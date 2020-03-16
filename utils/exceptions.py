@@ -3,9 +3,9 @@ import datetime
 
 class TellSpaceError(Exception):
     """Base Audit Manager Error Class"""
-    error_type = 'TellSpaceBaseError'
 
-    def __init__(self, err=None, msg='Error', status=500, user='', action=None):
+    def __init__(self, err=None, error_type='TellSpaceError', msg='Error', status=500, user='', action=None):
+        self.error_type = error_type
         self.msg = msg
         self.status = status
         if err:
@@ -45,9 +45,22 @@ class TellSpaceError(Exception):
 
 class TellSpaceApiError(TellSpaceError):
     """Audit Manager API error"""
-    error_type = 'ApiError'
+    def __init__(self):
+        super().__init__()
+        self.error_type = 'ApiError'
 
 
 class TellSpaceAuthError(TellSpaceError):
     """Error manager for authentication errors"""
-    error_type = 'AuthError'
+    def __init__(self):
+        super().__init__()
+        self.error_type = 'AuthError'
+
+
+class TellSpaceMethodNotAllowed(TellSpaceError):
+    def __init__(self):
+        super().__init__(
+            error_type='MethodNotAllowed',
+            msg="Method Not Allowed: The method is not allowed for the requested URL.",
+            status=405
+        )

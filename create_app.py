@@ -1,7 +1,7 @@
 from werkzeug.utils import find_modules, import_string
 from flask import Flask, request, current_app
 
-from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError
+from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError, TellSpaceMethodNotAllowed
 from utils.responses import ApiException, ApiResult
 
 
@@ -117,6 +117,14 @@ def register_error_handlers(app):
             )
         
         @app.errorhandler(TellSpaceAuthError)
+        def handle_auth_errors(error):
+            return ApiException(
+                _type=error.__class__.__name__,
+                message=error.msg,
+                status=error.status
+            )
+
+        @app.errorhandler(TellSpaceMethodNotAllowed)
         def handle_auth_errors(error):
             return ApiException(
                 _type=error.__class__.__name__,

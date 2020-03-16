@@ -26,7 +26,7 @@ class ApiResult(object):
 class ApiException(object):
     """API exception response wrapper class"""
 
-    def __init__(self,  message, _type='ClientError', status=400):
+    def __init__(self,  message='Error', _type='ClientError', status=400):
         self.message = message
         self.status = status
         self._type = _type
