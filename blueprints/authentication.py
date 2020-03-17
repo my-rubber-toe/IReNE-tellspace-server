@@ -1,40 +1,76 @@
 # TODO: Implement authentication strategy with flask dance and Google oAuth. Use decorators as needed.
 
 
-from flask import Blueprint, g, current_app, request, session, make_response, jsonify
+from flask import redirect, url_for, jsonify
+from flask_dance.contrib.google import make_google_blueprint, google
 from utils.responses import ApiResult, ApiException
+from utils.exceptions import TellSpaceAuthError
 
-from uuid import uuid4
-
-route_prefix = f'{current_app.config["PREFIX_URL"]}/auth'
-
-bp = Blueprint('auth', __name__, url_prefix=route_prefix)
+# Register Google oAuth Strategy blueprint
+bp = make_google_blueprint(scope=["profile", "email"])
+bp.url_prefix = "/"
 
 
-@bp.route('/login')
-def auth_login():
-    """ Objective:
-           Perform the authorization strategy sequence. Contact Google oAuth to perform sign in sequence accordingly.
-
-        Pre-conditions:
-           Client has no session token.
-           Client has invalid session token.
-
-        Args:
-           None
-
-        Returns:
-          ApiResult object with a new session token.
-
-        Author:
-           Roberto Y. Guzman
-
-        Date:
-          March 16, 2020
-    """
+@bp.route('/')
+def auth_main():
+    if not google.authorized:
+        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /api/auth/login")
 
     return ApiResult(
         value={
-            "response": f'Hi, your new session token is {uuid4()}'
+            "message": "Client authorized."
         }
     )
+
+
+@bp.route('/api/auth/me', methods=["GET"])
+def auth_me():
+
+    # TODO: Returns the relevant user information if valid token session
+
+    if not google.authorized:
+        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /api/auth/login")
+
+    resp = google.get("/oauth2/v2/userinfo").json()
+
+    return ApiResult(
+        value={
+            "response": resp
+        }
+    )
+
+
+@bp.route('/api/auth/login', methods=["GET"])
+def auth_login():
+
+    # TODO: If valid token exists return ApiException
+
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+
+    # TODO: Create new token and return it to the client
+
+    return ApiResult(
+        value={
+            "response": "Client authorized."
+        }
+    )
+
+
+@bp.route("/api/auth/logout")
+def auth_logout():
+    try:
+        token = bp.token["access_token"]
+        resp = google.post(
+            "https://accounts.google.com/o/oauth2/revoke",
+            params={"token": token},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+        print(resp)
+        del bp.token
+    except KeyError:
+        return jsonify(response="No token to be revoked. Please login at /api/auth/login")
+
+    return jsonify(response="Token successfully revoked!")
+
+

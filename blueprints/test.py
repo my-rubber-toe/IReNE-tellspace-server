@@ -1,7 +1,7 @@
 from flask import Blueprint, g, current_app, request, session, make_response, jsonify
 from utils.responses import ApiResult, ApiException
 
-route_prefix = f'{current_app.config["PREFIX_URL"]}/test'
+route_prefix = '/api/test'
 
 bp = Blueprint('test', __name__, url_prefix=route_prefix)
 

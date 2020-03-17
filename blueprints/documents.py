@@ -6,9 +6,7 @@ from uuid import uuid4
 
 from utils.exceptions import TellSpaceMethodNotAllowed
 
-route_prefix = f'{current_app.config["PREFIX_URL"]}/documents'
-
-bp = Blueprint('documents', __name__, url_prefix=route_prefix)
+bp = Blueprint('documents', __name__, url_prefix='/api/documents')
 
 
 @bp.route('/', methods=['GET'])
@@ -17,7 +15,6 @@ def get_documents():
            Return a list of documents based on the body request parameters. The parameters will be used to filter the
            information within the metadata of the documents. Documents returned will be those from the res.
            User id will be retrieved from the session object.
-.
 
         Pre-conditions:
            Client has valid session token.
@@ -46,7 +43,6 @@ def get_documents():
 
 @bp.route('/create', methods=['GET', 'POST'])
 def create_document():
-    print(request.method)
     if not(request.method == 'POST'):
         raise TellSpaceMethodNotAllowed()
 
@@ -182,5 +178,5 @@ def update_document_tags(doc_id):
 
 @bp.before_request
 def before_requests():
-    print(f'Before requests in {route_prefix}')
+    print(f'Before requests in /api/documents')
 

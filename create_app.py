@@ -1,5 +1,6 @@
 from werkzeug.utils import find_modules, import_string
 from flask import Flask, request, current_app
+from flask_dance.contrib.google import  make_google_blueprint
 
 from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError, TellSpaceMethodNotAllowed
 from utils.responses import ApiException, ApiResult
@@ -35,44 +36,43 @@ def create_app(config=None):
     """
     app = ApiFlask(__name__)
 
-    with app.app_context():
+    # Set all variables from the config file passed as a parameter
+    app.config.from_object(config or {})
 
-        # Set all variables from the config file passed as a parameter
-        app.config.from_object(config or {})
+    # Setup Flask Secret Key
+    app.secret_key = app.config['FLASK_SECRET_KEY']
 
-        # Setup Flask session Secret
-        # app.secret_key = app.config['SECRET_KEY']
+    # TODO: Setup CORS for all endpoints
+    # register_cors(app)
+    # CORS(app)
 
-        # TODO: Setup CORS for all endpoints
-        # register_cors(app)
+    # TODO: Setup database configuration
+    # db.init_app(app)
 
-        # TODO: Setup database configuration
-        # db.init_app(app)
+    # TODO: Setup authentication strategy for Google oAuth
+    # auth_setup.init_app(app)
 
-        # TODO: Setup authentication strategy for Google oAuth
-        # auth_setup.init_app(app)
+    # Setup validator plugins
+    # validator.init_app(app)
 
-        # Setup validator plugins
-        # validator.init_app(app)
+    # Setup blueprints to establish all endpoint routes
+    register_blueprints(app)
 
-        # Setup blueprints to establish all endpoint routes
-        register_blueprints(app)
+    # Register the error handlers
+    register_error_handlers(app)
 
-        # Register the error handlers
-        register_error_handlers(app)
+    # register '/api endpoint'
+    # register_base_url(app)
 
-        # register '/tellspace/api endpoint'
-        register_base_url(app)
+    # Setup app request teardown process
+    register_request_teardown(app)
 
-        # Setup app request teardown process
-        register_request_teardown(app)
-
-        return app
+    return app
 
 
 def register_blueprints(app):
-    """Register all blueprints under the {.blueprint} module
-    in the passed application instance.
+    """Register all blueprints under the {.blueprint} module in the passed application instance. The authentication
+        blueprint will be treated differently
 
     Arguments:
         app {flask application} -- application instance
@@ -165,13 +165,11 @@ def register_error_handlers(app):
 
 
 def register_base_url(app: Flask):
-    @app.route('/')
-    @app.route('/tellspace/')
-    @app.route(app.config['PREFIX_URL'])
+    @app.route('/api/')
     def api():
         return ApiResult(
             {
-                'message': 'You have reached the TellSpace API. To make other requests please use all routes under /tellspace/api'
+                'message': 'You have reached the TellSpace API. To make other requests please use all routes under /api'
             },
             status=200
         )
@@ -184,35 +182,36 @@ def register_request_teardown(app):
     pass
 
 
-# def register_cors(app: Flask):
-#     """
-#         Setup CORS , cross-origin-resource-sharing settings
-#     """
+def register_cors(app: Flask):
+    """
+        Setup CORS , cross-origin-resource-sharing settings
+    """
 
-#     origins_list = '*'
+    origins_list = '*'
 
-#     methods_list= ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS']
+    methods_list = ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS']
 
-#     allowed_headers_list = [
-#         'Access-Control-Allow-Credentials',
-#         'Access-Control-Allow-Headers',
-#         'Access-Control-Allow-Methods', 
-#         'Access-Control-Allow-Origin',
-#         'Content-Type',
-#         'Authorization',
-#         'Content-Disposition',
-#         'Referrer-Policy',
-#         'Strict-Transport-Security',
-#         'X-Frame-Options',
-#         'X-Xss-Protection',
-#         'X-Content-Type-Options',
-#         'X-Permitted-Cross-Domain-Policies'
-#     ]
-    
-#     CORS(
-#         app=app,
-#         resources={r"/api/*": {"origins": origins_list}},
-#         methods=methods_list,
-#         allowed_headers=allowed_headers_list,
-#         supports_credentials=True
-#     )
+    allowed_headers_list = [
+        'Access-Control-Allow-Credentials',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Methods',
+        'Access-Control-Allow-Origin',
+        'Content-Type',
+        'Authorization',
+        'Content-Disposition',
+        'Referrer-Policy',
+        'Strict-Transport-Security',
+        'X-Frame-Options',
+        'X-Xss-Protection',
+        'X-Content-Type-Options',
+        'X-Permitted-Cross-Domain-Policies'
+    ]
+
+    CORS(
+        app=app,
+        resources={r"/api/*": {"origins": origins_list}},
+        methods=methods_list,
+        allowed_headers=allowed_headers_list,
+        supports_credentials=True
+    )
+

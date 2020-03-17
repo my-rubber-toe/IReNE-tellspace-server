@@ -22,14 +22,14 @@ class TellSpaceError(Exception):
 
     def log(self):
         log_string = '"error":"{}","error_type":"{}","user":"{}","log_action":"{}",' \
-                     '"error_description":"{}","status":"{}", "time_stamp": "{}"'.format(
-            str(self.err).replace('"', "'"),
-            str(self.error_type).replace('"', "'"),
-            str(self.user),
-            str(self.action).replace('"', "'"),
-            str(self.error_stack),
-            str(self.status),
-            str(self.now.strftime("%a, %d %b %Y %I:%M:%S %p"))
+            '"error_description":"{}","status":"{}", "time_stamp": "{}"'.format(
+                str(self.err).replace('"', "'"),
+                str(self.error_type).replace('"', "'"),
+                str(self.user),
+                str(self.action).replace('"', "'"),
+                str(self.error_stack),
+                str(self.status),
+                str(self.now.strftime("%a, %d %b %Y %I:%M:%S %p"))
         )
         
         log_string = '{' + log_string + '},\n'
@@ -52,9 +52,10 @@ class TellSpaceApiError(TellSpaceError):
 
 class TellSpaceAuthError(TellSpaceError):
     """Error manager for authentication errors"""
-    def __init__(self):
-        super().__init__()
+    def __init__(self, msg="Credentials Error"):
+        super().__init__(msg=msg)
         self.error_type = 'AuthError'
+        self.status = 401
 
 
 class TellSpaceMethodNotAllowed(TellSpaceError):
