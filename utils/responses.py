@@ -2,8 +2,7 @@
     Classes to standardize the response methods. Improves the ease of debugging.
 """
 
-from flask import Response, json, jsonify, make_response
-from werkzeug.datastructures import Headers
+from flask import jsonify, make_response
 
 
 class ApiResult(object):
@@ -19,7 +18,6 @@ class ApiResult(object):
 
 class ApiException(object):
     """API exception response wrapper class"""
-
     def __init__(self, error_type='ApiError', message='Error', status=500):
         self.res = jsonify(error_type=error_type, message=message, status=status)
         self.status = status
