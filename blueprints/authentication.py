@@ -13,21 +13,17 @@ bp.url_prefix = "/"
 
 @bp.route('/')
 def auth_main():
+    # TODO: Check if user has a valid session token. Use decorator function.
     if not google.authorized:
         raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /api/auth/login")
 
-    return ApiResult(
-        value={
-            "message": "Client authorized."
-        }
-    )
+    return ApiResult(message="Client Authorized")
 
 
 @bp.route('/api/auth/me', methods=["GET"])
 def auth_me():
 
-    # TODO: Returns the relevant user information if valid token session
-
+    # TODO: Check if user has a valid session token. Returns the relevant user information from database.
     if not google.authorized:
         raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /api/auth/login")
 

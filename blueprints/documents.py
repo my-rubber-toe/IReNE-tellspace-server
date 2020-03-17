@@ -1,124 +1,164 @@
 # TODO: Add authentication decorator as needed
 
-from flask import Blueprint, g, current_app, request, session, make_response, jsonify
+from flask import Blueprint, request, json
 from utils.responses import ApiResult, ApiException
+from utils.validators import *
+from marshmallow import ValidationError
 from uuid import uuid4
 
-from utils.exceptions import TellSpaceMethodNotAllowed
+
+from utils.exceptions import TellSpaceApiError
 
 bp = Blueprint('documents', __name__, url_prefix='/api/documents')
 
 
-@bp.route('/', methods=['GET'])
+@bp.route('/', methods=['POST'])
 def get_documents():
-    """ Objective:
-           Return a list of documents based on the body request parameters. The parameters will be used to filter the
+    """ Return a list of documents based on the body request parameters. The parameters will be used to filter the
            information within the metadata of the documents. Documents returned will be those from the res.
            User id will be retrieved from the session object.
-
-        Pre-conditions:
-           Client has valid session token.
-           Request body must be valid.
-
-
-        Args:
-           None
-
-        Returns:
-          ApiResult where value is a list of documents metadata fitting the criteria in the request body.
-
-        Author:
-           Roberto Y. Guzman
-
-        Date:
-          March 16, 2020
     """
-    temp_response = {
-        "response": 'List of documents metadata fitting the criteria in the request body.'
-    }
+    # TODO: Check if user has a valid session token.
+
+    # TODO: Validate the request body object.
+    if request.json == {}:
+        return ApiException(
+            error_type='ApiError',
+            message='No data in request body.',
+            status=400
+        )
+    try:
+        GetDocumentsValidator().load(request.json)
+    except ValidationError as err:
+        return ApiException(
+            error_type='Validation Error',
+            message=err.messages,
+            status=400
+        )
+
+    # TODO: Use DAOs to retrieve the necessary information.
+
     return ApiResult(
-        value=temp_response
+        message='Valid Data'
     )
 
 
 @bp.route('/create', methods=['GET', 'POST'])
 def create_document():
-    if not(request.method == 'POST'):
-        raise TellSpaceMethodNotAllowed()
 
-    temp_response = {
-        "response": f'Hi this is a test. The document you created is {uuid4()}',
-        "method": request.method
-    }
-    return ApiResult(
-        value=temp_response
-    )
+    if not(request.method == 'POST'):
+        return ApiException(error_type='UnauthorizedMethod', message='Method not allowed.', status=400)
+
+    # TODO: Check if user has a valid session token.
+    # TODO: Validate the request body object.
+
+    if request.json == {}:
+        return ApiException(error_type='Api Error', message='No data in request body.', status=400)
+
+    try:
+        body = CreateDocumentValidator().load(request.json)
+        # TODO: Use DAOs to create a new document using the collaborator ID.
+        return ApiResult(message='Valid Data. Document will be created with the given data', given_data=body)
+
+    except ValidationError as err:
+        return ApiException(error_type='Validation Error', message=err.messages, status=400)
 
 
 @bp.route('/<doc_id>', methods=['GET'])
 def get_document_by_id(doc_id):
-    temp_response = {
-        "response":{
-            "doc_id": doc_id,
-            "message": 'Here is the doc_id param that you gave me'
-        }
-    }
-    return ApiResult(value=temp_response)
+
+    # TODO: Check if user has a valid session token.
+    # TODO: Use DAOs to retrieve the document with doc_id and user id respectively.
+
+    return ApiResult(response=f'Here is the document with doc_id = {doc_id}')
 
 
 @bp.route('/<doc_id>/edit/title', methods=['PUT'])
 def update_document_title(doc_id):
-    temp_response = {
-        "response":{
-            "doc_id": doc_id,
-            "message": 'You will edit the title for the document with the given doc_id'
-        }
-    }
-    return ApiResult(value=temp_response)
+
+    # TODO: Check if user has a valid session token.
+
+    if request.json == {}:
+        return ApiException(error_type='Api Error', message='No data in request body.', status=400)
+
+    try:
+        body = UpdateDocumentTitleValidator().load(request.json)
+        # TODO: Use DAOs to update the document.
+        return ApiResult(message=f'Valid Data. Updated document {doc_id} title to: {body.get("title")}')
+
+    except ValidationError as err:
+        return ApiException(error_type='Validation Error', message=err.messages, status=400)
 
 
 @bp.route('/<doc_id>/edit/description', methods=['PUT'])
 def update_document_description(doc_id):
-    temp_response = {
-        "response":{
-            "doc_id": doc_id,
-            "message": 'You will edit the description for the document with the given doc_id.'
-        }
-    }
-    return ApiResult(value=temp_response)
+
+    # TODO: Check if user has a valid session token.
+
+    if request.json == {}:
+        return ApiException(error_type='Api Error', message='No data in request body.', status=400)
+
+    try:
+        body = UpdateDocumentDescriptionValidator().load(request.json)
+        # TODO: Use DAOs to update the document.
+        return ApiResult(message=f'Valid Data. Updated document {doc_id} description to: {body.get("description")}')
+
+    except ValidationError as err:
+        return ApiException(error_type='Validation Error', message=err.messages, status=400)
 
 
 @bp.route('/<doc_id>/edit/timeline', methods=['PUT'])
 def update_document_timeline(doc_id):
-    temp_response = {
-        "response":{
-            "doc_id": doc_id,
-            "message": 'You will edit the timeline for the document with the given doc_id.'
-        }
-    }
-    return ApiResult(value=temp_response)
+    # TODO: Check if user has a valid session token.
+
+    if request.json == {}:
+        return ApiException(error_type='Api Error', message='No data in request body.', status=400)
+
+    try:
+        body = UpdateDocumentTimelineValidator().load(request.json)
+        # TODO: Use DAOs to update the document.
+        return ApiResult(message=f'Valid Data. Updated document {doc_id} timeline.', new_timeline=body.get("timeline"))
+
+    except ValidationError as err:
+        return ApiException(error_type='Validation Error', message=err.messages, status=400)
 
 
 @bp.route('/<doc_id>/edit/section', methods=['PUT'])
 def update_document_section(doc_id):
-    temp_response = {
-        "response":{
-            "doc_id": doc_id,
-            "message": 'You will edit a section of the document with the given doc_id.'
-        }
-    }
-    return ApiResult(value=temp_response)
+    # TODO: Check if user has a valid session token.
+
+    if request.json == {}:
+        return ApiException(error_type='Api Error', message='No data in request body.', status=400)
+
+    try:
+        body = UpdateDocumentSectionValidator().load(request.json)
+        # TODO: Use DAOs to update the document.
+        return ApiResult(
+            message=f'Valid Data. Updated document {doc_id}',
+            given_data=body
+        )
+
+    except ValidationError as err:
+        return ApiException(error_type='Validation Error', message=err.messages, status=400)
 
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])
 def update_document_infrastructure_types(doc_id):
-    temp_response = {
-        "response":{
-            "doc_id": doc_id,
-            "message": 'You will edit the infrastructure types of the document with the given doc_id.'
-        }
-    }
-    return ApiResult(value=temp_response)
+    # TODO: Check if user has a valid session token.
+
+    if request.json == {}:
+        return ApiException(error_type='Api Error', message='No data in request body.', status=400)
+
+    try:
+        body = UpdateDocumentInfrastructureTypesValidator().load(request.json)
+        # TODO: Use DAOs to update the document.
+        return ApiResult(
+            message=f'Valid Data. Updated document {doc_id}',
+            given_data=body
+        )
+
+    except ValidationError as err:
+        return ApiException(error_type='Validation Error', message=err.messages, status=400)
 
 
 @bp.route('/<doc_id>/edit/damage_types', methods=['PUT'])

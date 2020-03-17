@@ -2,7 +2,7 @@ from werkzeug.utils import find_modules, import_string
 from flask import Flask, request, current_app
 from flask_dance.contrib.google import  make_google_blueprint
 
-from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError, TellSpaceMethodNotAllowed
+from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
 
 
@@ -19,7 +19,7 @@ class ApiFlask(Flask):
         if isinstance(rv, ApiResult):
             return rv.to_response()
         if isinstance(rv, ApiException):
-            return rv.to_result()
+            return rv.to_response()
         return Flask.make_response(self, rv)
 
 
@@ -44,7 +44,6 @@ def create_app(config=None):
 
     # TODO: Setup CORS for all endpoints
     # register_cors(app)
-    # CORS(app)
 
     # TODO: Setup database configuration
     # db.init_app(app)
@@ -90,45 +89,36 @@ def register_error_handlers(app):
         app {flask application} -- application instance
     """
     if app.config['DEBUG']:
-        # If debug true, then return the whole error stack
         @app.errorhandler(TellSpaceError)
         def handle_error(error):
             return ApiException(
-                _type=error.__class__.__name__,
+                error_type=error.__class__.__name__,
                 message=error.error_stack,
                 status=error.status
             )
     else:
-        @app.errorhandler(TellSpaceError)
-        def handle_general_error(error):
-            return ApiException(
-                _type=error.__class__.__name__,
-                message=error.msg,
-                status=error.status
-            )
 
         @app.errorhandler(TellSpaceApiError)
         def handle_api_error(error):
-            # send email to service desk
             return ApiException(
-                _type=error.__class__.__name__,
-                message=error.msg,
-                status=error.status
-            )
-        
-        @app.errorhandler(TellSpaceAuthError)
-        def handle_auth_errors(error):
-            return ApiException(
-                _type=error.__class__.__name__,
+                error_type=error.__class__.__name__,
                 message=error.msg,
                 status=error.status
             )
 
-        @app.errorhandler(TellSpaceMethodNotAllowed)
-        def handle_auth_errors(error):
+        @app.errorhandler(TellSpaceAuthError)
+        def handle_custom_errors(error):
             return ApiException(
-                _type=error.__class__.__name__,
+                error_type=error.__class__.__name__,
                 message=error.msg,
+                status=error.status
+            )
+
+        @app.errorhandler(TellSpaceError)
+        def handle_general_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.error_stack,
                 status=error.status
             )
 
@@ -138,30 +128,30 @@ def register_error_handlers(app):
                 err=error,
                 msg='An unexpected error has occurred.',
                 status=500
-            ).log()
+            )
             return ApiException(
-                _type='UnexpectedException',
+                error_type='UnexpectedException',
                 message='An unexpected error has occurred. Please verify error logs',
                 status=500
             )
 
-    app.register_error_handler(
-        400,
-        lambda err: ApiException(message=str(
-            err), status=400, _type='Bad request')
-    )
+        app.register_error_handler(
+            400,
+            lambda err: ApiException(message=str(
+                err), status=400, error_type='Bad request')
+        )
 
-    app.register_error_handler(
-        404,
-        lambda err: ApiException(message=str(
-            err), status=404, _type='Not found')
-    )
+        app.register_error_handler(
+            404,
+            lambda err: ApiException(message=str(
+                err), status=404, error_type='Not found')
+        )
 
-    app.register_error_handler(
-        405,
-        lambda err: ApiException(message=str(
-            err), status=405, _type='Request method')
-    )
+        app.register_error_handler(
+            405,
+            lambda err: ApiException(message=str(
+                err), status=405, error_type='Request method')
+        )
 
 
 def register_base_url(app: Flask):

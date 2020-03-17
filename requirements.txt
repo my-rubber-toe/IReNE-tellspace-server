@@ -2,6 +2,7 @@
 flask
 flask-cors
 flask-dance
+marshmallow
 werkzeug
 python-dotenv
 commitizen
