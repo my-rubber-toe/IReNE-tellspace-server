@@ -1,8 +1,6 @@
 
 
 from marshmallow import Schema, fields, validate
-from datetime import datetime
-
 
 """Nested Schemas"""
 
@@ -11,18 +9,18 @@ class Authors(Schema):
     """Nested Schema"""
     first_name = fields.String(required=True, validate=validate.Length(min=1))
     last_name = fields.String(required=True, validate=validate.Length(min=1))
-    email = fields.Email(required=True)
+    email = fields.Email(
+        required=True,
+        validate=validate.Regexp("^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$")
+    )
+    faculty = fields.String(required=True, validate=validate.Length(min=1))
 
 
 class Actors(Schema):
     """Nested Schema"""
     first_name = fields.String(required=True, validate=validate.Length(min=1))
     last_name = fields.String(required=True, validate=validate.Length(min=1))
-    role = fields.String(
-        required=True,
-        allow_none=False,
-        validate=validate.Length(min=1)
-    )
+    role = fields.String(required=True, validate=validate.Length(min=1))
 
 
 class TimeLineEvent(Schema):
@@ -89,30 +87,30 @@ class CreateDocumentValidator(Schema):
     )
 
 
-class UpdateDocumentTitleValidator(Schema):
+class TitleValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/title"""
     title = fields.String(required=True, validate=validate.Length(min=1))
 
 
-class UpdateDocumentDescriptionValidator(Schema):
+class DescriptionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/description"""
     description = fields.String(required=True, validate=validate.Length(min=1))
 
 
-class UpdateDocumentTimelineValidator(Schema):
+class TimelineValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/timeline"""
     timeline = fields.List( fields.Nested(TimeLineEvent), required=True, validate=validate.Length(min=1)
     )
 
 
-class UpdateDocumentSectionValidator(Schema):
+class SectionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section"""
     section_nbr = fields.Integer(required=True)
     section_title = fields.String(required=False, validate=validate.Length(min=1))
     section_text = fields.String(required=False, validate=validate.Length(min=1))
 
 
-class UpdateDocumentInfrastructureTypesValidator(Schema):
+class InfrastructureTypesValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/infrastructure_types"""
     infrastructure_types = fields.List(
         fields.String(required=True, validate=validate.Length(min=1)),
@@ -121,22 +119,46 @@ class UpdateDocumentInfrastructureTypesValidator(Schema):
     )
 
 
-if __name__ == '__main__':
-    data = {
-        'general': 'testingdata',
-        'publication_date': [datetime.now(), datetime.now()],
-        'tags': ['tag1', 'tag2']
-    }
-
-    v = GetDocumentsValidator().dumps(data)
-
-    print(v)
+class DamageTypesValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/damage_types"""
+    damage_types = fields.List(
+        fields.String(required=True, validate=validate.Length(min=1)),
+        required=True,
+        validate=validate.Length(min=1)
+    )
 
 
+class ActorsValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/actors"""
+    actors = fields.List(
+        fields.Nested(Actors),
+        required=True,
+        validate=validate.Length(min=1)
+    )
 
 
+class LocationsValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/locations"""
+    locations = fields.List(
+        fields.String(required=True, validate=validate.Length(min=1, max=50)),
+        required=True,
+        validate=validate.Length(min=1)
+    )
 
 
+class AuthorsValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/authors"""
+    authors = fields.List(
+        fields.Nested(Authors),
+        required=True,
+        validate=validate.Length(min=1)
+    )
 
 
-
+class TagsValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/tags"""
+    tags = fields.List(
+        fields.String(required=True, validate=[validate.Length(min=1)]),
+        required=True,
+        validate=validate.Length(min=1)
+    )
