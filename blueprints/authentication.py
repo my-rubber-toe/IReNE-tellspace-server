@@ -62,7 +62,7 @@ def auth_logout():
             params={"token": token},
             headers={"Content-Type": "application/x-www-form-urlencoded"}
         )
-        print(resp)
+
         del bp.token
     except KeyError:
         return jsonify(response="No token to be revoked. Please login at /api/auth/login")

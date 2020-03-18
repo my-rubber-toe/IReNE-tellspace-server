@@ -14,24 +14,16 @@ bp = Blueprint('documents', __name__, url_prefix='/api/documents')
 
 @bp.route('/', methods=['GET'])
 def get_documents():
-    """ Return a list of documents based on the body request parameters. The parameters will be used to filter the
-           information within the metadata of the documents. Documents returned will be those from the res.
-           User id will be retrieved from the session object.
-    """
+    """ Return a list of documents' metadata belonging to the collabID"""
     # TODO: Check if user has a valid session token.
-
-    # Request validation
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
-    body = GetDocumentsValidator().load(request.json)
     # TODO: Use DAOs to retrieve the necessary information.
 
-    return ApiResult(message='Valid Data', given_data=body)
+    return ApiResult(message='Return a list of d')
 
 
 @bp.route('/create', methods=['GET', 'POST'])
 def create_document():
+    """ Create a new document using the information from the request body."""
 
     if not(request.method == 'POST'):
         return TellSpaceApiError(msg='Method not allowed.', status=400)
@@ -48,6 +40,7 @@ def create_document():
 
 @bp.route('/<doc_id>', methods=['GET'])
 def get_document_by_id(doc_id):
+    """Get all document information using the doc_id."""
 
     # TODO: Check if user has a valid session token.
 
@@ -55,7 +48,8 @@ def get_document_by_id(doc_id):
 
 
 @bp.route('/<doc_id>/edit/title', methods=['PUT'])
-def update_document_title(doc_id):
+def edit_document_title(doc_id):
+    """Edit the document title using doc_id and valid request body values."""
 
     # TODO: Check if user has a valid session token.
 
@@ -68,7 +62,8 @@ def update_document_title(doc_id):
 
 
 @bp.route('/<doc_id>/edit/description', methods=['PUT'])
-def update_document_description(doc_id):
+def edit_document_description(doc_id):
+    """Edit the document description using doc_id and valid request body values."""
 
     # TODO: Check if user has a valid session token.
 
@@ -81,9 +76,10 @@ def update_document_description(doc_id):
 
 
 @bp.route('/<doc_id>/edit/timeline', methods=['PUT'])
-def update_document_timeline(doc_id):
-    # TODO: Check if user has a valid session token.
+def edit_document_timeline(doc_id):
+    """Edit the document timeline using doc_id and valid request body values."""
 
+    # TODO: Check if user has a valid session token.
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
@@ -93,7 +89,9 @@ def update_document_timeline(doc_id):
 
 
 @bp.route('/<doc_id>/edit/section', methods=['PUT'])
-def update_document_section(doc_id):
+def edit_document_section(doc_id):
+    """Edit the document section using doc_id and valid request body values."""
+
     # TODO: Check if user has a valid session token.
 
     if request.json == {}:
@@ -105,7 +103,8 @@ def update_document_section(doc_id):
 
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])
-def update_document_infrastructure_types(doc_id):
+def edit_document_infrastructure_types(doc_id):
+    """Edit the document infrastructure_types using doc_id and valid request body values."""
     # TODO: Check if user has a valid session token.
 
     if request.json == {}:
@@ -117,7 +116,8 @@ def update_document_infrastructure_types(doc_id):
 
 
 @bp.route('/<doc_id>/edit/damage_types', methods=['PUT'])
-def update_document_damage_types(doc_id):
+def edit_document_damage_types(doc_id):
+    """Edit the document damage_types using doc_id and valid request body values."""
     # TODO: Check if user has a valid session token.
 
     if request.json == {}:
@@ -129,7 +129,8 @@ def update_document_damage_types(doc_id):
 
 
 @bp.route('/<doc_id>/edit/actors', methods=['PUT'])
-def update_document_actors(doc_id):
+def edit_document_actors(doc_id):
+    """Edit the document actors using doc_id and valid request body values."""
     # TODO: Check if user has a valid session token.
 
     if request.json == {}:
@@ -141,7 +142,9 @@ def update_document_actors(doc_id):
 
 
 @bp.route('/<doc_id>/edit/locations', methods=['PUT'])
-def update_document_locations(doc_id):
+def edit_document_locations(doc_id):
+    """Edit the document locations using doc_id and valid request body values."""
+
     # TODO: Check if user has a valid session token.
 
     if request.json == {}:
@@ -153,7 +156,9 @@ def update_document_locations(doc_id):
 
 
 @bp.route('/<doc_id>/edit/authors', methods=['PUT'])
-def update_document_authors(doc_id):
+def edit_document_authors(doc_id):
+    """Edit the document authors using doc_id and valid request body values."""
+
     # TODO: Check if user has a valid session token.
 
     if request.json == {}:
@@ -165,7 +170,9 @@ def update_document_authors(doc_id):
 
 
 @bp.route('/<doc_id>/edit/tags', methods=['PUT'])
-def update_document_tags(doc_id):
+def edit_document_tags(doc_id):
+    """Edit the document tags using doc_id and valid request body values."""
+
     # TODO: Check if user has a valid session token.
 
     if request.json == {}:

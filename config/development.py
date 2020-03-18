@@ -3,7 +3,11 @@ import os
 
 load_dotenv(verbose=True)
 
-DEBUG = os.getenv("DEBUG")
+FLASK_APP = os.getenv("FLASK_APP")
+FLASK_ENV = os.getenv("FLASK_ENV")
+PORT = os.getenv("PORT")
+
+FLASK_DEBUG = os.getenv("FLASK_DEBUG")
 DB = os.getenv("DB")
 
 

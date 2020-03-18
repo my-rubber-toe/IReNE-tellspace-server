@@ -32,25 +32,6 @@ class TimeLineEvent(Schema):
 """Request Body Schemas"""
 
 
-class GetDocumentsValidator(Schema):
-    """ Request body schema for the endpoint /api/documents"""
-    general = fields.String(required=False)
-
-    publication_date = fields.List(
-        fields.Date(),
-        required=False,
-        allow_none=False,
-        validate=validate.Length(min=2)
-    )
-
-    tags = fields.List(
-        fields.String(),
-        required=False,
-        validate=validate.Length(min=1)
-    )
-
-
-
 class CreateDocumentValidator(Schema):
     """ Request body schema for the endpoint /api/documents/create"""
     title = fields.String(required=True)

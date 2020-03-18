@@ -1,6 +1,5 @@
 from werkzeug.utils import find_modules, import_string
 from flask import Flask, request, current_app
-from flask_dance.contrib.google import  make_google_blueprint
 
 from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
@@ -15,7 +14,6 @@ class ApiFlask(Flask):
         Custom class extended from the Flask app object. 
         Overrides the make response method to add custom error classes ApiResult and ApiException support  
     """
-
     def make_response(self, rv):
         if isinstance(rv, ApiResult):
             return rv.to_response()
@@ -23,8 +21,6 @@ class ApiFlask(Flask):
             return rv.to_response()
         return Flask.make_response(self, rv)
 
-
-# Setup Methods
 
 def create_app(config=None):
     """Creates and returns a Flask app instance.
@@ -37,40 +33,41 @@ def create_app(config=None):
     """
     app = ApiFlask(__name__)
 
-    # Set all variables from the config file passed as a parameter
-    app.config.from_object(config or {})
+    with app.app_context():
+        # Set all variables from the config file passed as a parameter
+        app.config.from_object(config or {})
 
-    # Setup Flask Secret Key
-    app.secret_key = app.config['FLASK_SECRET_KEY']
+        # Setup Flask Secret Key
+        app.secret_key = app.config['FLASK_SECRET_KEY']
 
-    # TODO: Setup CORS for all endpoints
-    # register_cors(app)
+        # TODO: Setup CORS for all endpoints
+        # register_cors(app)
 
-    # TODO: Setup database configuration
-    # db.init_app(app)
+        # TODO: Setup database configuration
+        # db.init_app(app)
 
-    # TODO: Setup authentication strategy for Google oAuth
-    # auth_setup.init_app(app)
+        # TODO: Setup authentication strategy for Google oAuth
+        # auth_setup.init_app(app)
 
-    # Setup validator plugins
-    # validator.init_app(app)
+        # Setup validator plugins
+        # validator.init_app(app)
 
-    # Setup blueprints to establish all endpoint routes
-    register_blueprints(app)
+        # Setup blueprints to establish all endpoint routes
+        register_blueprints(app)
 
-    # Register the error handlers
-    register_error_handlers(app)
+        # Register the error handlers
+        register_error_handlers(app)
 
-    # register '/api endpoint'
-    # register_base_url(app)
+        # register '/api endpoint'
+        # register_base_url(app)
 
-    # Setup app request teardown process
-    register_request_teardown(app)
+        # Setup app request teardown process
+        register_request_teardown(app)
 
-    return app
+        return app
 
 
-def register_blueprints(app):
+def register_blueprints(app: ApiFlask):
     """Register all blueprints under the {.blueprint} module in the passed application instance. The authentication
         blueprint will be treated differently
 
@@ -83,13 +80,13 @@ def register_blueprints(app):
             app.register_blueprint(mod.bp)
 
 
-def register_error_handlers(app):
+def register_error_handlers(app: ApiFlask):
     """Register error daos to flask application instance.
 
     Arguments:
         app {flask application} -- application instance
     """
-    if app.config['DEBUG']:
+    if app.config['FLASK_DEBUG']:
         @app.errorhandler(TellSpaceError)
         def handle_error(error):
             return ApiException(
@@ -173,14 +170,14 @@ def register_base_url(app: Flask):
         )
 
 
-def register_request_teardown(app):
+def register_request_teardown(app: ApiFlask):
     @app.teardown_request
     def do_the_thing(exeption):
         pass
     pass
 
 
-def register_cors(app: Flask):
+def register_cors(app: ApiFlask):
     """
         Setup CORS , cross-origin-resource-sharing settings
     """
@@ -212,4 +209,3 @@ def register_cors(app: Flask):
         allowed_headers=allowed_headers_list,
         supports_credentials=True
     )
-
