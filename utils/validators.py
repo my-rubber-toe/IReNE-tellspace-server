@@ -50,6 +50,7 @@ class GetDocumentsValidator(Schema):
     )
 
 
+
 class CreateDocumentValidator(Schema):
     """ Request body schema for the endpoint /api/documents/create"""
     title = fields.String(required=True)
