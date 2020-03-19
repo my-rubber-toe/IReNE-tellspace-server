@@ -29,25 +29,36 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @bp.route('/')
 def auth_main():
-    """Generate a new access token for the user.
-        User must authorize access to Google oAuth to get a valid token.
+    """Generate a new access token for the user. User must sign in to Google oAuth to get a valid token.
     """
     if not google.authorized:
-        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /google")
+        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /google", status=401)
 
     # Get user email from Google Credentials to use as identity
     email = google.get("/oauth2/v2/userinfo").json()['email']
 
     # TODO: Check if user email exists in DB as an approved collaborator.
 
+    try:
+        # Revoke Google Token. Login sequence requires user to sign in to google
+        google_token = bp.token["access_token"]
+        google.post(
+            "https://accounts.google.com/o/oauth2/revoke",
+            params={"token": google_token},
+            headers={"Content-Type": "application/x-www-form-urlencoded"}
+        )
+        del bp.token
+    except KeyError:
+        raise TellSpaceAuthError(msg="No token to be revoked. Please login at /api/auth/login")
+
     # Use the email as the token identity
     return ApiResult(
-        access_token=create_access_token(identity=email, expires_delta=timedelta(hours=2)),
+        access_token=create_access_token(identity=email, expires_delta=timedelta(hours=1)),
         refresh_token=create_refresh_token(identity=email, expires_delta=timedelta(weeks=2))
     )
 
 
-@bp.route('/me', methods=["GET"])
+@bp.route('/me')
 @jwt_required
 def auth_me():
     """"Return information from the database."""
@@ -67,18 +78,6 @@ def auth_refresh():
 @jwt_required
 def auth_logout():
     """Revoke the Google authorization and add tokens to blacklist"""
-    try:
-        # Revoke Google Tokens
-        google_token = bp.token["access_token"]
-        google.post(
-            "https://accounts.google.com/o/oauth2/revoke",
-            params={"token": google_token},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
-        )
-        del bp.token
-    except KeyError:
-        raise TellSpaceAuthError(msg="No token to be revoked. Please login at /api/auth/login")
-
     # Blacklist jwt tokens
     jti = get_raw_jwt()['jti']
     token_blacklist.add(jti)
