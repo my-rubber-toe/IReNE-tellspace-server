@@ -14,8 +14,8 @@ depending on that input the app will be initialized with the
 corresponding database queries files and database driver
 '''
 
-# Search for the config file and add it to the
+# Set config file accordingly
 app = create_app('config.development')
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000, debug=True)
+    app.run(host='localhost', port=app.config['PORT'], debug=app.config['FLASK_DEBUG'])

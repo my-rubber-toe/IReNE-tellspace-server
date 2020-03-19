@@ -1,0 +1,414 @@
+{
+	"info": {
+		"_postman_id": "f9ad265c-8996-4ca1-b845-ca0eaed3421d",
+		"name": "tellspace_documents",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get_documents",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"general\": \"general string\",\n\t\"publication_date\": [\"2020-12-3\", \"2020-12-3\"],\n\t\"tags\": [\"tag1\", \"123\"]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create_document",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"actors\": [\n\t\t{\n    \t\t\"first_name\":\"name1\",\n    \t\t\"last_name\":\"lastname1\",\n    \t\t\"role\":\"some\"\n\t\t}\n\t],\n    \n    \"authors\": [\n    \t{\n    \t\t\"first_name\":\"name1\",\n    \t\t\"last_name\":\"lastname1\",\n    \t\t\"email\":\"email@email.com\",\n    \t\t\"faculty\": \"somefaculty\"\n    \t}\n    ],\n    \n    \"incident_date\":\"2020-02-15\",\n    \n    \"damage_type\": [\"damage1\", \"damage2\",\"damage3\"],\n    \n    \"infrastructure_type\": [\"infrastrucutre1\", \"infrastructure2\", \"infrastructure3\"],\n    \n    \"title\": \"Some Title\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_document_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_title",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"THIS IS THE NEW TITLE\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/title",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"title"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_description",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\":\"THIS IS THE NEW DESCRIPTION\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/description",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"description"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_timeline",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"timeline\": [\n\t\t{\n\t\t\t\"event_date\":\"2020-12-3\",\n\t\t\t\"event_description\": \"I am the event description\"\n\t\t},\n\t\t\t\t{\n\t\t\t\"event_date\":\"2020-12-4\",\n\t\t\t\"event_description\": \"I am the event description\"\n\t\t}\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/timeline",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"timeline"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_section",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"section_nbr\": 2,\n\t\"section_title\": \"NEW SECTION TITLE\",\n\t\"section_text\": 123\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/section",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"section"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_infrastructure_types",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"infrastructure_types\": [\n\t\t\"type1\",\n\t\t\"type2\"-\n\t]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/infrastructure_types",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"infrastructure_types"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_damage_types",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"damage_types\":[\n\t\t\"type1\",\n\t\t\"type2\"\n\t]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/damage_types",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"damage_types"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_actors",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"actors\":[\n\t\t{\n\t\t\t\"first_name\":\"name1\",\n\t\t\t\"last_name\":\"lastname1\",\n\t\t\t\"role\":\"role1\"\n\t\t},\n\t\t{\n\t\t\t\"first_name\":\"name2\",\n\t\t\t\"last_name\":\"lastname2\",\n\t\t\t\"role\":\"role2\"\n\t\t}\n\t]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/actors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"actors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_locations",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"locations\":[\n\t\t\"location1\",\n\t\t\"location2\",\n\t\t\"location3\"\n\t\t]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/locations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_authors",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"authors\":[\n\t\t{\n\t\t\t\"first_name\":\"name1\",\n\t\t\t\"last_name\":\"lastname1\",\n\t\t\t\"email\":\"email1@email.com\",\n\t\t\t\"faculty\":\"faculty1\"\n\t\t},\n\t\t{\n\t\t\t\"first_name\":\"name2\",\n\t\t\t\"last_name\":\"lastname2\",\n\t\t\t\"email\":\"email2@email.com\",\n\t\t\t\"faculty\": \"faculty2\"\n\t\t}\n\t]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/authors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit_document_tags",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tags\":[\"tag1\", \"tag2\"]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/documents/123456/edit/tags",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"documents",
+						"123456",
+						"edit",
+						"tags"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,9 +1,15 @@
 import datetime
 
+import logging
+
+logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('TellSpaceLogger')
+
 
 class TellSpaceError(Exception):
     """Base Audit Manager Error Class"""
-    error_type = 'TellSpaceBaseError'
+
+    error_type = 'TellSpaceError'
 
     def __init__(self, err=None, msg='Error', status=500, user='', action=None):
         self.msg = msg
@@ -31,7 +37,6 @@ class TellSpaceError(Exception):
             str(self.status),
             str(self.now.strftime("%a, %d %b %Y %I:%M:%S %p"))
         )
-        
         log_string = '{' + log_string + '},\n'
 
         # TODO: implement buffer
@@ -40,14 +45,20 @@ class TellSpaceError(Exception):
 
     def __str__(self):
         return f'\nApplication is in DEBUG MODE:\nError Pretty Print:\n\tType:{self.error_type}; Msg:{self.msg}; Status:{self.status}; ' \
-            f'ErrStackTrace:{self.error_stack}'
+               f'ErrStackTrace:{self.error_stack}'
 
 
 class TellSpaceApiError(TellSpaceError):
     """Audit Manager API error"""
-    error_type = 'ApiError'
+    error_type = 'TellSpaceApiError'
+
+
+class TellSpaceRequestValidationError(TellSpaceError):
+    """Audit Manager API error"""
+    error_type = 'TellSpaceRequestValidationError'
 
 
 class TellSpaceAuthError(TellSpaceError):
     """Error manager for authentication errors"""
-    error_type = 'AuthError'
+    error_type = 'TellSpaceAuthError'
+
