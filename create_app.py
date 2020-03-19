@@ -3,8 +3,9 @@ from flask import Flask, request, current_app
 
 from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
-from marshmallow import  ValidationError
+from marshmallow import ValidationError
 
+from flask_jwt_extended import JWTManager
 
 from flask_cors import CORS
 
@@ -41,6 +42,11 @@ def create_app(config=None):
         # Setup Flask Secret Key
         app.secret_key = app.config['FLASK_SECRET_KEY']
 
+        # Setup JWTManager to the app context on the attribute "jwt"
+        app.config['JWT_BLACKLIST_ENABLED'] = True
+        app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+        app.__setattr__("jwt", JWTManager(app))
+
         # TODO: Setup CORS for all endpoints
         # register_cors(app)
 
@@ -57,7 +63,7 @@ def create_app(config=None):
         register_blueprints(app)
 
         # Register the error handlers
-        register_error_handlers(app)
+        # register_error_handlers(app)
 
         # register '/api endpoint'
         # register_base_url(app)
@@ -87,77 +93,77 @@ def register_error_handlers(app: ApiFlask):
     Arguments:
         app {flask application} -- application instance
     """
-    # if app.config['FLASK_DEBUG']:
-    #     @app.errorhandler(TellSpaceError)
-    #     def handle_error(error):
-    #         return ApiException(
-    #             error_type=error.__class__.__name__,
-    #             message=error.error_stack,
-    #             status=error.status
-    #         )
-    # else:
-    #     @app.errorhandler(TellSpaceApiError)
-    #     def handle_api_error(error):
-    #         return ApiException(
-    #             error_type=error.__class__.__name__,
-    #             message=error.msg,
-    #             status=error.status
-    #         )
-    #
-    #     @app.errorhandler(TellSpaceAuthError)
-    #     def handle_custom_errors(error):
-    #         return ApiException(
-    #             error_type=error.__class__.__name__,
-    #             message=error.msg,
-    #             status=error.status
-    #         )
-    #
-    #     @app.errorhandler(TellSpaceError)
-    #     def handle_general_error(error):
-    #         return ApiException(
-    #             error_type=error.__class__.__name__,
-    #             message=error.error_stack,
-    #             status=500
-    #         )
-    #
-    #     @app.errorhandler(ValidationError)
-    #     def request_validator_error(err):
-    #         return ApiException(
-    #             error_type='ValidationError',
-    #             message=err.messages,
-    #             status=400
-    #         )
-    #
-    #     @app.errorhandler(Exception)
-    #     def handle_unexpected_error(error):
-    #         TellSpaceError(
-    #             err=error,
-    #             msg='An unexpected error has occurred.',
-    #             status=500
-    #         )
-    #         return ApiException(
-    #             error_type='UnexpectedException',
-    #             message='An unexpected error has occurred. Please verify error logs',
-    #             status=500
-    #         )
-    #
-    #     app.register_error_handler(
-    #         400,
-    #         lambda err: ApiException(message=str(
-    #             err), status=400, error_type='Bad request')
-    #     )
-    #
-    #     app.register_error_handler(
-    #         404,
-    #         lambda err: ApiException(message=str(
-    #             err), status=404, error_type='Not found')
-    #     )
-    #
-    #     app.register_error_handler(
-    #         405,
-    #         lambda err: ApiException(message=str(
-    #             err), status=405, error_type='Request method')
-    #     )
+    if app.config['FLASK_DEBUG']:
+        @app.errorhandler(TellSpaceError)
+        def handle_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.error_stack,
+                status=error.status
+            )
+    else:
+        @app.errorhandler(TellSpaceApiError)
+        def handle_api_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.msg,
+                status=error.status
+            )
+
+        @app.errorhandler(TellSpaceAuthError)
+        def handle_custom_errors(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.msg,
+                status=error.status
+            )
+
+        @app.errorhandler(TellSpaceError)
+        def handle_general_error(error):
+            return ApiException(
+                error_type=error.__class__.__name__,
+                message=error.error_stack,
+                status=500
+            )
+
+        @app.errorhandler(ValidationError)
+        def request_validator_error(err):
+            return ApiException(
+                error_type='ValidationError',
+                message=err.messages,
+                status=400
+            )
+
+        @app.errorhandler(Exception)
+        def handle_unexpected_error(error):
+            TellSpaceError(
+                err=error,
+                msg='An unexpected error has occurred.',
+                status=500
+            )
+            return ApiException(
+                error_type='UnexpectedException',
+                message='An unexpected error has occurred. Please verify error logs',
+                status=500
+            )
+
+        app.register_error_handler(
+            400,
+            lambda err: ApiException(message=str(
+                err), status=400, error_type='Bad request')
+        )
+
+        app.register_error_handler(
+            404,
+            lambda err: ApiException(message=str(
+                err), status=404, error_type='Not found')
+        )
+
+        app.register_error_handler(
+            405,
+            lambda err: ApiException(message=str(
+                err), status=405, error_type='Request method')
+        )
 
 
 

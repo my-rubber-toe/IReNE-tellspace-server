@@ -5,20 +5,20 @@ from flask import Blueprint, g, current_app, request, session, make_response, js
 from utils.responses import ApiResult, ApiException
 from datetime import timedelta
 
-from flask_jwt_extended import JWTManager, \
-    jwt_required, create_access_token, create_refresh_token, get_jwt_identity, jwt_refresh_token_required, get_raw_jwt
+from flask_jwt_extended import jwt_required, create_access_token, \
+    create_refresh_token, get_jwt_identity, jwt_refresh_token_required, get_raw_jwt
 
 
 route_prefix = '/api/test'
 
 bp = Blueprint('test', __name__, url_prefix=route_prefix)
 
-jwt = JWTManager(current_app)
-
 blacklist = set()
 
 
-def check_if_token_in_blacklist(jti):
+@current_app.jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
     return jti in blacklist
 
 
@@ -26,8 +26,8 @@ def check_if_token_in_blacklist(jti):
 @bp.route('/login', methods=['GET'])
 def login():
     ret = {
-        'access_token': create_access_token(identity=321),
-        'refresh_token': create_refresh_token(identity=321)
+        'access_token': create_access_token(identity=321, expires_delta=timedelta(seconds=30)),
+        'refresh_token': create_refresh_token(identity=321, expires_delta=timedelta(seconds=30))
     }
     return jsonify(ret), 200
 
@@ -50,6 +50,7 @@ def refresh():
 def logout():
     jti = get_raw_jwt()['jti']
     blacklist.add(jti)
+    print(blacklist)
     return jsonify({"msg": "Successfully logged out"}), 200
 
 
@@ -59,17 +60,15 @@ def logout():
 def logout2():
     jti = get_raw_jwt()['jti']
     blacklist.add(jti)
+    print(blacklist)
     return jsonify({"msg": "Successfully logged out"}), 200
 
 
 # This will now prevent users with blacklisted tokens from
 # accessing this endpoint
-@bp.route('/protected', methods=['GET'])
+@bp.route('/me', methods=['GET'])
 @jwt_required
 def protected():
-    jti = get_raw_jwt()['jti']
-    if check_if_token_in_blacklist(jti):
-        return 'Nope'
     return jsonify({'hello': 'world'})
 
 
