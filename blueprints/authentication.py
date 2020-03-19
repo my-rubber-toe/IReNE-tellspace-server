@@ -3,6 +3,7 @@
 
 from flask import redirect, url_for, jsonify
 from flask_dance.contrib.google import make_google_blueprint, google
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.exceptions import TellSpaceAuthError
 
@@ -13,47 +14,29 @@ bp.url_prefix = "/"
 
 @bp.route('/')
 def auth_main():
-    # TODO: Check if user has a valid session token. Use decorator function.
+    """Generate a new access token for the user.
+        User must perform Google oAuth sign in to get a valid token.
+    """
     if not google.authorized:
-        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /api/auth/login")
+        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /google")
 
-    return ApiResult(message="Client Authorized")
+    # Get credentials from Google
+    email = google.get("/oauth2/v2/userinfo").json()['email']
+
+    # TODO: Check if user email exists in DB as an approved collaborator.
+
+    access_token = create_access_token(identity=email)
+    return ApiResult(access_token=access_token)
 
 
-@bp.route('/api/auth/me', methods=["GET"])
+@bp.route('/me', methods=["GET"])
+@jwt_required
 def auth_me():
-
-    # TODO: Check if user has a valid session token. Returns the relevant user information from database.
-    if not google.authorized:
-        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /api/auth/login")
-
-    resp = google.get("/oauth2/v2/userinfo").json()
-
-    return ApiResult(
-        value={
-            "response": resp
-        }
-    )
+    # TODO: Check if user has a valid token. Returns the token identity.
+    return ApiResult(identity=get_jwt_identity())
 
 
-@bp.route('/api/auth/login', methods=["GET"])
-def auth_login():
-
-    # TODO: If valid token exists return ApiException
-
-    if not google.authorized:
-        return redirect(url_for("google.login"))
-
-    # TODO: Create new token and return it to the client
-
-    return ApiResult(
-        value={
-            "response": "Client authorized."
-        }
-    )
-
-
-@bp.route("/api/auth/logout")
+@bp.route("/logout")
 def auth_logout():
     try:
         token = bp.token["access_token"]
@@ -65,7 +48,7 @@ def auth_logout():
 
         del bp.token
     except KeyError:
-        return jsonify(response="No token to be revoked. Please login at /api/auth/login")
+        raise TellSpaceAuthError(msg="No token to be revoked. Please login at /api/auth/login")
 
     return jsonify(response="Token successfully revoked!")
 
