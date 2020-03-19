@@ -17,17 +17,17 @@ bp.url_prefix = "/"
 
 # Set blacklist set for blacklisted tokens
 # TODO: Replace blacklist with a Redis Store
-token_blacklist = set()
+blacklist = set()
 
 
 @current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """Verifies if a token has been blacklisted."""
     jti = decrypted_token['jti']
-    return jti in token_blacklist
+    return jti in blacklist
 
 
-@bp.route('/')
+@bp.route('/', methods=['GET'])
 def auth_main():
     """Generate a new access token for the user. User must sign in to Google oAuth to get a valid token.
     """
@@ -58,10 +58,10 @@ def auth_main():
     )
 
 
-@bp.route('/me')
+@bp.route('/me', methods=['GET'])
 @jwt_required
 def auth_me():
-    """"Return information from the database."""
+    """"Return the user information from the database."""
     # TODO: Use DAOs to look for user in the database.
     return ApiResult(identity=get_jwt_identity())
 
@@ -78,9 +78,9 @@ def auth_refresh():
 @jwt_required
 def auth_logout():
     """Revoke the Google authorization and add tokens to blacklist"""
-    # Blacklist jwt tokens
     jti = get_raw_jwt()['jti']
-    token_blacklist.add(jti)
+    blacklist.add(jti)
+    print(blacklist)
     return ApiResult(message="Successfully logged out.")
 
 

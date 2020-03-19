@@ -1,15 +1,15 @@
 # TODO: Add authentication decorator as needed
 
 from flask import Blueprint, request, json
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.validators import *
-from marshmallow import ValidationError
-from uuid import uuid4
+
 
 
 from utils.exceptions import TellSpaceApiError
 
-bp = Blueprint('documents', __name__, url_prefix='/api/documents')
+bp = Blueprint('documents', __name__, url_prefix='/documents')
 
 
 @bp.route('/', methods=['GET'])
@@ -18,7 +18,7 @@ def get_documents():
     # TODO: Check if user has a valid session token.
     # TODO: Use DAOs to retrieve the necessary information.
 
-    return ApiResult(message='Return a list of d')
+    return ApiResult(message='Return a list of documents that belong to the client.')
 
 
 @bp.route('/create', methods=['GET', 'POST'])
@@ -26,7 +26,7 @@ def create_document():
     """ Create a new document using the information from the request body."""
 
     if not(request.method == 'POST'):
-        return TellSpaceApiError(msg='Method not allowed.', status=400)
+        raise TellSpaceApiError(msg='Method not allowed.', status=400)
 
     # TODO: Check if user has a valid session token.
 
