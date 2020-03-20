@@ -9,6 +9,8 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from utils.responses import ApiResult, ApiException
 from utils.exceptions import TellSpaceAuthError
 
+from cachetools import TTLCache
+
 from datetime import timedelta
 
 # Register Google oAuth Strategy blueprint
@@ -17,14 +19,18 @@ bp.url_prefix = "/"
 
 # Set blacklist set for blacklisted tokens
 # TODO: Replace blacklist with a Redis Store
-blacklist = set()
+# Set tll to the same time of the ttl of the token #
+blacklist = TTLCache(maxsize=10000, ttl=120)
 
 
 @current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """Verifies if a token has been blacklisted."""
     jti = decrypted_token['jti']
-    return jti in blacklist
+    if blacklist.currsize == 0:
+        return False
+    entry = blacklist.get(jti)  #search for the jti on the blacklist#
+    return entry
 
 
 @bp.route('/', methods=['GET'])
@@ -73,13 +79,13 @@ def auth_refresh():
     email = get_jwt_identity()
     return ApiResult(access_token=create_access_token(identity=email, expires_delta=timedelta(hours=2)))
 
-
+#  TODO remove print
 @bp.route("/logout")
 @jwt_required
 def auth_logout():
     """Revoke the Google authorization and add tokens to blacklist"""
     jti = get_raw_jwt()['jti']
-    blacklist.add(jti)
+    blacklist[jti] = True   # Add the jti to the cache with value true #
     print(blacklist)
     return ApiResult(message="Successfully logged out.")
 
