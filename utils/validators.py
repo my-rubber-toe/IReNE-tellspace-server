@@ -68,6 +68,9 @@ class CreateDocumentValidator(Schema):
         default='English'
     )
 
+class RemoveDocumentValidator(Schema):
+    doc_id=fields.String(required=True, validate=validate.Length(min=1))
+
 
 class TitleValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/title"""
@@ -85,7 +88,12 @@ class TimelineValidator(Schema):
     )
 
 
-class SectionValidator(Schema):
+class RemoveSectionValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section"""
+    section_nbr = fields.Integer(required=True)
+
+
+class EditSectionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section"""
     section_nbr = fields.Integer(required=True)
     section_title = fields.String(required=False, validate=validate.Length(min=1))

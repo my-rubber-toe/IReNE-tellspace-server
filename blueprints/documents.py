@@ -38,12 +38,25 @@ def create_document():
     return ApiResult(message='Valid Data. Document will be created with the given data', given_data=body)
 
 
-@bp.route('/<doc_id>', methods=['GET'])
-def get_document_by_id(doc_id):
-    """Get all document information using the doc_id."""
+@bp.route('/remove', methods=['DELETE'])
+def create_document():
+    """ Removes a document using the information from the request body and the user id."""
 
     # TODO: Check if user has a valid session token.
 
+    if request.json == {}:
+        raise TellSpaceApiError(msg='No request body data.', status=400)
+
+    body = CreateDocumentValidator().load(request.json)
+    # TODO: Use user ID and DAOs to create a new document using the collaborator ID.
+    return ApiResult(message='Valid Data. Document will be created with the given data', given_data=body)
+
+
+@bp.route('/<doc_id>', methods=['GET'])
+def get_document_by_id(doc_id):
+    """Get all document information using the doc_id."""
+    # TODO: Check if user has a valid session token.
+    # TODO: Use user ID and DAOs to return the document.
     return ApiResult(response=f'Here is the document with doc_id = {doc_id}')
 
 
@@ -57,7 +70,7 @@ def edit_document_title(doc_id):
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
     body = TitleValidator().load(request.json)
-    # TODO: Use DAOs to update the document.
+    # TODO: Use user ID and DAOs to update the document title.
     return ApiResult(message=f'Valid Data. Updated document {doc_id} title to: {body.get("title")}')
 
 
@@ -71,7 +84,7 @@ def edit_document_description(doc_id):
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
     body = DescriptionValidator().load(request.json)
-    # TODO: Use DAOs to update the document.
+    # TODO: Use user ID and DAOs to update document.
     return ApiResult(message=f'Valid Data. Updated document {doc_id} description to: {body.get("description")}')
 
 
@@ -84,7 +97,7 @@ def edit_document_timeline(doc_id):
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
     body = TimelineValidator().load(request.json)
-    # TODO: Use DAOs to update the document.
+    # TODO: Use user ID and DAOs to update document.
     return ApiResult(message=f'Valid Data. Updated document {doc_id} timeline.', given_data=body)
 
 
@@ -97,9 +110,33 @@ def edit_document_section(doc_id):
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
-    body = SectionValidator().load(request.json)
-    # TODO: Use DAOs to update the document.
+    body = EditSectionValidator().load(request.json)
+    # TODO: Use user ID and DAOs to update document..
     return ApiResult(message=f'Valid Data. Updated document {doc_id}', given_data=body)
+
+
+@bp.route('/<doc_id>/edit/section/create', methods=['POST'])
+def create_document_section(doc_id):
+    """Create a new document section using doc_id. Section is appended at the end of document.
+        Return the new section number.
+    """
+
+    # TODO: Check if user has a valid session token.
+    # TODO: Use user ID and DAOs to create the document section.
+    return ApiResult(message=f'Valid Data.Section created in document {doc_id}')
+
+
+@bp.route('/<doc_id>/edit/section/remove', methods=['DELETE'])
+def remove_document_section(doc_id):
+    """Remove a section from a document using doc_id and section number."""
+    if request.json == {}:
+        raise TellSpaceApiError(msg='No request body data.', status=400)
+
+    body = RemoveSectionValidator().load(request.json)
+
+    # TODO: Check if user has a valid session token.
+    # TODO: Use user ID and DAOs to remove the document section.
+    return ApiResult(message=f'Valid Data.  Section removed in document {doc_id}', given_data=body)
 
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])
@@ -111,7 +148,7 @@ def edit_document_infrastructure_types(doc_id):
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
     body = InfrastructureTypesValidator().load(request.json)
-    # TODO: Use DAOs to update the document.
+    # TODO: Use user ID and DAOs to update the document.
     return ApiResult(message=f'Valid Data. Updated infrastructure types for {doc_id}', given_data=body)
 
 
