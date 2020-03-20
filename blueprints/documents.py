@@ -39,7 +39,7 @@ def create_document():
 
 
 @bp.route('/remove', methods=['DELETE'])
-def create_document():
+def remove_document():
     """ Removes a document using the information from the request body and the user id."""
 
     # TODO: Check if user has a valid session token.
