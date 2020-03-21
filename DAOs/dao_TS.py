@@ -27,41 +27,40 @@ def post_create_doc_DAO (**docatr):
     timeline = timelineDoc)
     doc1.save()
     
+def get_me(idcollab):
+    return Collaborator.objects.get(email = idcollab)
 
-def get_me (idcolab):
-    return Collaborator.objects.get(email = idcolab)
-
-def get_doc_(idcolab)
+def get_doc(idcolab):
     return DocumentCase.objects.filter(title = idcolab)
 
-def put_doc_title(title, docid):
-    Document.objects(title = docid).update_one(set__title = title)
+def put_doc_title(docid, title):
+    DocumentCase.objects(title = docid).update_one(set__title = title)
 
-def put_doc_des(des, docid):
-    Document.objects(title = docid).update_one(set__description = des)
+def put_doc_des(docid, des):
+    DocumentCase.objects(title = docid).update_one(set__description = des)
 
-def put_doc_timeline(timeline, docid):
-    Document.objects(title = docid).update_one(set__timeline = des)
+def put_doc_timeline( docid, timeline):
+    DocumentCase.objects(title = docid).update_one(set__timeline = timeline)
 
-def put_doc_section(sec, docid):
-    Document.objects(title = docid).update_one(set__section = sec)
+def put_doc_section(docid, sec):
+    DocumentCase.objects(title = docid).update_one(set__section = sec)
 
-def put_doc_damageType(damType, docid):
-    Document.objects(title = docid).update_one(set__damageDocList = damType)
+def put_doc_damageType(docid, damType):
+    DocumentCase.objects(title = docid).update_one(set__damageDocList = damType)
    
-def put_doc_infrasType(infrasType, docid):
-    Document.objects(title = docid).update_one(set__infrasDocList = infrasType)
+def put_doc_infrasType(docid,infrasType):
+    DocumentCase.objects(title = docid).update_one(set__infrasDocList = infrasType)
 
-def put_doc_locations(loc,docid):
-    Document.objects(title = docid).update_one(set__location = loc)
+def put_doc_locations(docid,loc):
+    DocumentCase.objects(title = docid).update_one(set__location = loc)
 
-def put_doc_actors(actors, docid):
-    Document.objects(title = docid).update_one(set__actor = actors)
+def put_doc_actors(docid, actors):
+    DocumentCase.objects(title = docid).update_one(set__actor = actors)
 
-def pit_doc_authors(authors, docid):
-    Document.objects(title = docid).update_one(set__author = authors)
+def pit_doc_authors(docid, authors):
+    DocumentCase.objects(title = docid).update_one(set__author = authors)
 
-def pit_doc_tags(tags, docid):
-    Document.objects(title = docid).update_one(set__tagsDoc = tags)
+def pit_doc_tags(docid, tags):
+    DocumentCase.objects(title = docid).update_one(set__tagsDoc = tags)
     
 
