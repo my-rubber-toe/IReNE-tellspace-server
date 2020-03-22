@@ -8,7 +8,7 @@ bp = Blueprint('general', __name__, url_prefix='/general')
 
 @bp.route("/infrastructure_types", methods=['GET'])
 def get_infrastructure_types():
-    """"Return all the available infrastrucutre types."""
+    """"Return all the available infrastructure types."""
 
     # TODO: Use DAOs to get all infrastructures
 
@@ -26,6 +26,6 @@ def get_damage_types():
 def get_tags():
     # TODO: Use DAOs to get all tags available.
 
-    return ApiResult(damage_types=['tag1', 'tag2'])
+    return ApiResult(tags=['tag1', 'tag2'])
 
 
