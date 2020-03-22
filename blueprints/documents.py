@@ -1,12 +1,7 @@
-# TODO: Add authentication decorator as needed
-
 from flask import Blueprint, request, json
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.validators import *
-
-
-
 from utils.exceptions import TellSpaceApiError
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
@@ -38,7 +33,7 @@ def create_document():
     return ApiResult(message='Valid Data. Document will be created with the given data', given_data=body)
 
 
-@bp.route('/remove', methods=['DELETE'])
+@bp.route('/remove/<document_id>', methods=['DELETE'])
 def remove_document():
     """ Removes a document using the information from the request body and the user id."""
 
@@ -126,7 +121,7 @@ def create_document_section(doc_id):
     return ApiResult(message=f'Valid Data.Section created in document {doc_id}')
 
 
-@bp.route('/<doc_id>/edit/section/remove', methods=['DELETE'])
+@bp.route('/<doc_id>/edit/section/remove/<section_nbr>', methods=['DELETE'])
 def remove_document_section(doc_id):
     """Remove a section from a document using doc_id and section number."""
     if request.json == {}:
