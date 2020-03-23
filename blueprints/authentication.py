@@ -13,6 +13,10 @@ from cachetools import TTLCache
 
 from datetime import timedelta
 
+from daos.dao_TS import *
+
+import json
+
 # Register Google oAuth Strategy blueprint
 bp = make_google_blueprint(scope=["profile", "email"])
 bp.url_prefix = "/"
@@ -43,25 +47,29 @@ def auth_main():
     # Get user email from Google Credentials to use as identity
     email = google.get("/oauth2/v2/userinfo").json()['email']
 
-    # TODO: Check if user email exists in DB as an approved collaborator.
+    # Get the user from the DB
+    user = get_me(email)
 
-    try:
-        # Revoke Google Token. Login sequence requires user to sign in to google
-        google_token = bp.token["access_token"]
-        google.post(
-            "https://accounts.google.com/o/oauth2/revoke",
-            params={"token": google_token},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
+    if user.approved:
+        try:
+            # Revoke Google Token. Login sequence requires user to sign in to google
+            google_token = bp.token["access_token"]
+            google.post(
+                "https://accounts.google.com/o/oauth2/revoke",
+                params={"token": google_token},
+                headers={"Content-Type": "application/x-www-form-urlencoded"}
+            )
+            del bp.token
+        except KeyError:
+            raise TellSpaceAuthError(msg="No token to be revoked. Please login at /api/auth/login")
+
+        # Use the email as the token identity
+        return ApiResult(
+            access_token=create_access_token(identity=email, expires_delta=timedelta(hours=1)),
+            refresh_token=create_refresh_token(identity=email, expires_delta=timedelta(weeks=2))
         )
-        del bp.token
-    except KeyError:
-        raise TellSpaceAuthError(msg="No token to be revoked. Please login at /api/auth/login")
 
-    # Use the email as the token identity
-    return ApiResult(
-        access_token=create_access_token(identity=email, expires_delta=timedelta(hours=1)),
-        refresh_token=create_refresh_token(identity=email, expires_delta=timedelta(weeks=2))
-    )
+    raise TellSpaceAuthError(msg="This user has not been approved.")
 
 
 @bp.route('/me', methods=['GET'])
@@ -69,7 +77,10 @@ def auth_main():
 def auth_me():
     """"Return the user information from the database."""
     # TODO: Use DAOs to look for user in the database.
-    return ApiResult(identity=get_jwt_identity())
+    email = get_jwt_identity()
+    user = json.loads(get_me("asasdas").to_json())
+
+    return ApiResult(response=user)
 
 
 @bp.route('/refresh', methods=["GET"])

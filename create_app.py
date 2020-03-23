@@ -6,9 +6,10 @@ from utils.responses import ApiException, ApiResult
 from marshmallow import ValidationError
 
 from flask_jwt_extended import JWTManager
-from flask_jwt_extended.exceptions import *
 
 from flask_cors import CORS
+
+from mongoengine import DoesNotExist
 
 
 class ApiFlask(Flask):

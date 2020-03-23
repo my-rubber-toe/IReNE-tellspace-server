@@ -7,4 +7,5 @@ marshmallow
 werkzeug
 python-dotenv
 commitizen
-cachetools
+mongoengine
+pymongo
