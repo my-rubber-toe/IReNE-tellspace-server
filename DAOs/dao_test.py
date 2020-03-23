@@ -118,4 +118,20 @@ sectionDoc = [secdoc]
 post_create_doc_DAO(creatoriD = "s",author = authlist,actor = actlist, timeline = timelineDoc,
 section = sectionDoc, title = "title10", description = "des10",
 incidentDate = datetime.datetime(2010,2,2),creationDate = datetime.datetime(2010,2,2),
-tagsDoc = ["...,.","mkdjcioe"], infrasDocList = ["infras10"], damageDocList = ["dam10"], location = ["loc10"])
+tagsDoc = ["tag1","tag2"], infrasDocList = ["infras10"], damageDocList = ["dam10"], location = ["loc10"])
+
+#Testing DAO get Tag list, same process for Damage & Infrastructure list
+# change the string, it will give an error if the tag already exist
+# t = Tag(tagItem = "Hurricane")
+# t.save()
+# t1 = Tag(tagItem = "Flood")
+# t1.save()
+# print(get_tags_list())
+
+#testing DAO post section
+# sec1 = Section(secTitle = "Body", content="lol")
+# post_doc_section("title10", sec1)
+# test_sec = DocumentCase.objects.get(title = "title10")
+# sec = 0
+# for sec in range(0,len(test_sec.section)):
+#     print(test_sec.section[sec].secTitle, test_sec.section[sec].content)

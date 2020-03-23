@@ -25,6 +25,12 @@ def post_create_doc_DAO (**docatr):
     tagsDoc = docatr["tagsDoc"], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
     location = docatr["location"], author = docatr["author"], actor = docatr["actor"], 
     section = docatr["section"], timeline = docatr["timeline"])
+    for tag in docatr["tagsDoc"]:
+        if not Tag.objects(tagItem=tag):
+            newTag = Tag(tagItem=tag)
+            newTag.save()
+
+
     doc1.save()
     
 def get_me(email_collab):
@@ -62,5 +68,40 @@ def put_doc_authors(title_doc, authors):
 
 def put_doc_tags(title_doc, tags):
     DocumentCase.objects(title = title_doc).update_one(set__tagsDoc = tags)
-    
+    for tag in tags:
+        if not Tag.objects(tagItem=tag):
+            newTag = Tag(tagItem=tag)
+            newTag.save()
 
+def get_infrastructure_list ():
+    infra_list = []
+    infra_objects = Infrastructure.objects()
+    for infra in infra_objects:
+        infra_list.append(infra.infrastructureType)
+    return infra_list
+
+def get_damage_list():
+    damage_list = []
+    damage_objects = Damage.objects()
+    for damage in damage_objects:
+        damage_list.append(damage.damageType)
+    return damage_list
+
+def get_tags_list():
+    tag_list = []
+    tag_objects = Tag.objects()
+    for tag in tag_objects:
+        tag_list.append(tag.tagItem)
+    return tag_list
+
+def post_doc_section(title_doc,section):
+    post_sec = DocumentCase.objects.get(title = title_doc)
+    post_sec.section.append(section)
+    post_sec.save()
+
+def remove_doc(title_doc):
+    doc_del = DocumentCase.objects.get(title = title_doc)
+    doc_del.delete() 
+
+def remove_doc_section(title_doc, section_title):
+    DocumentCase.objects(title = title_doc).update(pull__section__secTitle= section_title)
