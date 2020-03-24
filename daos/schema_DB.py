@@ -4,7 +4,7 @@ import datetime
 #Connection to the Database
 connect('IReNEdb')
 #connec the db for testing purposes
-# connect('IReNEdb', host='mongomock://localhost:27017')
+#connect('IReNEdb', host='mongomock://localhost:27017')
 
 class Collaborator(Document):
     documentsID =  ListField(StringField(required=False))

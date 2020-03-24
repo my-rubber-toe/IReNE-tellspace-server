@@ -1,6 +1,7 @@
 from mongoengine import *
-from daos.schema_DB import *
+from schema_DB import *
 import datetime
+import json
 
 def post_create_doc_DAO (**docatr):
     # authorDoc = []
@@ -29,16 +30,20 @@ def post_create_doc_DAO (**docatr):
         if not Tag.objects(tagItem=tag):
             newTag = Tag(tagItem=tag)
             newTag.save()
-
-
     doc1.save()
 
 
 def get_me(email_collab):
-    return Collaborator.objects.get(email = email_collab)
+    get_collab = Collaborator.objects.get(email = email_collab)
+    return json.loads(get_collab.to_json())
+
+def get_doc_collab(collabid):
+    get_docs = Document.objects.filter(creatoriD= collabid)
+    return json.loads(get_docs.to_json())
 
 def get_doc(title_doc):
-    return DocumentCase.objects.filter(title = title_doc)
+    get_doc = DocumentCase.objects.get(title = title_doc)
+    return json.loads(get_doc.to_json())
 
 def put_doc_title(title_doc, title):
     DocumentCase.objects(title = title_doc).update_one(set__title = title)
@@ -74,26 +79,17 @@ def put_doc_tags(title_doc, tags):
             newTag = Tag(tagItem=tag)
             newTag.save()
 
-def get_infrastructure_list ():
-    infra_list = []
+def get_infrastructure_list():
     infra_objects = Infrastructure.objects()
-    for infra in infra_objects:
-        infra_list.append(infra.infrastructureType)
-    return infra_list
-
+    return json.loads(infra_objects.to_json())
+   
 def get_damage_list():
-    damage_list = []
     damage_objects = Damage.objects()
-    for damage in damage_objects:
-        damage_list.append(damage.damageType)
-    return damage_list
+    return json.loads(damage_objects.to_json())
 
 def get_tags_list():
-    tag_list = []
     tag_objects = Tag.objects()
-    for tag in tag_objects:
-        tag_list.append(tag.tagItem)
-    return tag_list
+    return json.loads(tag_objects.to_json())
 
 def post_doc_section(title_doc,section):
     post_sec = DocumentCase.objects.get(title = title_doc)

@@ -1,19 +1,20 @@
 from mongoengine import *
-from daos.schema_DB import *
-from daos.dao_TS import *
+from schema_DB import *
+from dao_TS import *
 import datetime
 
 # Testing Dao get collaborator 
-collab = "email@email.com"
-get = get_me(collab)
-print(get.to_json())
-
+# col = Collaborator( first_name = "Aurora", 
+# last_name = "Black", email = "aurora.black@upr.edu", faculty = "ICOM")
+# col.save()
+# collab = "aurora.black@upr.edu"
+# get = get_me(collab)
+# print(get)
 
 # tesing DAO get list docs
-# doc = "The great Flooding"
-# get_doc = get_doc(doc)
-# for x in get_doc: 
-#     print(x.title)
+doc = "The great Flooding"
+get_doc = get_doc(doc)
+print(get_doc)
 
 #testing DAO update title
 change_title = "The final countdown"
