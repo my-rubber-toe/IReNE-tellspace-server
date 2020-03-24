@@ -55,7 +55,7 @@ class Section(EmbeddedDocument):
 class DocumentCase(Document):
     creatoriD = StringField(min_length=1, required=True)
     title = StringField(min_length=1, required=True, unique=True)
-    location = ListField(StringField(min_length=1,required=True))
+    location = ListField(StringField(min_length=1, required=True))
     description = StringField(min_length=1, required=True)
     published = BooleanField(default=False,required=True)
     incidentDate = DateTimeField(required=True)

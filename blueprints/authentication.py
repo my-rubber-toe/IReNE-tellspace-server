@@ -39,7 +39,8 @@ def check_if_token_in_blacklist(decrypted_token):
 
 @bp.route('/', methods=['GET'])
 def auth_main():
-    """Generate a new access token for the user. User must sign in to Google oAuth to get a valid token.
+    """Generate a new access token for the user. Client must sign in to Google oAuth to get a valid token.
+        Client must be approved and NOT banned.
     """
     if not google.authorized:
         raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /google", status=401)
@@ -50,7 +51,7 @@ def auth_main():
     # Get the user from the DB
     user = get_me(email)
 
-    if user.approved:
+    if user.approved and (not user.banned):
         try:
             # Revoke Google Token. Login sequence requires user to sign in to google
             google_token = bp.token["access_token"]
@@ -65,11 +66,11 @@ def auth_main():
 
         # Use the email as the token identity
         return ApiResult(
-            access_token=create_access_token(identity=email, expires_delta=timedelta(hours=1)),
+            access_token=create_access_token(identity=email, expires_delta=timedelta(hours=2)),
             refresh_token=create_refresh_token(identity=email, expires_delta=timedelta(weeks=2))
         )
 
-    raise TellSpaceAuthError(msg="This user has not been approved.")
+    raise TellSpaceAuthError(msg="Access denied. User is not approved or is banned.")
 
 
 @bp.route('/me', methods=['GET'])
@@ -78,9 +79,18 @@ def auth_me():
     """"Return the user information from the database."""
     # TODO: Use DAOs to look for user in the database.
     email = get_jwt_identity()
-    user = json.loads(get_me("asasdas").to_json())
+    user = get_me(email)
 
-    return ApiResult(response=user)
+    if user.approved and (not user.banned):
+        return ApiResult(
+            id=user.id.__str__(),
+            first_name=user.first_name,
+            last_name=user.email,
+            email=user.email,
+            faculty=user.faculty
+        )
+
+    raise TellSpaceAuthError(msg="Access denied. User is not approved or is banned.")
 
 
 @bp.route('/refresh', methods=["GET"])
@@ -88,16 +98,16 @@ def auth_me():
 def auth_refresh():
     """Return a new access_token given a valid refresh token."""
     email = get_jwt_identity()
-    return ApiResult(access_token=create_access_token(identity=email, expires_delta=timedelta(hours=2)))
+    access_token = create_access_token(identity=email, expires_delta=timedelta(hours=2))
+    return ApiResult(access_token=access_token)
 
-#  TODO remove print
+
 @bp.route("/logout")
 @jwt_required
 def auth_logout():
     """Revoke the Google authorization and add tokens to blacklist"""
     jti = get_raw_jwt()['jti']
     blacklist[jti] = True   # Add the jti to the cache with value true #
-    print(blacklist)
     return ApiResult(message="Successfully logged out.")
 
 

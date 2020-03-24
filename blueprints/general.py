@@ -1,6 +1,7 @@
 
 from flask import Blueprint
 from utils.responses import ApiResult
+from daos.dao_TS import get_infrastructure_list, get_tags_list, get_damage_list
 
 
 bp = Blueprint('general', __name__, url_prefix='/general')
@@ -9,23 +10,16 @@ bp = Blueprint('general', __name__, url_prefix='/general')
 @bp.route("/infrastructure_types", methods=['GET'])
 def get_infrastructure_types():
     """"Return all the available infrastructure types."""
-
-    # TODO: Use DAOs to get all infrastructures
-
-    return ApiResult(infrastructure_types=["type1", "type2"])
+    return ApiResult(infrastructure_types=get_infrastructure_list())
 
 
 @bp.route("/damage_types", methods=['GET'])
 def get_damage_types():
-    # TODO: Use DAOs to get all damage types available.
-
-    return ApiResult(damage_types=['damage1', 'damage2'])
+    return ApiResult(damage_types=get_damage_list())
 
 
 @bp.route("/tags", methods=['GET'])
 def get_tags():
-    # TODO: Use DAOs to get all tags available.
-
-    return ApiResult(tags=['tag1', 'tag2'])
+    return ApiResult(tags=get_tags_list())
 
 

@@ -1,7 +1,4 @@
-from mongoengine import *
-from daos.schema_DB import *
 from daos.dao_TS import *
-import datetime
 
 # Testing Dao get collaborator 
 collab = "email@email.com"

@@ -96,20 +96,6 @@ def edit_document_timeline(doc_id):
     return ApiResult(message=f'Valid Data. Updated document {doc_id} timeline.', given_data=body)
 
 
-@bp.route('/<doc_id>/edit/section', methods=['PUT'])
-def edit_document_section(doc_id):
-    """Edit the document section using doc_id and valid request body values."""
-
-    # TODO: Check if user has a valid session token.
-
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
-    body = EditSectionValidator().load(request.json)
-    # TODO: Use user ID and DAOs to update document..
-    return ApiResult(message=f'Valid Data. Updated document {doc_id}', given_data=body)
-
-
 @bp.route('/<doc_id>/edit/section/create', methods=['POST'])
 def create_document_section(doc_id):
     """Create a new document section using doc_id. Section is appended at the end of document.
@@ -132,6 +118,21 @@ def remove_document_section(doc_id):
     # TODO: Check if user has a valid session token.
     # TODO: Use user ID and DAOs to remove the document section.
     return ApiResult(message=f'Valid Data.  Section removed in document {doc_id}', given_data=body)
+
+
+@bp.route('/<doc_id>/edit/section', methods=['PUT'])
+def edit_document_section(doc_id):
+    """Edit the document section using doc_id and valid request body values."""
+
+    # TODO: Check if user has a valid session token.
+
+    if request.json == {}:
+        raise TellSpaceApiError(msg='No request body data.', status=400)
+
+    body = EditSectionValidator().load(request.json)
+    # TODO: Use user ID and DAOs to update document..
+    return ApiResult(message=f'Valid Data. Updated document {doc_id}', given_data=body)
+
 
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])

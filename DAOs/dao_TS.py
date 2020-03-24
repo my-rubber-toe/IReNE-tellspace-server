@@ -1,6 +1,5 @@
-from mongoengine import *
-from daos.schema_DB import *
-import datetime
+from database.schema_DB import *
+
 
 def post_create_doc_DAO (**docatr):
     # authorDoc = []
@@ -30,12 +29,11 @@ def post_create_doc_DAO (**docatr):
             newTag = Tag(tagItem=tag)
             newTag.save()
 
-
     doc1.save()
 
 
 def get_me(email_collab):
-    return Collaborator.objects.get(email = email_collab)
+    return Collaborator.objects.get(email=email_collab)
 
 def get_doc(title_doc):
     return DocumentCase.objects.filter(title = title_doc)
