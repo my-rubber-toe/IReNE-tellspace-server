@@ -41,39 +41,39 @@ def get_doc_collab(collabid):
     get_docs = Document.objects.filter(creatoriD= collabid)
     return json.loads(get_docs.to_json())
 
-def get_doc(title_doc):
-    get_doc = DocumentCase.objects.get(title = title_doc)
+def get_doc(docid):
+    get_doc = DocumentCase.objects.get(id = docid)
     return json.loads(get_doc.to_json())
 
-def put_doc_title(title_doc, title):
-    DocumentCase.objects(title = title_doc).update_one(set__title = title)
+def put_doc_title(docid, title):
+    DocumentCase.objects(id = docid).update_one(set__title = title)
 
-def put_doc_des(title_doc, des):
-    DocumentCase.objects(title = title_doc).update_one(set__description = des)
+def put_doc_des(docid, des):
+    DocumentCase.objects(id = docid).update_one(set__description = des)
 
-def put_doc_timeline( title_doc, timeline):
-    DocumentCase.objects(title = title_doc).update_one(set__timeline = timeline)
+def put_doc_timeline(docid, timeline):
+    DocumentCase.objects(id = docid).update_one(set__timeline = timeline)
 
-def put_doc_section(title_doc, sec):
-    DocumentCase.objects(title = title_doc).update_one(set__section = sec)
+def put_doc_section(docid, sec):
+    DocumentCase.objects(id = docid).update_one(set__section = sec)
 
-def put_doc_damageType(title_doc, damType):
-    DocumentCase.objects(title = title_doc).update_one(set__damageDocList = damType)
+def put_doc_damageType(docid, damType):
+    DocumentCase.objects(id = docid).update_one(set__damageDocList = damType)
    
-def put_doc_infrasType(title_doc,infrasType):
-    DocumentCase.objects(title = title_doc).update_one(set__infrasDocList = infrasType)
+def put_doc_infrasType(docid,infrasType):
+    DocumentCase.objects(id = docid).update_one(set__infrasDocList = infrasType)
 
-def put_doc_locations(title_doc,loc):
-    DocumentCase.objects(title = title_doc).update_one(set__location = loc)
+def put_doc_locations(docid,loc):
+    DocumentCase.objects(id = docid).update_one(set__location = loc)
 
-def put_doc_actors(title_doc, actors):
-    DocumentCase.objects(title = title_doc).update_one(set__actor = actors)
+def put_doc_actors(docid, actors):
+    DocumentCase.objects(id = docid).update_one(set__actor = actors)
 
-def put_doc_authors(title_doc, authors):
-    DocumentCase.objects(title = title_doc).update_one(set__author = authors)
+def put_doc_authors(docid, authors):
+    DocumentCase.objects(id = docid).update_one(set__author = authors)
 
-def put_doc_tags(title_doc, tags):
-    DocumentCase.objects(title = title_doc).update_one(set__tagsDoc = tags)
+def put_doc_tags(docid, tags):
+    DocumentCase.objects(id = docid).update_one(set__tagsDoc = tags)
     for tag in tags:
         if not Tag.objects(tagItem=tag):
             newTag = Tag(tagItem=tag)
@@ -91,14 +91,26 @@ def get_tags_list():
     tag_objects = Tag.objects()
     return json.loads(tag_objects.to_json())
 
-def post_doc_section(title_doc,section):
-    post_sec = DocumentCase.objects.get(title = title_doc)
+def post_doc_section(docid,section):
+    post_sec = DocumentCase.objects.get(id = docid)
     post_sec.section.append(section)
     post_sec.save()
 
-def remove_doc(title_doc):
-    doc_del = DocumentCase.objects.get(title = title_doc)
+def remove_doc(docid):
+    doc_del = DocumentCase.objects.get(id = docid)
     doc_del.delete() 
 
-def remove_doc_section(title_doc, section_title):
-    DocumentCase.objects(title = title_doc).update(pull__section__secTitle= section_title)
+def remove_doc_section(docid, section_title):
+    DocumentCase.objects(id = docid).update(pull__section__secTitle= section_title)
+
+def get_doc_damage_type(damage):
+    get_docs = DocumentCase.objects.filter(damageDocList__contains = damage)
+    return json.loads(get_docs.to_json())
+
+def get_doc_infrastructure_type(infras):
+    get_docs = DocumentCase.objects.filter(infrasDocList__contains = infras)
+    return json.loads(get_docs.to_json())
+
+def get_doc_tag_type(tag):
+    get_docs = DocumentCase.objects.filter(tagsDoc__contains = tag)
+    return json.loads(get_docs.to_json()) 
