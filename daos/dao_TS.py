@@ -22,7 +22,7 @@ def post_create_doc_DAO (**docatr):
     #     secdoc = Section(secTitle = sec.title, content = sec.content)
     #     timelineDoc.append(secdoc)
     doc1 = DocumentCase(creatoriD = docatr["creatoriD"],title = docatr["title"], description = docatr["description"],
-    incidentDate = docatr["incidentDate"], creationDate = docatr["creationDate"],
+    incidentDate = docatr["incidentDate"], creationDate = docatr["creationDate"], lastModificationDate = docatr["lastModificationDate"],
     tagsDoc = docatr["tagsDoc"], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
     location = docatr["location"], author = docatr["author"], actor = docatr["actor"], 
     section = docatr["section"], timeline = docatr["timeline"])
@@ -45,32 +45,48 @@ def get_doc(docid):
     get_doc = DocumentCase.objects.get(id = docid)
     return json.loads(get_doc.to_json())
 
+
+def current_date():
+    d = datetime.datetime.today()
+    current_date =  str(d.year) + "-" + str(d.month) + "-" + str(d.day)
+    return current_date
+
 def put_doc_title(docid, title):
     DocumentCase.objects(id = docid).update_one(set__title = title)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+
 
 def put_doc_des(docid, des):
     DocumentCase.objects(id = docid).update_one(set__description = des)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_timeline(docid, timeline):
     DocumentCase.objects(id = docid).update_one(set__timeline = timeline)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_section(docid, sec):
     DocumentCase.objects(id = docid).update_one(set__section = sec)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_damageType(docid, damType):
     DocumentCase.objects(id = docid).update_one(set__damageDocList = damType)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
    
 def put_doc_infrasType(docid,infrasType):
     DocumentCase.objects(id = docid).update_one(set__infrasDocList = infrasType)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_locations(docid,loc):
     DocumentCase.objects(id = docid).update_one(set__location = loc)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_actors(docid, actors):
     DocumentCase.objects(id = docid).update_one(set__actor = actors)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_authors(docid, authors):
     DocumentCase.objects(id = docid).update_one(set__author = authors)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_tags(docid, tags):
     DocumentCase.objects(id = docid).update_one(set__tagsDoc = tags)

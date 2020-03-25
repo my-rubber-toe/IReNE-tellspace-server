@@ -45,11 +45,11 @@ class Actor(EmbeddedDocument):
     role = StringField(min_length=1, required=True)
 
 class Timeline(EmbeddedDocument):
-    event = StringField(min_length=1, required=False, unique=True)
+    event = StringField(min_length=1, required=False)
     eventDate = StringField(min_length=1, required=True)
 
 class Section(EmbeddedDocument):
-    secTitle = StringField(min_length=1, required=True, unique=True)
+    secTitle = StringField(min_length=1, required=True)
     content = StringField(required=True)
 
 class DocumentCase(Document):
@@ -60,6 +60,7 @@ class DocumentCase(Document):
     published = BooleanField(default=False,required=True)
     incidentDate = StringField(min_length=1, required=True)
     creationDate = StringField(min_length=1, required=True)
+    lastModificationDate = StringField(min_length=1, required=True)
     tagsDoc = ListField(StringField(min_length=1,required=True))
     infrasDocList =  ListField(StringField(min_length=1,required=True))
     damageDocList =  ListField(StringField(min_length=1,required=True))

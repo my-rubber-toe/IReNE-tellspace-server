@@ -16,11 +16,6 @@ doc = "The great Flooding"
 get_doc = get_doc(doc)
 print(get_doc)
 
-#testing DAO update title
-change_title = "The final countdown"
-# put_doc_title(doc, change_title)
-# update_title = DocumentCase.objects.get(title = "The final countdown")
-# print(update_title.title)
 
 #testing DAO update description
 # change_des = "uff, it was bad"
@@ -136,3 +131,8 @@ change_title = "The final countdown"
 # sec = 0
 # for sec in range(0,len(test_sec.section)):
 #     print(test_sec.section[sec].secTitle, test_sec.section[sec].content)
+
+#testing DAO update title
+put_doc_title("5e7be0ec08bf84571d0a0d43", "into the unknown")
+get = DocumentCase.objects.get(id ="5e7be0ec08bf84571d0a0d43")
+print(get.lastModificationDate)
