@@ -1,5 +1,5 @@
 from werkzeug.utils import find_modules, import_string
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, render_template
 
 from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
@@ -162,14 +162,9 @@ def register_error_handlers(app: ApiFlask):
 
 
 def register_base_url(app: Flask):
-    @app.route('/api/')
+    @app.route('/')
     def api():
-        return ApiResult(
-            {
-                'message': 'You have reached the TellSpace API. To make other requests please use all routes under /api'
-            },
-            status=200
-        )
+        return render_template('index.html')
 
 
 def register_request_teardown(app: ApiFlask):
