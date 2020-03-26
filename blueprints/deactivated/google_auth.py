@@ -1,7 +1,5 @@
 # TODO: Implement authentication strategy with flask dance and Google oAuth. Use decorators as needed.
 
-
-from flask import jsonify
 from flask_dance.contrib.google import make_google_blueprint, google
 
 from utils.exceptions import TellSpaceAuthError
@@ -22,7 +20,7 @@ def auth_main():
     # Get user email from Google Credentials to use as identity
     user = google.get("/oauth2/v2/userinfo").json()
 
-    return "OK"
+    return bp.token['access_token']
 
 
 

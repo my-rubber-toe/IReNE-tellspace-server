@@ -13,7 +13,7 @@ from datetime import timedelta
 
 from daos.dao_TS import *
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('authentication', __name__, url_prefix='/auth')
 
 # Set blacklist set for blacklisted tokens
 # TODO: Replace blacklist with a Redis Store
@@ -31,25 +31,30 @@ def check_if_token_in_blacklist(decrypted_token):
     return entry
 
 @bp.route("/<google_token>", methods=['GET'])
-def verify_google(google_token: str):
-
-    print(google_token)
-
+def get_tokens(google_token: str):
+    """Verify if the given param string is a valid Google idToken. Return 2 tokens to be used as the authentication.
+    """
 
     id_info = id_token.verify_oauth2_token(
         google_token,
         requests.Request(),
         current_app.config['GOOGLE_OAUTH_CLIENT_ID'])
 
-    return id_info
+    # Verify that the token was indeed issued by google accounts.
+    if id_info['iss'] != 'accounts.google.com':
+        raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
 
+    return ApiResult(
+        access_token=create_access_token(identity=id_info['email'], expires_delta=timedelta(hours=2)),
+        refresh_token=create_refresh_token(identity=id_info['email'], expires_delta=timedelta(days=1))
+    )
 
 
 @bp.route('/me', methods=['GET'])
 @jwt_required
 def auth_me():
     """"Return the user information from the database."""
-    # TODO: Use DAOs to look for user in the database.
+    # Use DAOs to look for user in the database.
     email = get_jwt_identity()
     user = get_me(email)
 

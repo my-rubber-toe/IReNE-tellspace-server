@@ -9,8 +9,6 @@ from flask_jwt_extended import JWTManager
 
 from flask_cors import CORS
 
-from mongoengine import DoesNotExist
-
 
 class ApiFlask(Flask):
     """
@@ -49,7 +47,7 @@ def create_app(config=None):
         app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
         app.__setattr__("jwt", JWTManager(app))
 
-        # TODO: Setup CORS for all endpoints
+        # Setup CORS for cross site requests and more
         register_cors(app)
 
         # TODO: Setup database configuration
