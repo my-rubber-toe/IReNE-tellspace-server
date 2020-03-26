@@ -50,7 +50,7 @@ def create_app(config=None):
         app.__setattr__("jwt", JWTManager(app))
 
         # TODO: Setup CORS for all endpoints
-        # register_cors(app)
+        register_cors(app)
 
         # TODO: Setup database configuration
         # db.init_app(app)
@@ -164,7 +164,7 @@ def register_error_handlers(app: ApiFlask):
 def register_base_url(app: Flask):
     @app.route('/')
     def api():
-        return render_template('index.html')
+        return "OK";
 
 
 def register_request_teardown(app: ApiFlask):
@@ -201,7 +201,7 @@ def register_cors(app: ApiFlask):
 
     CORS(
         app=app,
-        resources={r"/api/*": {"origins": origins_list}},
+        resources={r"/*": {"origins": origins_list}},
         methods=methods_list,
         allowed_headers=allowed_headers_list,
         supports_credentials=True

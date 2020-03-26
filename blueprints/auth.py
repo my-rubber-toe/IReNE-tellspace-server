@@ -1,10 +1,8 @@
-# TODO: Implement authentication strategy with flask dance and Google oAuth. Use decorators as needed.
-
-
-from flask import current_app, jsonify
-from flask_dance.contrib.google import make_google_blueprint, google
+from flask import current_app, Blueprint
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_refresh_token_required, \
     jwt_required, get_jwt_identity, get_raw_jwt
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 from utils.responses import ApiResult, ApiException
 from utils.exceptions import TellSpaceAuthError
@@ -15,11 +13,7 @@ from datetime import timedelta
 
 from daos.dao_TS import *
 
-import json
-
-# Register Google oAuth Strategy blueprint
-bp = make_google_blueprint(scope=["profile", "email"])
-bp.url_prefix = "/"
+bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # Set blacklist set for blacklisted tokens
 # TODO: Replace blacklist with a Redis Store
@@ -36,41 +30,19 @@ def check_if_token_in_blacklist(decrypted_token):
     entry = blacklist.get(jti)  #search for the jti on the blacklist#
     return entry
 
+@bp.route("/<google_token>", methods=['GET'])
+def verify_google(google_token: str):
 
-@bp.route('/', methods=['GET'])
-def auth_main():
-    """Generate a new access token for the user. Client must sign in to Google oAuth to get a valid token.
-        Client must be approved and NOT banned.
-    """
-    if not google.authorized:
-        raise TellSpaceAuthError(msg="Client is not unauthorized. Please login at /google", status=401)
+    print(google_token)
 
-    # Get user email from Google Credentials to use as identity
-    email = google.get("/oauth2/v2/userinfo").json()['email']
 
-    # Get the user from the DB
-    user = get_me(email)
+    id_info = id_token.verify_oauth2_token(
+        google_token,
+        requests.Request(),
+        current_app.config['GOOGLE_OAUTH_CLIENT_ID'])
 
-    if user.approved and (not user.banned):
-        try:
-            # Revoke Google Token. Login sequence requires user to sign in to google
-            google_token = bp.token["access_token"]
-            google.post(
-                "https://accounts.google.com/o/oauth2/revoke",
-                params={"token": google_token},
-                headers={"Content-Type": "application/x-www-form-urlencoded"}
-            )
-            del bp.token
-        except KeyError:
-            raise TellSpaceAuthError(msg="No token to be revoked. Please login at /api/auth/login")
+    return id_info
 
-        # Use the email as the token identity
-        return ApiResult(
-            access_token=create_access_token(identity=email, expires_delta=timedelta(hours=2)),
-            refresh_token=create_refresh_token(identity=email, expires_delta=timedelta(weeks=2))
-        )
-
-    raise TellSpaceAuthError(msg="Access denied. User is not approved or is banned.")
 
 
 @bp.route('/me', methods=['GET'])
@@ -109,5 +81,3 @@ def auth_logout():
     jti = get_raw_jwt()['jti']
     blacklist[jti] = True   # Add the jti to the cache with value true #
     return ApiResult(message="Successfully logged out.")
-
-

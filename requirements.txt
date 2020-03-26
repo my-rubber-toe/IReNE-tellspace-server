@@ -9,3 +9,4 @@ python-dotenv
 commitizen
 mongoengine
 pymongo
+google-auth
