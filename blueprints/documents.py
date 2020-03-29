@@ -3,84 +3,130 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.validators import *
 from utils.exceptions import TellSpaceApiError
+from database.schema_DB import *
+from daos.dao_TS import *
+from datetime import datetime
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
 
 
 @bp.route('/', methods=['GET'])
+@jwt_required
 def get_documents():
     """ Return a list of documents' metadata belonging to the collabID"""
-    # TODO: Check if user has a valid session token.
-    # TODO: Use DAOs to retrieve the necessary information.
+    email = get_jwt_identity()
+    collab: Collaborator = Collaborator.objects.get(email=email)
+    documents = DocumentCase.objects.filter(creatoriD=str(collab.id))
 
-    return ApiResult(message='Return a list of documents that belong to the client.')
+    response = []
+    for doc in documents:
+        response.append({
+            "id": str(doc.id),
+            "title": doc.title,
+            "desctription":  doc.description,
+            "published": doc.published,
+            "incidentDate": doc.incidentDate,
+            "creationDate": doc.creationDate
+        })
+
+    return ApiResult(response=response)
 
 
 @bp.route('/create', methods=['GET', 'POST'])
+@jwt_required
 def create_document():
     """ Create a new document using the information from the request body."""
-
     if not(request.method == 'POST'):
         raise TellSpaceApiError(msg='Method not allowed.', status=400)
 
-    # TODO: Check if user has a valid session token.
-
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
-    body = CreateDocumentValidator().load(request.json)
-    # TODO: Use user ID and DAOs to create a new document using the collaborator ID.
-    return ApiResult(message='Valid Data. Document will be created with the given data', given_data=body)
+    body: CreateDocumentValidator = CreateDocumentValidator().load(request.json)
+    email = get_jwt_identity()
+    collab: Collaborator = Collaborator.objects.get(email=email)
+
+    doc = DocumentCase()
+    doc.creatoriD = str(collab.id)
+    doc.title = body['title']
+    doc.location = []
+    doc.description = body['description']
+    doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
+    doc.creationDate = datetime.today().strftime('%Y-%m-%d')
+    doc.tagsDoc = []
+    doc.infrasDocList = body['infrastructure_type']
+    doc.damageDocList = []
+    doc.author = []
+    doc.actor = []
+    doc.section = []
+    doc.timeline = []
+    doc.published = True
+    doc.save()
+
+    return ApiResult(docId=str(doc.id))
 
 
-@bp.route('/remove/<document_id>', methods=['DELETE'])
-def remove_document():
+@bp.route('/remove/<doc_id>', methods=['DELETE'])
+@jwt_required
+def remove_document(doc_id: str):
     """ Removes a document using the information from the request body and the user id."""
 
-    # TODO: Check if user has a valid session token.
+    email = get_jwt_identity()
+    collab: Collaborator = Collaborator.objects.get(email=email)
 
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
+    doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+    doc.delete()
 
-    body = CreateDocumentValidator().load(request.json)
-    # TODO: Use user ID and DAOs to create a new document using the collaborator ID.
-    return ApiResult(message='Valid Data. Document will be created with the given data', given_data=body)
+    return ApiResult(docId=str(doc.id))
 
 
 @bp.route('/<doc_id>', methods=['GET'])
-def get_document_by_id(doc_id):
+@jwt_required
+def get_document_by_id(doc_id: str):
     """Get all document information using the doc_id."""
-    # TODO: Check if user has a valid session token.
-    # TODO: Use user ID and DAOs to return the document.
-    return ApiResult(response=f'Here is the document with doc_id = {doc_id}')
+    email = get_jwt_identity()
+    collab: Collaborator = Collaborator.objects.get(email=email)
+    doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+
+    return ApiResult(content=json.loads(doc.to_json()), id=doc_id)
 
 
 @bp.route('/<doc_id>/edit/title', methods=['PUT'])
-def edit_document_title(doc_id):
+@jwt_required
+def edit_document_title(doc_id: str):
     """Edit the document title using doc_id and valid request body values."""
-
-    # TODO: Check if user has a valid session token.
 
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
+    email = get_jwt_identity()
     body = TitleValidator().load(request.json)
-    # TODO: Use user ID and DAOs to update the document title.
-    return ApiResult(message=f'Valid Data. Updated document {doc_id} title to: {body.get("title")}')
+
+    collab: Collaborator = Collaborator.objects.get(email=email)
+    doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+
+    doc.title = body['title']
+    doc.save()
+    return ApiResult(message=f'Valid Data. Updated document {doc.id} title to: {doc.title}')
 
 
 @bp.route('/<doc_id>/edit/description', methods=['PUT'])
+@jwt_required
 def edit_document_description(doc_id):
     """Edit the document description using doc_id and valid request body values."""
-
-    # TODO: Check if user has a valid session token.
 
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
+    email = get_jwt_identity()
     body = DescriptionValidator().load(request.json)
-    # TODO: Use user ID and DAOs to update document.
-    return ApiResult(message=f'Valid Data. Updated document {doc_id} description to: {body.get("description")}')
+
+    collab: Collaborator = Collaborator.objects.get(email=email)
+    doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+    doc.description = body['description']
+    doc.save()
+
+    return ApiResult(message=f'Valid Data. Updated document {doc.id} description to: {doc.description}')
 
 
 @bp.route('/<doc_id>/edit/timeline', methods=['PUT'])

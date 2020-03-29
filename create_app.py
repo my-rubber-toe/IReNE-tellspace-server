@@ -126,6 +126,14 @@ def register_error_handlers(app: ApiFlask):
                 status=400
             )
 
+        @app.errorhandler(ValueError)
+        def request_validator_error(err):
+            return ApiException(
+                error_type='ValidationError',
+                message=err.messages,
+                status=400
+            )
+
         @app.errorhandler(Exception)
         def handle_unexpected_error(error):
             TellSpaceError(
@@ -138,6 +146,7 @@ def register_error_handlers(app: ApiFlask):
                 message='An unexpected error has occurred. Please verify error logs',
                 status=500
             )
+
 
         app.register_error_handler(
             400,

@@ -2,7 +2,7 @@
 from flask import Blueprint
 from utils.responses import ApiResult
 from daos.dao_TS import get_infrastructure_list, get_tags_list, get_damage_list
-
+from database.mock_db import *
 
 bp = Blueprint('general', __name__, url_prefix='/general')
 

@@ -19,17 +19,28 @@ def post_create_doc_DAO (**docatr):
     # for sec in docatr["sectionList"]:
     #     secdoc = Section(secTitle = sec.title, content = sec.content)
     #     timelineDoc.append(secdoc)
-    doc1 = DocumentCase(creatoriD = docatr["creatoriD"],title = docatr["title"], description = docatr["description"],
-    incidentDate = docatr["incidentDate"], creationDate = docatr["creationDate"],
-    tagsDoc = docatr["tagsDoc"], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
-    location = docatr["location"], author = docatr["author"], actor = docatr["actor"], 
-    section = docatr["section"], timeline = docatr["timeline"])
+    doc1 = DocumentCase(
+        creatoriD = docatr["creatoriD"],
+        title = docatr["title"],
+        description = docatr["description"],
+        incidentDate = docatr["incidentDate"],
+        creationDate = docatr["creationDate"],
+        tagsDoc = docatr["tagsDoc"],
+        infrasDocList = docatr["infrasDocList"],
+        damageDocList = docatr["damageDocList"],
+        location = docatr["location"],
+        author = docatr["author"],
+        actor = docatr["actor"],
+        section = docatr["section"],
+        timeline = docatr["timeline"])
+
     for tag in docatr["tagsDoc"]:
         if not Tag.objects(tagItem=tag):
             newTag = Tag(tagItem=tag)
             newTag.save()
 
     doc1.save()
+    return doc1.id
 
 
 def get_me(email_collab):

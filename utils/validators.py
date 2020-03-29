@@ -25,7 +25,7 @@ class Actors(Schema):
 
 class TimeLineEvent(Schema):
     """Nested Schema"""
-    event_date = fields.Date(required=True)
+    event_date = fields.String(required=True, format="%Y-%m-%d")
     event_description = fields.String(required=True, validate=validate.Length(min=1))
 
 
@@ -62,11 +62,7 @@ class CreateDocumentValidator(Schema):
         validate=validate.Length(min=1)
     )
 
-    incident_date = fields.Date(required=True)
-
-    language = fields.String(
-        default='English'
-    )
+    incident_date = fields.String(required=True, format="%Y-%m-%d")
 
 class RemoveDocumentValidator(Schema):
     doc_id=fields.String(required=True, validate=validate.Length(min=1))

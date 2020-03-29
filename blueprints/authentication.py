@@ -12,6 +12,7 @@ from cachetools import TTLCache
 from datetime import timedelta
 
 from daos.dao_TS import *
+from database.schema_DB import *
 
 bp = Blueprint('authentication', __name__, url_prefix='/auth')
 
@@ -30,11 +31,10 @@ def check_if_token_in_blacklist(decrypted_token):
     entry = blacklist.get(jti)  #search for the jti on the blacklist#
     return entry
 
-@bp.route("/<google_token>", methods=['GET'])
+@bp.route("/login/<google_token>", methods=['GET'])
 def get_tokens(google_token: str):
     """Verify if the given param string is a valid Google idToken. Return 2 tokens to be used as the authentication.
     """
-
     id_info = id_token.verify_oauth2_token(
         google_token,
         requests.Request(),
@@ -44,10 +44,14 @@ def get_tokens(google_token: str):
     if id_info['iss'] != 'accounts.google.com':
         raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
 
-    return ApiResult(
-        access_token=create_access_token(identity=id_info['email'], expires_delta=timedelta(hours=2)),
-        refresh_token=create_refresh_token(identity=id_info['email'], expires_delta=timedelta(days=1))
-    )
+    collab: Collaborator = get_me(id_info['email'])
+    if not collab.banned:
+        return ApiResult(
+            # access_token=create_access_token(identity=id_info['email'], expires_delta=timedelta(hours=30),
+            access_token=create_access_token(identity= collab.email, expires_delta=timedelta(days=30)),
+            refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(minutes=30))
+        )
+
 
 
 @bp.route('/me', methods=['GET'])
@@ -56,15 +60,15 @@ def auth_me():
     """"Return the user information from the database."""
     # Use DAOs to look for user in the database.
     email = get_jwt_identity()
-    user = get_me(email)
+    collab : Collaborator= get_me(email)
 
-    if user.approved and (not user.banned):
+
+    if (not collab.banned) and collab.approved:
         return ApiResult(
-            id=user.id.__str__(),
-            first_name=user.first_name,
-            last_name=user.email,
-            email=user.email,
-            faculty=user.faculty
+            id=collab.id.__str__(),
+            first_name=collab.first_name,
+            last_name=collab.email,
+            email=collab.email
         )
 
     raise TellSpaceAuthError(msg="Access denied. User is not approved or is banned.")
