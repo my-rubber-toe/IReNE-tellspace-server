@@ -130,24 +130,45 @@ def edit_document_description(doc_id):
 
 
 @bp.route('/<doc_id>/edit/timeline', methods=['PUT'])
+@jwt_required
 def edit_document_timeline(doc_id):
     """Edit the document timeline using doc_id and valid request body values."""
 
-    # TODO: Check if user has a valid session token.
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
+    email = get_jwt_identity()
     body = TimelineValidator().load(request.json)
-    # TODO: Use user ID and DAOs to update document.
-    return ApiResult(message=f'Valid Data. Updated document {doc_id} timeline.', given_data=body)
+
+    collab: Collaborator = Collaborator.objects.get(email=email)
+
+    # If collaborator is NOT banned, do the thing
+    if not collab.banned:
+        doc : DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        new_timeline = []
+        for timeline_pair in body['timeline']:
+            t = Timeline()
+            t.eventDate = timeline_pair['event_date']
+            t.event = timeline_pair['event_description']
+            new_timeline.append(t)
+
+        doc.timeline = new_timeline
+        doc.save()
+
+        return ApiResult(value=doc.id)
+
+    raise TellSpaceApiError(msg='Banned collaborator.')
 
 
 @bp.route('/<doc_id>/edit/section/create', methods=['POST'])
+@jwt_required
 def create_document_section(doc_id):
-    """Create a new document section using doc_id. Section is appended at the end of document.
+    """Create a new document section using doc_id. Section is appended at the end of document with empty values.
         Return the new section number.
     """
+    email = get_jwt_identity()
 
+    collab: Collaborator = Collaborator.objects.get(email=email)
     # TODO: Check if user has a valid session token.
     # TODO: Use user ID and DAOs to create the document section.
     return ApiResult(message=f'Valid Data.Section created in document {doc_id}')

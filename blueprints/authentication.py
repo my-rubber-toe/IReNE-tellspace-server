@@ -49,7 +49,7 @@ def get_tokens(google_token: str):
         return ApiResult(
             # access_token=create_access_token(identity=id_info['email'], expires_delta=timedelta(hours=30),
             access_token=create_access_token(identity= collab.email, expires_delta=timedelta(days=30)),
-            refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(minutes=30))
+            refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(days=30))
         )
 
 
@@ -60,7 +60,7 @@ def auth_me():
     """"Return the user information from the database."""
     # Use DAOs to look for user in the database.
     email = get_jwt_identity()
-    collab : Collaborator= get_me(email)
+    collab : Collaborator = get_me(email)
 
 
     if (not collab.banned) and collab.approved:
