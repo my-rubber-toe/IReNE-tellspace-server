@@ -1,6 +1,7 @@
 
 
 from marshmallow import Schema, fields, validate
+import re
 
 """Nested Schemas"""
 
@@ -83,14 +84,8 @@ class TimelineValidator(Schema):
     timeline = fields.List( fields.Nested(TimeLineEvent), required=True, validate=validate.Length(min=1))
 
 
-class RemoveSectionValidator(Schema):
-    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section"""
-    section_nbr = fields.Integer(required=True)
-
-
 class EditSectionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section"""
-    section_nbr = fields.Integer(required=True)
     section_title = fields.String(required=False, validate=validate.Length(min=1))
     section_text = fields.String(required=False, validate=validate.Length(min=1))
 
@@ -143,7 +138,15 @@ class AuthorsValidator(Schema):
 class TagsValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/tags"""
     tags = fields.List(
-        fields.String(required=True, validate=[validate.Length(min=1)]),
+        fields.String(
+            required=True,
+            validate=[
+                validate.Length(min=1),
+                # TODO: Regex will NOT accept number or special characters
+                validate.Regexp('[^0-9\r\n!@#$%\^&*()\-_\+=\{\}\[\]\|\\:;"\'<>,\.\/\?]+', re.IGNORECASE),
+
+            ]
+        ),
         required=True,
         validate=validate.Length(min=1)
     )

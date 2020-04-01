@@ -121,17 +121,17 @@ collaborator3.save()
 doc = DocumentCase()
 doc.creatoriD = str(collaborator1.id)
 doc.title= "Document 1"
-doc.location = ["San Juan, PR", "Fajardo, PR"]
+doc.location = []
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
 doc.creationDate = datetime.today().strftime('%Y-%m-%d')
-doc.tagsDoc = ["sustento"]
-doc.infrasDocList =  ["Carreteras"]
-doc.damageDocList = ["Alcantarillados"]
-doc.author = [sample_author, sample_author]
-doc.actor = [sample_actor, sample_actor]
-doc.section = [sample_section, sample_section]
-doc.timeline = [sample_timeline_pair, sample_timeline_pair]
+doc.tagsDoc = []
+doc.infrasDocList =  []
+doc.damageDocList = []
+doc.author = []
+doc.actor = []
+doc.section = []
+doc.timeline = []
 doc.published = True
 doc.save()
 
@@ -147,7 +147,7 @@ doc.infrasDocList =  ["Carreteras"]
 doc.damageDocList = ["Alcantarillados"]
 doc.author = [sample_author, sample_author]
 doc.actor = [sample_actor, sample_actor]
-doc.section = [sample_section, sample_section]
+doc.section = [sample_section]
 doc.timeline = [sample_timeline_pair, sample_timeline_pair]
 doc.published = True
 doc.save()
@@ -155,7 +155,7 @@ doc.save()
 doc = DocumentCase()
 doc.creatoriD = str(collaborator2.id)
 doc.title= "COVID-19: Puerto Rico en alerta."
-doc.location = ["San Juan, PR", "Fajardo, PR"]
+doc.location = ["San Juan, PR", "Ponce, PR"]
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
 doc.creationDate = datetime.today().strftime('%Y-%m-%d')
