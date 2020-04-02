@@ -3,6 +3,9 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
     jwt_required, get_jwt_identity, get_raw_jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
+import random
+import string
+
 
 from utils.responses import ApiResult, ApiException
 from utils.exceptions import TellSpaceAuthError
@@ -45,12 +48,14 @@ def get_tokens(google_token: str):
         raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
 
     collab: Collaborator = get_me(id_info['email'])
-    if not collab.banned:
+    if (not collab.banned) and collab.approved:
         return ApiResult(
             # access_token=create_access_token(identity=id_info['email'], expires_delta=timedelta(hours=30),
             access_token=create_access_token(identity= collab.email, expires_delta=timedelta(days=30)),
             refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(days=30))
         )
+
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin')
 
 
 
@@ -71,7 +76,7 @@ def auth_me():
             email=collab.email
         )
 
-    raise TellSpaceAuthError(msg="Access denied. User is not approved or is banned.")
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/refresh', methods=["GET"])
@@ -90,3 +95,36 @@ def auth_logout():
     jti = get_raw_jwt()['jti']
     blacklist[jti] = True   # Add the jti to the cache with value true #
     return ApiResult(message="Successfully logged out.")
+
+
+@bp.route("/get-invalid-token")
+def get_invalid_token():
+    invalid_token=create_access_token(identity='iamnotinthedatabase@email.com', expires_delta=timedelta(days=1))
+    invalid_token = invalid_token + ''.join(random.choice(string.ascii_lowercase) for i in range(random.randint(1, 10)))
+    return ApiResult(
+        invalid_token=invalid_token
+    )
+
+@bp.route("/get-expired-token")
+def get_expired_token():
+    return ApiResult(
+        expired_token=create_access_token(identity='iamexpired@email.com', expires_delta=timedelta(seconds=1))
+    )
+
+@bp.route("/get-invalid-user-token")
+def get_invalid_user_token():
+    return ApiResult(
+        invalid_token=create_access_token(identity='invaliduser@email.com', expires_delta=timedelta(days=30))
+    )
+
+@bp.route("/get-banned-user-token")
+def get_banned_user_token():
+    return ApiResult(
+        banned_user_token=create_access_token(identity='banneduser@upr.edu', expires_delta=timedelta(days=30))
+    )
+
+@bp.route("/get-notapproved-user-token")
+def get_notapproved_user_token():
+    return ApiResult(
+        notapproved_user_token=create_access_token(identity='notapproved@upr.edu', expires_delta=timedelta(days=30))
+    )

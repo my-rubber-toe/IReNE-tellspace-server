@@ -12,7 +12,7 @@ class Authors(Schema):
     last_name = fields.String(required=True, validate=validate.Length(min=1))
     email = fields.Email(
         required=True,
-        validate=validate.Regexp("^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$")
+        # validate=validate.Regexp("^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$")
     )
     faculty = fields.String(required=True, validate=validate.Length(min=1))
 
@@ -26,8 +26,8 @@ class Actors(Schema):
 
 class TimeLineEvent(Schema):
     """Nested Schema"""
-    event_date = fields.String(required=True, format="%Y-%m-%d")
-    event_description = fields.String(required=True, validate=validate.Length(min=1))
+    event_date = fields.Date('%Y-%m-%d')
+    event_description = fields.String(required=True, validate=validate.Length(min=1, max=250))
 
 
 """Request Body Schemas"""
@@ -35,9 +35,9 @@ class TimeLineEvent(Schema):
 
 class CreateDocumentValidator(Schema):
     """ Request body schema for the endpoint /api/documents/create"""
-    title = fields.String(required=True)
+    title = fields.String(required=True, validate=validate.Length(min=5, max=100))
 
-    description = fields.String(required=False)
+    description = fields.String(required=False, validate=validate.Length(min=1, max=500))
 
     authors = fields.List(
         fields.Nested(Authors),
@@ -52,7 +52,7 @@ class CreateDocumentValidator(Schema):
     )
 
     infrastructure_type = fields.List(
-        fields.String(),
+        fields.String(required=True, validate=validate.Length(min=1)),
         required=True,
         validate=validate.Length(min=1)
     )
@@ -63,7 +63,7 @@ class CreateDocumentValidator(Schema):
         validate=validate.Length(min=1)
     )
 
-    incident_date = fields.String(required=True, format="%Y-%m-%d")
+    incident_date = fields.Date('%Y-%m-%d')
 
 class RemoveDocumentValidator(Schema):
     doc_id=fields.String(required=True, validate=validate.Length(min=1))
@@ -71,7 +71,13 @@ class RemoveDocumentValidator(Schema):
 
 class TitleValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/title"""
-    title = fields.String(required=True, validate=validate.Length(min=1))
+    title = fields.String(
+        required=True,
+        validate=[
+            validate.Length(min=1),
+            validate.Regexp(r"^[A-Za-z0-9 :]*[A-Za-z0-9:][A-Za-z0-9 :]*$")
+        ]
+    )
 
 
 class DescriptionValidator(Schema):

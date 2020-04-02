@@ -99,18 +99,18 @@ collaborator1.approved = True
 collaborator1.save()
 
 collaborator2 = Collaborator()
-collaborator2.first_name = 'Jainel'
-collaborator2.last_name = 'Torres'
-collaborator2.email = 'jainel.torres@upr.edu'
+collaborator2.first_name = 'BannedUser'
+collaborator2.last_name = 'BannedUser'
+collaborator2.email = 'banneduser@upr.edu'
 collaborator2.faculty = 'ICOM'
 collaborator2.banned = True
 collaborator2.approved = True
 collaborator2.save()
 
 collaborator3 = Collaborator()
-collaborator3.first_name = 'Alejandro'
-collaborator3.last_name = 'Vasquez'
-collaborator3.email = 'alejandro.vasquez@upr.edu'
+collaborator3.first_name = 'NotApproved'
+collaborator3.last_name = 'NotApproved'
+collaborator3.email = 'notapproved@upr.edu'
 collaborator3.faculty = 'ICOM'
 collaborator3.banned = False
 collaborator3.approved = False

@@ -18,10 +18,11 @@ def get_documents():
     # Get user identity
     email = get_jwt_identity()
 
+    print(email)
     # Extract collaborator with identity
     collab: Collaborator = Collaborator.objects.get(email=email)
 
-    if not collab.banned:
+    if (not collab.banned) and collab.approved:
         documents = DocumentCase.objects.filter(creatoriD=str(collab.id))
         response = []
         for doc in documents:
@@ -36,10 +37,24 @@ def get_documents():
 
         return ApiResult(response=response)
 
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
+
+
+@bp.route('/<doc_id>', methods=['GET'])
+@jwt_required
+def get_document_by_id(doc_id: str):
+    """Get all document information using the doc_id."""
+    email = get_jwt_identity()
+    collab: Collaborator = Collaborator.objects.get(email=email)
+
+    if not collab.banned:
+        doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+
+        return ApiResult(content=json.loads(doc.to_json()), id=doc_id)
+
     raise TellSpaceAuthError(msg='Banned collaborator.')
 
-
-@bp.route('/create', methods=['GET', 'POST'])
+@bp.route('/create', methods=['POST'])
 @jwt_required
 def create_document():
     """ Create a new document using the information from the request body."""
@@ -52,6 +67,9 @@ def create_document():
     body: CreateDocumentValidator = CreateDocumentValidator().load(request.json)
     email = get_jwt_identity()
     collab: Collaborator = Collaborator.objects.get(email=email)
+
+    # TODO: Verify that the infrastrucutres and damage types exist in the database
+    # TODO: Verify if tags exist in the database, if not... add them and create document.
 
     if not collab.banned:
         doc = DocumentCase()
@@ -73,7 +91,7 @@ def create_document():
 
         return ApiResult(docId=str(doc.id))
 
-    raise TellSpaceAuthError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/remove/<doc_id>', methods=['DELETE'])
@@ -91,22 +109,7 @@ def remove_document(doc_id: str):
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         doc.delete()
 
-        return ApiResult(docId=str(doc.id))
-
-    raise TellSpaceAuthError(msg='Banned collaborator.')
-
-
-@bp.route('/<doc_id>', methods=['GET'])
-@jwt_required
-def get_document_by_id(doc_id: str):
-    """Get all document information using the doc_id."""
-    email = get_jwt_identity()
-    collab: Collaborator = Collaborator.objects.get(email=email)
-
-    if not collab.banned:
-        doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
-
-        return ApiResult(content=json.loads(doc.to_json()), id=doc_id)
+        return ApiResult(id=str(doc.id))
 
     raise TellSpaceAuthError(msg='Banned collaborator.')
 
@@ -128,7 +131,7 @@ def edit_document_title(doc_id: str):
 
         doc.title = body['title']
         doc.save()
-        return ApiResult(message=f'Valid Data. Updated document {doc.id} title to: {doc.title}')
+        return ApiResult(message=f'Updated document {doc.id} title to: {doc.title}')
 
     raise TellSpaceAuthError(msg='Banned collaborator.')
 
@@ -151,7 +154,7 @@ def edit_document_description(doc_id):
         doc.description = body['description']
         doc.save()
 
-        return ApiResult(id=str(doc.id))
+        return ApiResult(message=f'Updated document {doc.id} description to: {doc.description}')
 
     raise TellSpaceAuthError(msg='Banned collaborator.')
 
