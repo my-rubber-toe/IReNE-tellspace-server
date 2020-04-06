@@ -34,6 +34,7 @@ def check_if_token_in_blacklist(decrypted_token):
     entry = blacklist.get(jti)  #search for the jti on the blacklist#
     return entry
 
+
 @bp.route("/login/<google_token>", methods=['GET'])
 def get_tokens(google_token: str):
     """Verify if the given param string is a valid Google idToken. Return 2 tokens to be used as the authentication.

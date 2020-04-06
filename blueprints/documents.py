@@ -52,7 +52,7 @@ def get_document_by_id(doc_id: str):
 
         return ApiResult(content=json.loads(doc.to_json()), id=doc_id)
 
-    raise TellSpaceAuthError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 @bp.route('/create', methods=['POST'])
 @jwt_required
@@ -111,7 +111,7 @@ def remove_document(doc_id: str):
 
         return ApiResult(id=str(doc.id))
 
-    raise TellSpaceAuthError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/<doc_id>/edit/title', methods=['PUT'])
@@ -133,7 +133,7 @@ def edit_document_title(doc_id: str):
         doc.save()
         return ApiResult(message=f'Updated document {doc.id} title to: {doc.title}')
 
-    raise TellSpaceAuthError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/<doc_id>/edit/description', methods=['PUT'])
@@ -180,16 +180,16 @@ def edit_document_timeline(doc_id):
         new_timeline = []
         for timeline_pair in body['timeline']:
             t = Timeline()
-            t.eventDate = timeline_pair['event_date']
+            t.eventDate = str(timeline_pair['event_date'])
             t.event = timeline_pair['event_description']
             new_timeline.append(t)
 
         doc.timeline = new_timeline
         doc.save()
 
-        return ApiResult(id=str(doc.id))
+        return ApiResult(message=f'Updated document {doc.id} timeline.')
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/<doc_id>/edit/section/create', methods=['POST'])
@@ -207,9 +207,9 @@ def create_document_section(doc_id):
         new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
         doc.section.append(new_section)
         doc.save()
-        return ApiResult(id=str(doc.id), section_nbr=len(doc.section))
+        return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}')
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 
@@ -221,18 +221,22 @@ def remove_document_section(doc_id: str, section_nbr: str):
     collab: Collaborator = Collaborator.objects.get(email=email)
 
     # No such thing as a negative section or section 0
-    if int(section_nbr) <= 0:
-        raise TellSpaceApiError(msg='Section No. does not exist.')
 
     if not collab.banned:
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
 
+        # Check if section to pop is larger that the total number of sections
+        if int(section_nbr) > len(doc.section) or int(section_nbr) <= 0:
+            raise TellSpaceApiError(msg='Section No. does not exist.')
+
         # Remember that lists start with index 0
         doc.section.pop(int(section_nbr) - 1)
         doc.save()
-        return ApiResult(id=str(doc.id))
+        return ApiResult(
+            message=f'Removed section {section_nbr} from {doc.id}. Total No. of sections left {len(doc.section)}'
+        )
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/<doc_id>/edit/section/<section_nbr>', methods=['PUT'])
@@ -263,9 +267,11 @@ def edit_document_section(doc_id, section_nbr):
         doc.section[int(section_nbr) - 1] = section
         doc.save()
 
-        return ApiResult(id=str(doc.id))
+        return ApiResult(
+            message=f'Edited section {section_nbr} from the document {doc.id}.'
+        )
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])
@@ -294,9 +300,11 @@ def edit_document_infrastructure_types(doc_id):
         doc.infrasDocList = body['infrastructure_types']
         doc.save()
 
-        return ApiResult(id=str(doc.id))
+        return ApiResult(
+            message=f'Edited infrastructure types of the document {doc.id}.'
+        )
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.route('/<doc_id>/edit/damage_types', methods=['PUT'])
@@ -322,10 +330,103 @@ def edit_document_damage_types(doc_id):
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         doc.damageDocList = body['damage_types']
         doc.save()
-        return ApiResult(id=str(doc.id))
+        return ApiResult(
+            message=f'Edited damage types of the document {doc.id}.'
+        )
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
+@bp.route('/<doc_id>/edit/locations', methods=['PUT'])
+@jwt_required
+def edit_document_locations(doc_id):
+    """Edit the document locations using doc_id and valid request body values."""
+
+    # Get user identity
+    email = get_jwt_identity()
+
+    # Verify request parameters
+    if request.json == {}:
+        raise TellSpaceApiError(msg='No request body data.', status=400)
+
+    body = LocationsValidator().load(request.json)
+
+    # Extract collaborator with identity
+    collab: Collaborator = Collaborator.objects.get(email=email)
+
+    if not collab.banned:
+        doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        doc.location = body.get('locations')
+        doc.save()
+        return ApiResult(
+            message=f'Edited locations of the document {doc.id}.'
+        )
+
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
+
+
+@bp.route('/<doc_id>/edit/tags', methods=['PUT'])
+@jwt_required
+def edit_document_tags(doc_id):
+    """Edit the document tags using doc_id and valid request body values."""
+
+    # Get user identity
+    email = get_jwt_identity()
+
+    # Verify request parameters
+    if request.json == {}:
+        raise TellSpaceApiError(msg='No request body data.', status=400)
+
+    body = TagsValidator().load(request.json)
+
+    # Extract collaborator with identity
+    collab: Collaborator = Collaborator.objects.get(email=email)
+
+    if not collab.banned:
+        doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+
+        # If tags exists DO NOT exist in the tags collection, add it
+        for tag in body['tags']:
+            if not Tag.objects(tagItem=tag):
+                newTag = Tag(tagItem=tag)
+                newTag.save()
+
+        doc.tagsDoc = body['tags']
+        doc.save()
+        return ApiResult(message=f'Edited tags of the document {doc.id}.')
+
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
+
+
+@bp.route('/<doc_id>/edit/incident_date', methods=['PUT'])
+@jwt_required
+def edit_document_incident_date(doc_id):
+    """Edit the document tags using doc_id and valid request body values."""
+
+    # Get user identity
+    email = get_jwt_identity()
+
+    # Verify request parameters
+    if request.json == {}:
+        raise TellSpaceApiError(msg='No request body data.', status=400)
+
+    body = IncidentDateValidator().load(request.json)
+
+    # Verify that the date of the incident date is not in the future
+    today = datetime.today().strftime('%Y-%m-%d')
+    if str(body['incident_date']) > today:
+        raise TellSpaceApiError(msg='Incident date is in the future.')
+
+
+    # Extract collaborator with identity
+    collab: Collaborator = Collaborator.objects.get(email=email)
+
+    if not collab.banned:
+        doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        doc.incidentDate = str(body['incident_date'])
+        doc.save()
+        return ApiResult(message=f'Edited incident date of the document {doc.id}.')
+
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 @bp.route('/<doc_id>/edit/actors', methods=['PUT'])
 @jwt_required
@@ -355,36 +456,11 @@ def edit_document_actors(doc_id):
 
         doc.actor = actor_list
         doc.save()
-        return ApiResult(id=str(doc.id))
+        return ApiResult(
+            message=f'Edited actors of the document {doc.id}.'
+        )
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
-
-
-@bp.route('/<doc_id>/edit/locations', methods=['PUT'])
-@jwt_required
-def edit_document_locations(doc_id):
-    """Edit the document locations using doc_id and valid request body values."""
-
-    # Get user identity
-    email = get_jwt_identity()
-
-    # Verify request parameters
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
-    body = LocationsValidator().load(request.json)
-
-    # Extract collaborator with identity
-    collab: Collaborator = Collaborator.objects.get(email=email)
-
-    if not collab.banned:
-        doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
-        doc.location = body.get('locations')
-        doc.save()
-        return ApiResult(id=str(doc.id))
-
-    raise TellSpaceApiError(msg='Banned collaborator.')
-
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 @bp.route('/<doc_id>/edit/authors', methods=['PUT'])
 @jwt_required
@@ -418,40 +494,7 @@ def edit_document_authors(doc_id):
         doc.save()
         return ApiResult(id=str(doc.id))
 
-    raise TellSpaceApiError(msg='Banned collaborator.')
-
-
-@bp.route('/<doc_id>/edit/tags', methods=['PUT'])
-@jwt_required
-def edit_document_tags(doc_id):
-    """Edit the document tags using doc_id and valid request body values."""
-
-    # Get user identity
-    email = get_jwt_identity()
-
-    # Verify request parameters
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
-    body = TagsValidator().load(request.json)
-
-    # Extract collaborator with identity
-    collab: Collaborator = Collaborator.objects.get(email=email)
-
-    if not collab.banned:
-        doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
-
-        # If tags exists DO NOT exist in the tags collection, add it
-        for tag in body['tags']:
-            if not Tag.objects(tagItem=tag):
-                newTag = Tag(tagItem=tag)
-                newTag.save()
-
-        doc.tagsDoc = body['tags']
-        doc.save()
-        return ApiResult(id=str(doc.id))
-
-    raise TellSpaceAuthError(msg='Banned collaborator.')
+    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
 @bp.before_request

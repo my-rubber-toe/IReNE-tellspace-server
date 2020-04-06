@@ -27,7 +27,7 @@ class Actors(Schema):
 class TimeLineEvent(Schema):
     """Nested Schema"""
     event_date = fields.Date('%Y-%m-%d')
-    event_description = fields.String(required=True, validate=validate.Length(min=1, max=250))
+    event_description = fields.String(required=True, validate=validate.Length(min=10, max=250))
 
 
 """Request Body Schemas"""
@@ -87,7 +87,7 @@ class DescriptionValidator(Schema):
 
 class TimelineValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/timeline"""
-    timeline = fields.List( fields.Nested(TimeLineEvent), required=True, validate=validate.Length(min=1))
+    timeline = fields.List(fields.Nested(TimeLineEvent), required=True, validate=validate.Length(min=1))
 
 
 class EditSectionValidator(Schema):
@@ -131,6 +131,9 @@ class LocationsValidator(Schema):
         validate=validate.Length(min=1)
     )
 
+class IncidentDateValidator(Schema):
+    incident_date = fields.Date('%Y-%m-%d')
+
 
 class AuthorsValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/authors"""
@@ -149,7 +152,7 @@ class TagsValidator(Schema):
             validate=[
                 validate.Length(min=1),
                 # TODO: Regex will NOT accept number or special characters
-                validate.Regexp('[^0-9\r\n!@#$%\^&*()\-_\+=\{\}\[\]\|\\:;"\'<>,\.\/\?]+', re.IGNORECASE),
+                # validate.Regexp('[^0-9\r\n!@#$%\^&*()\-_\+=\{\}\[\]\|\\:;"\'<>,\.\/\?]+', re.IGNORECASE),
 
             ]
         ),

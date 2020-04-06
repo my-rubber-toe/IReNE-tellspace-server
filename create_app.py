@@ -6,6 +6,7 @@ from utils.responses import ApiException, ApiResult
 from marshmallow import ValidationError
 
 from flask_jwt_extended import JWTManager
+from flask_jwt_extended.exceptions import *
 
 from flask_cors import CORS
 
@@ -93,7 +94,7 @@ def register_error_handlers(app: ApiFlask):
     Arguments:
         app {flask application} -- application instance
     """
-    if app.config['FLASK_DEBUG']:
+    if False:
         @app.errorhandler(TellSpaceError)
         def handle_error(error):
             return ApiException(
@@ -118,19 +119,28 @@ def register_error_handlers(app: ApiFlask):
                 status=error.status
             )
 
+        # JWT Error Handler
+        @app.errorhandler(JWTExtendedException)
+        def request_token_errors(error):
+            return ApiException(
+                error_type='JWTTokenError',
+                message=error.messages,
+                status=error.status
+            )
+
         @app.errorhandler(ValidationError)
-        def request_validator_error(err):
+        def request_validator_error(error):
             return ApiException(
                 error_type='ValidationError',
-                message=err.messages,
+                message=error.messages,
                 status=400
             )
 
         @app.errorhandler(ValueError)
-        def request_validator_error(err):
+        def request_value_error(error):
             return ApiException(
                 error_type='ValidationError',
-                message=err.messages,
+                message=error.messages,
                 status=400
             )
 
