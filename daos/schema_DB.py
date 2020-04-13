@@ -7,7 +7,6 @@ connect('IReNEdb')
 #connec the db for testing purposes
 #connect('IReNEdb', host='mongomock://localhost', alias='IReNEdb')
 
-
 class Collaborator(Document):
     documentsID =  ListField(StringField(required=False))
     first_name = StringField(min_length=1, max_length=30, required=True)

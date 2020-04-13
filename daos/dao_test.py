@@ -291,3 +291,4 @@ import datetime
 """
 # category = 'Structure'
 # print(get_doc_infrastructure_type(category))
+
