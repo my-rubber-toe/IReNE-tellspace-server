@@ -183,8 +183,9 @@ def edit_document_timeline(doc_id):
         new_timeline = []
         for timeline_pair in body['timeline']:
             # TODO: Create comparison to verify that endDate >> startDate
+
             t = Timeline()
-            t.eventDate = str(timeline_pair['event_date'])
+            timeline_pair['event_start_date']
             t.event = timeline_pair['event_description']
             new_timeline.append(t)
 
