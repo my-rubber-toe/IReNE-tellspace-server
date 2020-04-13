@@ -66,8 +66,8 @@ def create_app(config=None):
         # Register the error handlers
         # register_error_handlers(app)
 
-        # register '/api endpoint'
-        # register_base_url(app)
+        # register '/ endpoint'
+        register_base_url(app)
 
         # Setup app request teardown process
         register_request_teardown(app)

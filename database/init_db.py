@@ -1,25 +1,11 @@
 from database.schema_DB import *
 from datetime import  datetime
-import names
-import random
 
-# facultyITEM = ['ICOM', 'INEL', 'INSO', 'CIIC', ]
-# fn = names.get_first_name()
-# ln = names.get_last_name()
-# emailc = fn + '.' + ln + "@upr.edu"
-# collab1 = Collaborator(first_name = fn,
-# last_name = ln,
-# approved = random.choice([True, False]),
-# faculty = random.choice(facultyITEM),
-# banned = random.choice([True, False]),
-# email = emailc
-# )
-# collab1.save()
 
 # SAMPLES
 # Damage types
 damage_type = Damage()
-damage_type.damageType=  "Terremoto"
+damage_type.damageType="Terremoto"
 damage_type.save()
 
 damage_type = Damage()
@@ -69,7 +55,7 @@ sample_author = Author()
 sample_author.author_FN = "Author Name"
 sample_author.author_LN = "Author Last Name"
 sample_author.author_faculty = "ININ"
-sample_author.author_email = "author@author.com"
+sample_author.author_email = "author.author@upr.edu"
 
 # sample Actor
 sample_actor = Actor()
@@ -85,7 +71,8 @@ sample_section.content = 'Section content here'
 # sample timeline
 sample_timeline_pair = Timeline()
 sample_timeline_pair.event = 'Timeline event'
-sample_timeline_pair.eventDate = datetime.today().strftime('%Y-%m-%d')
+sample_timeline_pair.eventStartDate = datetime.today().strftime('%Y-%m-%d')
+sample_timeline_pair.eventEndDate = datetime.today().strftime('%Y-%m-%d')
 
 ################################
 
@@ -101,7 +88,7 @@ collaborator1.save()
 collaborator2 = Collaborator()
 collaborator2.first_name = 'BannedUser'
 collaborator2.last_name = 'BannedUser'
-collaborator2.email = 'banneduser@upr.edu'
+collaborator2.email = 'banned.user@upr.edu'
 collaborator2.faculty = 'ICOM'
 collaborator2.banned = True
 collaborator2.approved = True
@@ -110,7 +97,7 @@ collaborator2.save()
 collaborator3 = Collaborator()
 collaborator3.first_name = 'NotApproved'
 collaborator3.last_name = 'NotApproved'
-collaborator3.email = 'notapproved@upr.edu'
+collaborator3.email = 'not.approved@upr.edu'
 collaborator3.faculty = 'ICOM'
 collaborator3.banned = False
 collaborator3.approved = False
@@ -125,6 +112,8 @@ doc.location = []
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
 doc.creationDate = datetime.today().strftime('%Y-%m-%d')
+doc.language = 'Spanish'
+doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
 doc.tagsDoc = []
 doc.infrasDocList =  []
 doc.damageDocList = []
@@ -142,6 +131,8 @@ doc.location = ["San Juan, PR", "Fajardo, PR"]
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
 doc.creationDate = datetime.today().strftime('%Y-%m-%d')
+doc.language = 'Spanish'
+doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
 doc.tagsDoc = ["sustento"]
 doc.infrasDocList =  ["Carreteras"]
 doc.damageDocList = ["Alcantarillados"]
@@ -159,6 +150,8 @@ doc.location = ["San Juan, PR", "Ponce, PR"]
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
 doc.creationDate = datetime.today().strftime('%Y-%m-%d')
+doc.language = 'English'
+doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
 doc.tagsDoc = ["sustento"]
 doc.infrasDocList =  ["Carreteras"]
 doc.damageDocList = ["Alcantarillados"]

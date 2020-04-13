@@ -18,27 +18,27 @@ def get_documents():
     # Get user identity
     email = get_jwt_identity()
 
-    print(email)
-    # Extract collaborator with identity
+    # # Extract collaborator with identity
     collab: Collaborator = Collaborator.objects.get(email=email)
 
     if (not collab.banned) and collab.approved:
         documents = DocumentCase.objects.filter(creatoriD=str(collab.id))
         response = []
         for doc in documents:
+            doc : DocumentCase
             response.append({
                 "id": str(doc.id),
                 "title": doc.title,
                 "desctription":  doc.description,
                 "published": doc.published,
                 "incidentDate": doc.incidentDate,
-                "creationDate": doc.creationDate
+                "creationDate": doc.creationDate,
+                "lastModificationDate": doc.lastModificationDate
             })
 
         return ApiResult(response=response)
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
 
 @bp.route('/<doc_id>', methods=['GET'])
 @jwt_required
@@ -47,10 +47,10 @@ def get_document_by_id(doc_id: str):
     email = get_jwt_identity()
     collab: Collaborator = Collaborator.objects.get(email=email)
 
-    if not collab.banned:
+    if not collab.banned and collab.approved:
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
 
-        return ApiResult(content=json.loads(doc.to_json()), id=doc_id)
+        return json.loads(doc.to_json()), 200
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
@@ -71,7 +71,7 @@ def create_document():
     # TODO: Verify that the infrastrucutres and damage types exist in the database
     # TODO: Verify if tags exist in the database, if not... add them and create document.
 
-    if not collab.banned:
+    if not collab.banned and collab.approved:
         doc = DocumentCase()
         doc.creatoriD = str(collab.id)
         doc.title = body['title']
@@ -79,6 +79,8 @@ def create_document():
         doc.description = body['description']
         doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
         doc.creationDate = datetime.today().strftime('%Y-%m-%d')
+        doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
+        doc.language = body['language']
         doc.tagsDoc = []
         doc.infrasDocList = body['infrastructure_type']
         doc.damageDocList = []
@@ -164,6 +166,7 @@ def edit_document_description(doc_id):
 @jwt_required
 def edit_document_timeline(doc_id):
     """Edit the document timeline using doc_id and valid request body values."""
+    # TODO: Update timeline validator
 
     email = get_jwt_identity()
 
@@ -179,6 +182,7 @@ def edit_document_timeline(doc_id):
         doc : DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         new_timeline = []
         for timeline_pair in body['timeline']:
+            # TODO: Create comparison to verify that endDate >> startDate
             t = Timeline()
             t.eventDate = str(timeline_pair['event_date'])
             t.event = timeline_pair['event_description']

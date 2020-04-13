@@ -1,5 +1,3 @@
-
-
 from marshmallow import Schema, fields, validate
 import re
 
@@ -8,26 +6,27 @@ import re
 
 class Authors(Schema):
     """Nested Schema"""
-    first_name = fields.String(required=True, validate=validate.Length(min=1))
-    last_name = fields.String(required=True, validate=validate.Length(min=1))
+    first_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
+    last_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
     email = fields.Email(
         required=True,
-        # validate=validate.Regexp("^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$")
+        # validate=validate.Regexp('(.*)\.(.*)@upr\.edu')
     )
-    faculty = fields.String(required=True, validate=validate.Length(min=1))
+    faculty = fields.String(required=True, validate=validate.Length(min=1, max=30))
 
 
 class Actors(Schema):
     """Nested Schema"""
-    first_name = fields.String(required=True, validate=validate.Length(min=1))
-    last_name = fields.String(required=True, validate=validate.Length(min=1))
-    role = fields.String(required=True, validate=validate.Length(min=1))
+    first_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
+    last_name = fields.String(required=False, validate=validate.Length(min=1, max=30))
+    role = fields.String(required=True, validate=validate.Length(min=1, max=30))
 
 
 class TimeLineEvent(Schema):
     """Nested Schema"""
-    event_date = fields.Date('%Y-%m-%d')
-    event_description = fields.String(required=True, validate=validate.Length(min=10, max=250))
+    event = fields.String(required=True, validate=validate.Length(min=10, max=250))
+    event_start_date = fields.Date('%Y-%m-%d', required=True)
+    event_end_date = fields.Date('%Y-%m-%d', required=True)
 
 
 """Request Body Schemas"""
@@ -35,9 +34,9 @@ class TimeLineEvent(Schema):
 
 class CreateDocumentValidator(Schema):
     """ Request body schema for the endpoint /api/documents/create"""
-    title = fields.String(required=True, validate=validate.Length(min=5, max=100))
+    title = fields.String(required=True, validate=validate.Length(min=10, max=250))
 
-    description = fields.String(required=False, validate=validate.Length(min=1, max=500))
+    description = fields.String(required=False, validate=validate.Length(min=10, max=500))
 
     authors = fields.List(
         fields.Nested(Authors),
@@ -58,15 +57,17 @@ class CreateDocumentValidator(Schema):
     )
 
     damage_type = fields.List(
-        fields.String(),
+        fields.String(required=True, validate=validate.Length(min=1, max=30)),
         required=True,
         validate=validate.Length(min=1)
     )
 
-    incident_date = fields.Date('%Y-%m-%d')
+    incident_date = fields.Date('%Y-%m-%d', required=True)
+    language = fields.Str(required=True, validate=validate.Length(min=1))
+
 
 class RemoveDocumentValidator(Schema):
-    doc_id=fields.String(required=True, validate=validate.Length(min=1))
+    doc_id = fields.String(required=True, validate=validate.Length(min=1))
 
 
 class TitleValidator(Schema):
@@ -74,7 +75,7 @@ class TitleValidator(Schema):
     title = fields.String(
         required=True,
         validate=[
-            validate.Length(min=1),
+            validate.Length(min=10, max=250),
             validate.Regexp(r"^[A-Za-z0-9 :]*[A-Za-z0-9:][A-Za-z0-9 :]*$")
         ]
     )
@@ -82,7 +83,7 @@ class TitleValidator(Schema):
 
 class DescriptionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/description"""
-    description = fields.String(required=True, validate=validate.Length(min=1))
+    description = fields.String(required=True, validate=validate.Length(min=10, max=500))
 
 
 class TimelineValidator(Schema):
@@ -92,14 +93,14 @@ class TimelineValidator(Schema):
 
 class EditSectionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section"""
-    section_title = fields.String(required=False, validate=validate.Length(min=1))
-    section_text = fields.String(required=False, validate=validate.Length(min=1))
+    section_title = fields.String(required=True, validate=validate.Length(min=1, max=250))
+    section_text = fields.String(required=True)
 
 
 class InfrastructureTypesValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/infrastructure_types"""
     infrastructure_types = fields.List(
-        fields.String(required=True, validate=validate.Length(min=1)),
+        fields.String(required=True, validate=validate.Length(min=1, max=30)),
         required=True,
         validate=validate.Length(min=1)
     )
@@ -108,7 +109,7 @@ class InfrastructureTypesValidator(Schema):
 class DamageTypesValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/damage_types"""
     damage_types = fields.List(
-        fields.String(required=True, validate=validate.Length(min=1)),
+        fields.String(required=True, validate=validate.Length(min=1, max=30)),
         required=True,
         validate=validate.Length(min=1)
     )
@@ -126,13 +127,14 @@ class ActorsValidator(Schema):
 class LocationsValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/locations"""
     locations = fields.List(
-        fields.String(required=True, validate=validate.Length(min=1, max=50)),
+        fields.String(required=True, validate=validate.Length(min=1)),
         required=True,
         validate=validate.Length(min=1)
     )
 
+
 class IncidentDateValidator(Schema):
-    incident_date = fields.Date('%Y-%m-%d')
+    incident_date = fields.Date('%Y-%m-%d', required=True)
 
 
 class AuthorsValidator(Schema):
@@ -148,13 +150,7 @@ class TagsValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/tags"""
     tags = fields.List(
         fields.String(
-            required=True,
-            validate=[
-                validate.Length(min=1),
-                # TODO: Regex will NOT accept number or special characters
-                # validate.Regexp('[^0-9\r\n!@#$%\^&*()\-_\+=\{\}\[\]\|\\:;"\'<>,\.\/\?]+', re.IGNORECASE),
-
-            ]
+            required=True, validate=validate.Length(min=1, max=20)
         ),
         required=True,
         validate=validate.Length(min=1)
