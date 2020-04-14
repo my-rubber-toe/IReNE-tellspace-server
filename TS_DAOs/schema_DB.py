@@ -65,6 +65,3 @@ class DocumentCase(Document):
     actor = ListField(EmbeddedDocumentField(Actor))
     section = ListField(EmbeddedDocumentField(Section))
     timeline = ListField(EmbeddedDocumentField(Timeline))
-
-
-

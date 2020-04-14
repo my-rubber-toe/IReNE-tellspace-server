@@ -292,4 +292,3 @@ import init_db_test
 """
 # category = 'Structure'
 # print(get_doc_infrastructure_type(category))
-
