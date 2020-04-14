@@ -2,6 +2,7 @@ from mongoengine import *
 from schema_DB import *
 from dao_TS import *
 import datetime
+import init_db_test
 
 """
     DAO_TS_1 (Dao which creates a Document)
