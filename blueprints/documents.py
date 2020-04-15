@@ -1,3 +1,11 @@
+"""
+documents.py
+====================================
+Blueprint class that holds the endpoints that perform CRUD operations on the documents present in the database.
+All operations performed on these endpoints must have a valid access token to proceed with a collaborator that has been
+approved and is not banned.
+"""
+
 from flask import Blueprint, request, json
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
@@ -13,7 +21,20 @@ bp = Blueprint('documents', __name__, url_prefix='/documents')
 @bp.route('/', methods=['GET'])
 @jwt_required
 def get_documents():
-    """ Return a list of documents' metadata belonging to the collabID"""
+    """
+        Return a list of documents' metadata belonging to a collaborator. The collaborator ID is extracted from the
+        access token.
+
+        Returns
+        -------
+             ApiResult
+                JSON object with the list of documents belonging to the collaborator.
+
+             TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
 
     # Get user identity
     email = get_jwt_identity()
@@ -25,11 +46,11 @@ def get_documents():
         documents = DocumentCase.objects.filter(creatoriD=str(collab.id))
         response = []
         for doc in documents:
-            doc : DocumentCase
+            doc: DocumentCase
             response.append({
                 "id": str(doc.id),
                 "title": doc.title,
-                "desctription":  doc.description,
+                "desctription": doc.description,
                 "published": doc.published,
                 "incidentDate": doc.incidentDate,
                 "creationDate": doc.creationDate,
@@ -40,10 +61,27 @@ def get_documents():
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
+
 @bp.route('/<doc_id>', methods=['GET'])
 @jwt_required
 def get_document_by_id(doc_id: str):
-    """Get all document information using the doc_id."""
+    """
+        Get the information from a specific document using the document id.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string to be searched for
+
+        Returns
+        -------
+            ApiResult
+                JSON object with all the information from a document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+    """
     email = get_jwt_identity()
     collab: Collaborator = Collaborator.objects.get(email=email)
 
@@ -54,11 +92,24 @@ def get_document_by_id(doc_id: str):
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
+
 @bp.route('/create', methods=['POST'])
 @jwt_required
 def create_document():
-    """ Create a new document using the information from the request body."""
-    if not(request.method == 'POST'):
+    """
+        Create a new document using the information from the request body.
+
+        Returns
+        -------
+            ApiResult
+                JSON object with the id of the newly created document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+    """
+
+    if not (request.method == 'POST'):
         raise TellSpaceApiError(msg='Method not allowed.', status=400)
 
     if request.json == {}:
@@ -99,7 +150,24 @@ def create_document():
 @bp.route('/remove/<doc_id>', methods=['DELETE'])
 @jwt_required
 def remove_document(doc_id: str):
-    """ Removes a document using the information from the request body and the user id."""
+    """
+        Removes a document using the document id from the route parameters.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object containing the id of the removed document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
 
     # Get user identity
     email = get_jwt_identity()
@@ -119,7 +187,24 @@ def remove_document(doc_id: str):
 @bp.route('/<doc_id>/edit/title', methods=['PUT'])
 @jwt_required
 def edit_document_title(doc_id: str):
-    """Edit the document title using doc_id and valid request body values."""
+    """
+        Edit the document title using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message of the updated document with the new title.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
 
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
@@ -140,8 +225,25 @@ def edit_document_title(doc_id: str):
 
 @bp.route('/<doc_id>/edit/description', methods=['PUT'])
 @jwt_required
-def edit_document_description(doc_id):
-    """Edit the document description using doc_id and valid request body values."""
+def edit_document_description(doc_id: str):
+    """
+        Edit the document description using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message of the updated document with the new description.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
 
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
@@ -161,11 +263,27 @@ def edit_document_description(doc_id):
     raise TellSpaceAuthError(msg='Banned collaborator.')
 
 
-
 @bp.route('/<doc_id>/edit/timeline', methods=['PUT'])
 @jwt_required
-def edit_document_timeline(doc_id):
-    """Edit the document timeline using doc_id and valid request body values."""
+def edit_document_timeline(doc_id: str):
+    """
+        Edit the document timeline using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message of the updated document and its id.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
     # TODO: Update timeline validator
 
     email = get_jwt_identity()
@@ -179,7 +297,7 @@ def edit_document_timeline(doc_id):
 
     # If collaborator is NOT banned, do the thing
     if not collab.banned:
-        doc : DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         new_timeline = []
         for timeline_pair in body['timeline']:
             # TODO: Create comparison to verify that endDate >> startDate
@@ -199,14 +317,29 @@ def edit_document_timeline(doc_id):
 
 @bp.route('/<doc_id>/edit/section/create', methods=['POST'])
 @jwt_required
-def create_document_section(doc_id):
-    """Append new document section using doc_id. Section is appended at the end of document with empty values.
+def create_document_section(doc_id: str):
+    """
+        Append new document section using doc_id. Section is appended at the end of document with empty values.
         Return the new section number.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message of the updated document id and the new number of sections.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
     """
     email = get_jwt_identity()
     collab: Collaborator = Collaborator.objects.get(email=email)
     if not collab.banned:
-        doc : DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         new_section = Section()
         new_section.secTitle = f'Section No. {len(doc.section) + 1}'
         new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
@@ -217,11 +350,31 @@ def create_document_section(doc_id):
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
 
-
 @bp.route('/<doc_id>/edit/section/remove/<section_nbr>', methods=['DELETE'])
 @jwt_required
 def remove_document_section(doc_id: str, section_nbr: str):
-    """Remove a section from a document using doc_id and section number."""
+    """
+        Remove a section from a document using doc_id and section number. Section number must be 1 <= x <= len(sections)
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+            section_nbr
+                the document section number to be removed
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message that show the removed section number, the document id and the number of
+                sections left.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
     email = get_jwt_identity()
     collab: Collaborator = Collaborator.objects.get(email=email)
 
@@ -247,7 +400,27 @@ def remove_document_section(doc_id: str, section_nbr: str):
 @bp.route('/<doc_id>/edit/section/<section_nbr>', methods=['PUT'])
 @jwt_required
 def edit_document_section(doc_id, section_nbr):
-    """Edit the document section using doc_id and valid request body values."""
+    """
+        Edit the document section with valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+            section_nbr
+                the document section number to be removed
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message of the updated section and the document id.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
 
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
@@ -281,8 +454,24 @@ def edit_document_section(doc_id, section_nbr):
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])
 @jwt_required
-def edit_document_infrastructure_types(doc_id):
-    """Edit the document infrastructure_types using doc_id and valid request body values."""
+def edit_document_infrastructure_types(doc_id: str):
+    """
+        Edit the document infrastructure_types using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message containing the id of the updated document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+    """
 
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
@@ -314,8 +503,24 @@ def edit_document_infrastructure_types(doc_id):
 
 @bp.route('/<doc_id>/edit/damage_types', methods=['PUT'])
 @jwt_required
-def edit_document_damage_types(doc_id):
-    """Edit the document damage_types using doc_id and valid request body values."""
+def edit_document_damage_types(doc_id: str):
+    """
+        Edit the document damage_types using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message containing the id of the updated document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+    """
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
 
@@ -341,10 +546,27 @@ def edit_document_damage_types(doc_id):
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
+
 @bp.route('/<doc_id>/edit/locations', methods=['PUT'])
 @jwt_required
-def edit_document_locations(doc_id):
-    """Edit the document locations using doc_id and valid request body values."""
+def edit_document_locations(doc_id: str):
+    """
+        Edit the document locations using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message containing the id of the updated document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+    """
 
     # Get user identity
     email = get_jwt_identity()
@@ -371,8 +593,24 @@ def edit_document_locations(doc_id):
 
 @bp.route('/<doc_id>/edit/tags', methods=['PUT'])
 @jwt_required
-def edit_document_tags(doc_id):
-    """Edit the document tags using doc_id and valid request body values."""
+def edit_document_tags(doc_id: str):
+    """
+        Edit the document tags using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message containing the id of the updated document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+    """
 
     # Get user identity
     email = get_jwt_identity()
@@ -404,8 +642,25 @@ def edit_document_tags(doc_id):
 
 @bp.route('/<doc_id>/edit/incident_date', methods=['PUT'])
 @jwt_required
-def edit_document_incident_date(doc_id):
-    """Edit the document tags using doc_id and valid request body values."""
+def edit_document_incident_date(doc_id: str):
+    """
+        Edit the document tags using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message containing the id of the updated document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
 
     # Get user identity
     email = get_jwt_identity()
@@ -421,7 +676,6 @@ def edit_document_incident_date(doc_id):
     if str(body['incident_date']) > today:
         raise TellSpaceApiError(msg='Incident date is in the future.')
 
-
     # Extract collaborator with identity
     collab: Collaborator = Collaborator.objects.get(email=email)
 
@@ -433,10 +687,27 @@ def edit_document_incident_date(doc_id):
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
+
 @bp.route('/<doc_id>/edit/actors', methods=['PUT'])
 @jwt_required
-def edit_document_actors(doc_id):
-    """Edit the document actors using doc_id and valid request body values."""
+def edit_document_actors(doc_id: str):
+    """
+        Edit the document actors using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message containing the id of the updated document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+    """
 
     # Get user identity
     email = get_jwt_identity()
@@ -467,10 +738,28 @@ def edit_document_actors(doc_id):
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
+
 @bp.route('/<doc_id>/edit/authors', methods=['PUT'])
 @jwt_required
-def edit_document_authors(doc_id):
-    """Edit the document authors using doc_id and valid request body values."""
+def edit_document_authors(doc_id: str):
+    """
+        Edit the document authors using doc_id and valid request body values.
+
+        Parameters
+        ----------
+            doc_id
+                the document id string
+
+        Returns
+        -------
+            ApiResult
+                JSON Object with message containing the id of the updated document.
+
+            TellSpaceAuthError
+                Exception Class with authorization error message. Raised when the collaborator is banned or not
+                approved.
+
+    """
 
     # Get user identity
     email = get_jwt_identity()
@@ -506,4 +795,3 @@ def edit_document_authors(doc_id):
 def before_requests():
     """Method to setup variables and route dependencies if needed."""
     pass
-

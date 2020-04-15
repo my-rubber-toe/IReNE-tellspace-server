@@ -10,9 +10,6 @@ commitizen
 mongoengine
 pymongo
 google-auth
-names
-pdfkit
-wkhtmltopdf
-regex
+sphinx
 
 

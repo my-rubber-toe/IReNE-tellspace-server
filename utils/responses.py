@@ -1,5 +1,7 @@
 """
-    Classes to standardize the response methods. Improves the ease of debugging.
+responses.py
+====================================
+Classes to standardize the response methods.
 """
 
 from flask import jsonify, make_response

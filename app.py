@@ -1,3 +1,9 @@
+"""
+app.py
+====================================
+Main file that holds the entry point for this server application.
+"""
+
 from create_app import create_app
 '''
 To run this server in development

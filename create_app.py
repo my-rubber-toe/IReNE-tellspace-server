@@ -1,3 +1,9 @@
+"""
+create_app.py
+====================================
+Holds the configuration functions for blueprints, routes, cors, error catching and much more.
+"""
+
 from werkzeug.utils import find_modules, import_string
 from flask import Flask, request, current_app, render_template
 
@@ -14,8 +20,9 @@ from flask_cors import CORS
 class ApiFlask(Flask):
     """
         Custom class extended from the Flask app object. 
-        Overrides the make response method to add custom error classes ApiResult and ApiException support  
+        Overrides the make response method to add custom error classes ApiResult and ApiException support.
     """
+
     def make_response(self, rv):
         if isinstance(rv, ApiResult):
             return rv.to_response()
@@ -27,16 +34,19 @@ class ApiFlask(Flask):
 def create_app(config=None):
     """Creates and returns a Flask app instance.
 
-    Keyword Arguments:
-        config {string} --  (default: {None})
+        Parameters
+        ----------
+            config
+                the file to be used as the configuration file
 
-    Returns:
-        [flask_application] -- instance of a flask app
+        Returns
+        -------
+            app
+                Instance of the ApiFlask class.
     """
     app = ApiFlask(__name__)
 
     with app.app_context():
-
         # Set all variables from the config file passed as a parameter
         app.config.from_object(config or {})
 
@@ -51,36 +61,28 @@ def create_app(config=None):
         # Setup CORS for cross site requests and more
         register_cors(app)
 
-        # TODO: Setup database configuration
-        # db.init_app(app)
-
-        # TODO: Setup authentication strategy for Google oAuth
-        # auth_setup.init_app(app)
-
-        # Setup validator plugins
-        # validator.init_app(app)
-
-        # Setup blueprints to establish all endpoint routes
+        # Setup and register blueprints to establish all endpoint routes
         register_blueprints(app)
 
-        # Register the error handlers
-        # register_error_handlers(app)
+        # Setup the error handlers
+        register_error_handlers(app)
 
-        # register '/ endpoint'
+        # Setup and register '/ endpoint'
         register_base_url(app)
 
-        # Setup app request teardown process
-        register_request_teardown(app)
+        # Setup app request teardown process if needed
+        # register_request_teardown(app)
 
-        return app
+    return app
 
 
 def register_blueprints(app: ApiFlask):
-    """Register all blueprints under the {.blueprint} module in the passed application instance. The authentication
-        blueprint will be treated differently
+    """Register all blueprints under the {.blueprint} module in the passed application instance.
 
-    Arguments:
-        app {flask application} -- application instance
+        Parameters
+        ----------
+            app
+                the ApiFlask application instance.
     """
     for name in find_modules('blueprints'):
         mod = import_string(name)
@@ -89,10 +91,12 @@ def register_blueprints(app: ApiFlask):
 
 
 def register_error_handlers(app: ApiFlask):
-    """Register error daos to flask application instance.
+    """Register exception classes to flask application instance.
 
-    Arguments:
-        app {flask application} -- application instance
+        Parameters
+        ----------
+            app
+                the ApiFlask application instance.
     """
     if False:
         @app.errorhandler(TellSpaceError)
@@ -157,7 +161,6 @@ def register_error_handlers(app: ApiFlask):
                 status=500
             )
 
-
         app.register_error_handler(
             400,
             lambda err: ApiException(message=str(
@@ -177,23 +180,38 @@ def register_error_handlers(app: ApiFlask):
         )
 
 
+def register_base_url(app: ApiFlask):
+    """
+        Base url to perform server health check.
 
-def register_base_url(app: Flask):
+        Parameters
+        ----------
+            app
+                the ApiFlask Instance
+
+    """
+
     @app.route('/')
     def api():
-        return "OK";
+        return "Health-Check ---> OK"
 
 
 def register_request_teardown(app: ApiFlask):
     @app.teardown_request
     def do_the_thing(exeption):
         pass
+
     pass
 
 
 def register_cors(app: ApiFlask):
     """
-        Setup CORS , cross-origin-resource-sharing settings
+        Setup CORS, cross-origin-resource-sharing settings
+
+        Parameters
+        ----------
+            app
+                the ApiFlask application instance.
     """
 
     origins_list = '*'

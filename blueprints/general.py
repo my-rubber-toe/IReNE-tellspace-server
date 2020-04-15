@@ -1,3 +1,9 @@
+"""
+general.py
+====================================
+Blueprint class that holds the endpoints that allows the retrieval of non sensitive information. Holds a blueprint object
+ that is used to create the routes for this module.
+"""
 
 from flask import Blueprint
 from utils.responses import ApiResult
@@ -11,7 +17,18 @@ bp = Blueprint('general', __name__, url_prefix='/general')
 
 @bp.route("/infrastructure_types", methods=['GET'])
 def get_infrastructure_types():
-    """"Return all the available infrastructure types."""
+    """
+        Get the list of the available infrastructure types within the database.
+
+        Returns
+        -------
+              ApiResult
+                JSON Object containing the list of infrastructure types.
+
+        Example
+        -------
+            ["Infra1", "Infra2", ...]
+    """
     list = []
     for infra in Infrastructure.objects():
         list.append(infra.infrastructureType)
@@ -20,6 +37,18 @@ def get_infrastructure_types():
 
 @bp.route("/damage_types", methods=['GET'])
 def get_damage_types():
+    """
+        Get the list of the available damage types within the database.
+
+        Returns
+        -------
+            ApiResult
+                JSON Object containing the list of damage types.
+
+        Example
+        -------
+            ["damage1","damage2", ...]
+    """
     list = []
     for d in Damage.objects():
         list.append(d.damageType)
@@ -28,9 +57,19 @@ def get_damage_types():
 
 @bp.route("/tags", methods=['GET'])
 def get_tags():
+    """
+        Get the list of all the available tags within the database. (Tags are created by collaborators.)
+
+        Returns
+        -------
+            ApiResult
+                JSON Object containing the list of tags.
+
+        Example
+        -------
+            ["Tag1", "Tag2", ...]
+    """
     list = []
     for t in Tag.objects():
         list.append(t.tagItem)
     return ApiResult(value=list)
-
-

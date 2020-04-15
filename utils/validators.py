@@ -1,3 +1,10 @@
+"""
+responses.py
+====================================
+Classes that perfom the request body validation process. These classes throw messages according to the missing values or
+validation errors
+"""
+
 from marshmallow import Schema, fields, validate
 import re
 
@@ -5,7 +12,7 @@ import re
 
 
 class Authors(Schema):
-    """Nested Schema"""
+    """Authors Validator."""
     first_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
     last_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
     email = fields.Email(
@@ -16,14 +23,14 @@ class Authors(Schema):
 
 
 class Actors(Schema):
-    """Nested Schema"""
+    """Actors Validator."""
     first_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
     last_name = fields.String(required=False, validate=validate.Length(min=1, max=30))
     role = fields.String(required=True, validate=validate.Length(min=1, max=30))
 
 
 class TimeLineEvent(Schema):
-    """Nested Schema"""
+    """Timeline Validator."""
     event = fields.String(required=True, validate=validate.Length(min=10, max=250))
     event_start_date = fields.Date('%Y-%m-%d', required=True)
     event_end_date = fields.Date('%Y-%m-%d', required=True)
