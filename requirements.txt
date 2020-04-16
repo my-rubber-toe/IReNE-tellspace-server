@@ -9,6 +9,7 @@ python-dotenv
 commitizen
 mongoengine
 pymongo
+mongomock
 google-auth
 sphinx
 

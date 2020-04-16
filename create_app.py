@@ -188,7 +188,6 @@ def register_base_url(app: ApiFlask):
         ----------
             app
                 the ApiFlask Instance
-
     """
 
     @app.route('/')

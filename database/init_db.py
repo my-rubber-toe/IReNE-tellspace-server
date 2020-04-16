@@ -74,7 +74,7 @@ sample_timeline_pair.event = 'Timeline event'
 sample_timeline_pair.eventStartDate = datetime.today().strftime('%Y-%m-%d')
 sample_timeline_pair.eventEndDate = datetime.today().strftime('%Y-%m-%d')
 
-################################
+##############TESTER EMAIL##################
 
 collaborator1 = Collaborator()
 collaborator1.first_name = 'Roberto'
