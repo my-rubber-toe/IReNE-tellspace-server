@@ -6,7 +6,7 @@ connect('IReNEdb')
 
 
 # connec the db for testing purposes
-connect('IReNEdb', host='mongomock://localhost', alias='IReNEdb')
+# connect('IReNEdb', host='mongomock://localhost', alias='IReNEdb')
 
 
 class Collaborator(Document):
@@ -19,8 +19,8 @@ class Collaborator(Document):
 
 
 class Admin(Document):
-    username = StringField(min_length=8, required=True, unique=True)
-    password = StringField(min_length=8, required=True, regex='(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])')
+    username = StringField(min_length=8, max_length=20, required=True, unique=True, regex='[a-zA-Z0-9]')
+    password = StringField(min_length=8, required=True)
 
 
 class Tag(Document):
@@ -38,7 +38,7 @@ class Damage(Document):
 class Author(EmbeddedDocument):
     author_FN = StringField(min_length=1, max_length=30, required=True)
     author_LN = StringField(min_length=1, max_length=30, required=True)
-    author_email = EmailField(min_length=1, max_length=50, required=True)
+    author_email = EmailField(min_length=1, max_length=50, required=True, regex='(.*)\.(.*)@upr\.edu')
     author_faculty = StringField(min_length=1, max_length=30, required=True)
 
 

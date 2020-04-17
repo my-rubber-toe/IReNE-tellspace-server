@@ -156,8 +156,8 @@ def register_error_handlers(app: ApiFlask):
                 status=500
             )
             return ApiException(
-                error_type='UnexpectedException',
-                message='An unexpected error has occurred. Please verify error logs',
+                error_type='UnexpectedError',
+                message=str(error),
                 status=500
             )
 

@@ -5,7 +5,7 @@ Blueprint class that holds the endpoints that allows the retrieval of non sensit
  that is used to create the routes for this module.
 """
 
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from utils.responses import ApiResult
 from daos.dao_TS import get_infrastructure_list, get_tags_list, get_damage_list
 from database.mock_db import *
@@ -22,7 +22,7 @@ def get_infrastructure_types():
 
         Returns
         -------
-              ApiResult
+              Response
                 JSON Object containing the list of infrastructure types.
 
         Example
@@ -32,7 +32,7 @@ def get_infrastructure_types():
     list = []
     for infra in Infrastructure.objects():
         list.append(infra.infrastructureType)
-    return ApiResult(value=list)
+    return jsonify(list)
 
 
 @bp.route("/damage_types", methods=['GET'])
@@ -42,7 +42,7 @@ def get_damage_types():
 
         Returns
         -------
-            ApiResult
+            Response
                 JSON Object containing the list of damage types.
 
         Example
@@ -52,7 +52,7 @@ def get_damage_types():
     list = []
     for d in Damage.objects():
         list.append(d.damageType)
-    return ApiResult(value=list)
+    return jsonify(list)
 
 
 @bp.route("/tags", methods=['GET'])
@@ -72,4 +72,4 @@ def get_tags():
     list = []
     for t in Tag.objects():
         list.append(t.tagItem)
-    return ApiResult(value=list)
+    return jsonify(list)

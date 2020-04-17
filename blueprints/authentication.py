@@ -94,9 +94,8 @@ def auth_me():
 
     if (not collab.banned) and collab.approved:
         return ApiResult(
-            id=collab.id.__str__(),
             first_name=collab.first_name,
-            last_name=collab.email,
+            last_name=collab.last_name,
             email=collab.email
         )
 

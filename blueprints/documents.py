@@ -6,7 +6,7 @@ All operations performed on these endpoints must have a valid access token to pr
 approved and is not banned.
 """
 
-from flask import Blueprint, request, json
+from flask import Blueprint, request, json, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.validators import *
@@ -27,7 +27,7 @@ def get_documents():
 
         Returns
         -------
-             ApiResult
+             Response
                 JSON object with the list of documents belonging to the collaborator.
 
              TellSpaceAuthError
@@ -50,14 +50,14 @@ def get_documents():
             response.append({
                 "id": str(doc.id),
                 "title": doc.title,
-                "desctription": doc.description,
+                "description": doc.description,
                 "published": doc.published,
                 "incidentDate": doc.incidentDate,
                 "creationDate": doc.creationDate,
                 "lastModificationDate": doc.lastModificationDate
             })
 
-        return ApiResult(response=response)
+        return jsonify(response)
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
@@ -75,7 +75,7 @@ def get_document_by_id(doc_id: str):
 
         Returns
         -------
-            ApiResult
+            Response
                 JSON object with all the information from a document.
 
             TellSpaceAuthError
@@ -124,11 +124,11 @@ def create_document():
 
     if not collab.banned and collab.approved:
         doc = DocumentCase()
-        doc.creatoriD = str(collab.id)
         doc.title = body['title']
+        doc.creatoriD = str(collab.id)
         doc.location = []
         doc.description = body['description']
-        doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
+        doc.incidentDate = str(body['incident_date'])
         doc.creationDate = datetime.today().strftime('%Y-%m-%d')
         doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
         doc.language = body['language']
@@ -175,7 +175,7 @@ def remove_document(doc_id: str):
     # Extract collaborator with identity
     collab: Collaborator = Collaborator.objects.get(email=email)
 
-    if not collab.banned:
+    if not collab.banned and collab.approved:
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         doc.delete()
 
@@ -213,7 +213,7 @@ def edit_document_title(doc_id: str):
     body = TitleValidator().load(request.json)
 
     collab: Collaborator = Collaborator.objects.get(email=email)
-    if not collab.banned:
+    if not collab.banned and collab.approved:
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
 
         doc.title = body['title']
@@ -253,7 +253,7 @@ def edit_document_description(doc_id: str):
 
     collab: Collaborator = Collaborator.objects.get(email=email)
 
-    if not collab.banned:
+    if not collab.banned and collab.approved:
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         doc.description = body['description']
         doc.save()
@@ -267,7 +267,8 @@ def edit_document_description(doc_id: str):
 @jwt_required
 def edit_document_timeline(doc_id: str):
     """
-        Edit the document timeline using doc_id and valid request body values.
+        Edit the document timeline using doc_id and valid request body values. Verifies if for all given timeline pairs
+        the start date is NOT larger than the end-date.
 
         Parameters
         ----------
@@ -284,8 +285,6 @@ def edit_document_timeline(doc_id: str):
                 approved.
 
     """
-    # TODO: Update timeline validator
-
     email = get_jwt_identity()
 
     if request.json == {}:
@@ -293,20 +292,32 @@ def edit_document_timeline(doc_id: str):
 
     body = TimelineValidator().load(request.json)
 
+    # Check that event_start_date is NOT larger than event_end_date
+    for time_pair in body['timeline']:
+        if time_pair['event_start_date'] > time_pair['event_end_date']:
+            raise TellSpaceApiError(
+                msg='Invalid Timeline Pair. Start Date is larger or equal to the end date',
+                status=500
+            )
+
     collab: Collaborator = Collaborator.objects.get(email=email)
 
-    # If collaborator is NOT banned, do the thing
-    if not collab.banned:
+    # If collaborator is NOT banned and its approved, then do the thing
+    if not collab.banned and collab.approved:
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         new_timeline = []
-        for timeline_pair in body['timeline']:
-            # TODO: Create comparison to verify that endDate >> startDate
+        new_time_pair = {
+            "event": None,
+            "eventStartDate": None,
+            "eventEndDate": None
+        }
+        for time_pair in body['timeline']:
+            new_time_pair['eventStartDate'] = str(time_pair['event_start_date'])
+            new_time_pair['eventEndDate'] = str(time_pair['event_end_date'])
+            new_time_pair['event'] = time_pair['event']
+            new_timeline.append(new_time_pair)
 
-            t = Timeline()
-            timeline_pair['event_start_date']
-            t.event = timeline_pair['event_description']
-            new_timeline.append(t)
-
+        print(new_timeline)
         doc.timeline = new_timeline
         doc.save()
 

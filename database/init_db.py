@@ -1,53 +1,52 @@
 from database.schema_DB import *
-from datetime import  datetime
-
+from datetime import datetime
 
 # SAMPLES
 # Damage types
 damage_type = Damage()
-damage_type.damageType="Terremoto"
+damage_type.damageType = "Terremoto"
 damage_type.save()
 
 damage_type = Damage()
-damage_type.damageType=  "Huracan"
+damage_type.damageType = "Huracan"
 damage_type.save()
 
 damage_type = Damage()
-damage_type.damageType=  "Inundaciones"
+damage_type.damageType = "Inundaciones"
 damage_type.save()
 
 damage_type = Damage()
-damage_type.damageType=  "Alcantarillados"
+damage_type.damageType = "Alcantarillados"
 damage_type.save()
 
 # Infrastrucutres
-infrastructure_types= Infrastructure()
+infrastructure_types = Infrastructure()
 infrastructure_types.infrastructureType = "Puertos"
 infrastructure_types.save()
 
-infrastructure_types= Infrastructure()
+infrastructure_types = Infrastructure()
 infrastructure_types.infrastructureType = "Puentes"
 infrastructure_types.save()
 
-infrastructure_types= Infrastructure()
+infrastructure_types = Infrastructure()
 infrastructure_types.infrastructureType = "Alambrado"
 infrastructure_types.save()
 
-infrastructure_types= Infrastructure()
+infrastructure_types = Infrastructure()
 infrastructure_types.infrastructureType = "Carreteras"
 infrastructure_types.save()
 
 # Tags
 tag = Tag()
-tag.tagItem="Volatil"
+tag.tagItem = "Volatil"
 tag.save()
 
 tag = Tag()
-tag.tagItem="Renovable"
+tag.tagItem = "Renovable"
 tag.save()
 
 tag = Tag()
-tag.tagItem="Sustento"
+tag.tagItem = "Sustento"
 tag.save()
 
 # Sample author
@@ -103,11 +102,10 @@ collaborator3.banned = False
 collaborator3.approved = False
 collaborator3.save()
 
-
 # Documents
 doc = DocumentCase()
 doc.creatoriD = str(collaborator1.id)
-doc.title= "Document 1"
+doc.title = "Document 1"
 doc.location = []
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
@@ -115,7 +113,7 @@ doc.creationDate = datetime.today().strftime('%Y-%m-%d')
 doc.language = 'Spanish'
 doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
 doc.tagsDoc = []
-doc.infrasDocList =  []
+doc.infrasDocList = []
 doc.damageDocList = []
 doc.author = []
 doc.actor = []
@@ -126,7 +124,7 @@ doc.save()
 
 doc = DocumentCase()
 doc.creatoriD = str(collaborator1.id)
-doc.title= "Document 2"
+doc.title = "Document 2"
 doc.location = ["San Juan, PR", "Fajardo, PR"]
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
@@ -134,7 +132,7 @@ doc.creationDate = datetime.today().strftime('%Y-%m-%d')
 doc.language = 'Spanish'
 doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
 doc.tagsDoc = ["sustento"]
-doc.infrasDocList =  ["Carreteras"]
+doc.infrasDocList = ["Carreteras"]
 doc.damageDocList = ["Alcantarillados"]
 doc.author = [sample_author, sample_author]
 doc.actor = [sample_actor, sample_actor]
@@ -145,7 +143,7 @@ doc.save()
 
 doc = DocumentCase()
 doc.creatoriD = str(collaborator2.id)
-doc.title= "COVID-19: Puerto Rico en alerta."
+doc.title = "COVID-19: Puerto Rico en alerta."
 doc.location = ["San Juan, PR", "Ponce, PR"]
 doc.description = "Lorem ipsum dolor sit amet."
 doc.incidentDate = datetime.today().strftime('%Y-%m-%d')
@@ -153,7 +151,7 @@ doc.creationDate = datetime.today().strftime('%Y-%m-%d')
 doc.language = 'English'
 doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')
 doc.tagsDoc = ["sustento"]
-doc.infrasDocList =  ["Carreteras"]
+doc.infrasDocList = ["Carreteras"]
 doc.damageDocList = ["Alcantarillados"]
 doc.author = [sample_author, sample_author]
 doc.actor = [sample_actor, sample_actor]
@@ -161,9 +159,3 @@ doc.section = [sample_section, sample_section]
 doc.timeline = [sample_timeline_pair, sample_timeline_pair]
 doc.published = False
 doc.save()
-
-
-
-
-
-
