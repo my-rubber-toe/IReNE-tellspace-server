@@ -63,10 +63,18 @@ def get_tokens(google_token: str):
 
     collab: Collaborator = get_me(id_info['email'])
     if (not collab.banned) and collab.approved:
+
+        # TODO: Change token lifetime to hours
+
+        access_token_ttl = 5
+        refresh_token_ttl = 10
+
         return ApiResult(
             # access_token=create_access_token(identity=id_info['email'], expires_delta=timedelta(hours=30),
-            access_token=create_access_token(identity=collab.email, expires_delta=timedelta(days=30)),
-            refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(days=30))
+            access_token=create_access_token(identity=collab.email, expires_delta=timedelta(hours=access_token_ttl)),
+            refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(hours=refresh_token_ttl)),
+            access_token_ttl=access_token_ttl,
+            refresh_token_ttl=refresh_token_ttl
         )
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin')
