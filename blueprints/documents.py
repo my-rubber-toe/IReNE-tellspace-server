@@ -296,7 +296,8 @@ def edit_document_timeline(doc_id: str):
     for time_pair in body['timeline']:
         if time_pair['event_start_date'] > time_pair['event_end_date']:
             raise TellSpaceApiError(
-                msg='Invalid Timeline Pair. Start Date is larger or equal to the end date',
+                msg='Invalid Timeline Pair. '
+                    'Start Date is larger than the end date. One of the dates is larger than today.',
                 status=500
             )
 
@@ -306,18 +307,12 @@ def edit_document_timeline(doc_id: str):
     if not collab.banned and collab.approved:
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         new_timeline = []
-        new_time_pair = {
-            "event": None,
-            "eventStartDate": None,
-            "eventEndDate": None
-        }
+        new_time_pair = Timeline()
         for time_pair in body['timeline']:
-            new_time_pair['eventStartDate'] = str(time_pair['event_start_date'])
-            new_time_pair['eventEndDate'] = str(time_pair['event_end_date'])
-            new_time_pair['event'] = time_pair['event']
+            new_time_pair.eventStartDate = str(time_pair['event_start_date'])
+            new_time_pair.eventEndDate = str(time_pair['event_end_date'])
+            new_time_pair.event = time_pair['event']
             new_timeline.append(new_time_pair)
-
-        print(new_timeline)
         doc.timeline = new_timeline
         doc.save()
 

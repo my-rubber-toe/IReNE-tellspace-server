@@ -140,7 +140,7 @@ def auth_logout():
     return ApiResult(message="Successfully logged out.")
 
 
-@current_app.jwt.token_in_blacklist_loader
+# @current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """
         Verifies if a token has been blacklisted. Token exists within the blacklist cache.
@@ -154,6 +154,9 @@ def check_if_token_in_blacklist(decrypted_token):
         -------
             entry
                 the key of the blacklist set which points to the blacklisted token.
+
+            False
+                boolean value if a token is not found in the blacklist.
     """
     jti = decrypted_token['jti']
     if blacklist.currsize == 0:

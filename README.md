@@ -63,7 +63,8 @@ For more info follow this link https://www.jetbrains.com/help/pycharm/configurin
 
 ## Documentation
 
-To access the documentation for this project, access the directory ./docs/build/html/ and open the file `index.html` in
+To generate the documentation for this project, change directory to `/docs` and run `make html`. Once all the 
+application has been built, access the directory `/docs/build/html/` and open the file `index.html` in
 your desired browser. 
 
 **Note: To update the documentation files, please refer to https://www.sphinx-doc.org/en/master/usage/quickstart.html**
