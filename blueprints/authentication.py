@@ -125,7 +125,7 @@ def auth_refresh():
 @jwt_required
 def auth_logout():
     """
-        Revoke the Google authorization and add tokens to blacklist.
+        Revoke access token. Add access tokens to blacklist.
 
         Returns
         -------
@@ -140,7 +140,7 @@ def auth_logout():
     return ApiResult(message="Successfully logged out.")
 
 
-# @current_app.jwt.token_in_blacklist_loader
+@current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """
         Verifies if a token has been blacklisted. Token exists within the blacklist cache.
