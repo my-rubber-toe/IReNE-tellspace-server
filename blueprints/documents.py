@@ -12,7 +12,6 @@ from utils.responses import ApiResult, ApiException
 from utils.validators import *
 from utils.exceptions import TellSpaceApiError, TellSpaceAuthError
 from database.schema_DB import *
-from daos.dao_TS import *
 from datetime import datetime
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')

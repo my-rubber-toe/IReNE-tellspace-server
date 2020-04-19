@@ -20,7 +20,7 @@ from cachetools import TTLCache
 
 from datetime import timedelta
 
-from daos.dao_TS import *
+from DAOs.dao_TS import *
 from database.schema_DB import *
 
 bp = Blueprint('authentication', __name__, url_prefix='/auth')
