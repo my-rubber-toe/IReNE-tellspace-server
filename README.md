@@ -56,7 +56,7 @@ and access the project settings.
 **Note: if dependencies are not installed automatically, open a terminal and run `pip install -r requirements.txt`.**
 
 When all dependencies have been installed, right-click on the `app.py` file and run. You can also open a terminal and 
-run `flask run`
+run `python app.py`
 
 For more info follow this link https://www.jetbrains.com/help/pycharm/configuring-python-interpreter.html
 
