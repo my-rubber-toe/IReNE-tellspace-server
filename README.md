@@ -4,19 +4,11 @@
 ## Dependencies
     1. Python 3.8.0    
     2. pip3 19.03
+    
+## Setup Environment File
 
-## Development Setup: Linux Environment
-
-Ensure that you have `Python 3.8.0` installed. Once you have cloned the repository locally, create a virtual environment
-by running ```python3 -m venv venv```. This will create a folder named **venv**. 
-
-To access the virtual environment run ```source ./venv/bin/activate```. You will see that you terminal has a prefix 
-```(venv)``` in the console line.
-
-Install all dependencies with ```pip install -r requirements.txt```.
-
-Create a **.env** file in the main directory of the project. This file contains the evironmental information used by the
-server. The file must contain the following:
+Create a **.env** file in the main directory of the project. This file contains the environmental information used by 
+the server. The file must contain the following:
 
 ```.env
 FLASK_APP=app
@@ -40,7 +32,17 @@ FLASK_SECRET_KEY="your-server-secret-key"
 FLASK_SALT="your-server-salt"
 ```
 
-Once all has been set, run the server using `flask run` or `python app.py`.
+## Development Setup: Linux Environment
+
+Ensure that you have `Python 3.8.0` installed. Once you have cloned the repository locally, create a virtual environment
+by running ```python3 -m venv venv```. This will create a folder named **venv**. 
+
+To access the virtual environment run ```source ./venv/bin/activate```. You will see that you terminal has a prefix 
+```(venv)``` in the console line.
+
+Install all dependencies with ```pip install -r requirements.txt```.
+
+Once all has been set, run the server using `python app.py`.
 
 ## Development Setup: Pycharm
 
