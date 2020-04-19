@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>dao_TS module &#8212; TellSpace DAOs 2.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="dao_test module" href="dao_test.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-dao_TS">
+<span id="dao-ts-module"></span><h1>dao_TS module<a class="headerlink" href="#module-dao_TS" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="dao_TS.current_date">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">current_date</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.current_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is not a DAO, the purpose is to get current date to change lastModificationDate</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_damage_list">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_damage_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_damage_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns the list of damages</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_doc">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_doc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns a json object with the information about a specific document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_doc_collab">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_doc_collab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">collabid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_doc_collab" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns a json object with the information about documents 
+created by a collaborator</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_doc_damage_type">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_doc_damage_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">damage</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_doc_damage_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns the documents containing damage category</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_doc_infrastructure_type">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_doc_infrastructure_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infras</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_doc_infrastructure_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns the documents containing infras category</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_doc_tag_type">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_doc_tag_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_doc_tag_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns the documents containing tag category</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_infrastructure_list">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_infrastructure_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_infrastructure_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns the list of infras</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_me">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_me</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">email_collab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_me" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns a json object with the information about a collaborator</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.get_tags_list">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">get_tags_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.get_tags_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that returns the list of tags</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.post_create_doc_DAO">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">post_create_doc_DAO</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">docatr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.post_create_doc_DAO" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that posts a Doc into the DB &amp; any new Tag is added to Tag Document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_actors">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_actors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">actors</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_actors" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the actors list of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_authors">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_authors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">authors</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_authors" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the authors list of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_damageType">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_damageType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">damType</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_damageType" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the damagelist of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_des">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_des</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">des</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_des" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the description of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_infrasType">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_infrasType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">infrasType</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_infrasType" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the infrastructure list of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_locations">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_locations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">loc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the location list of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_section">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">sec</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the section of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_tags">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_tags</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">tags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the tags list of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_timeline">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_timeline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">timeline</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_timeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the timeline of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.put_doc_title">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">put_doc_title</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">title</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.put_doc_title" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that updates the title of a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.remove_doc">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">remove_doc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.remove_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that removes a document</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="dao_TS.remove_doc_section">
+<code class="sig-prename descclassname">dao_TS.</code><code class="sig-name descname">remove_doc_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">docid</span></em>, <em class="sig-param"><span class="n">section_title</span></em><span class="sig-paren">)</span><a class="headerlink" href="#dao_TS.remove_doc_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>DAO that deletes a section</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TellSpace DAOs</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">dao_TS module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dao_test.html">dao_test module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="init_db_test.html">init_db_test module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema_DB.html">schema_DB module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">&lt;no title&gt;</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="dao_test.html" title="next chapter">dao_test module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jainel M. Torres Santos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.0+/08dab41</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/dao_TS.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
