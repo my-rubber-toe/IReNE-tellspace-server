@@ -47,13 +47,13 @@ class CreateDocumentValidator(Schema):
 
     authors = fields.List(
         fields.Nested(Authors),
-        required=True,
+        required=False,
         validate=validate.Length(min=1)
     )
 
     actors = fields.List(
         fields.Nested(Actors),
-        required=True,
+        required=False,
         validate=validate.Length(min=1)
     )
 

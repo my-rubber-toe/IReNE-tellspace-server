@@ -7,7 +7,6 @@ Blueprint class that holds the endpoints that allows the retrieval of non sensit
 
 from flask import Blueprint, jsonify
 from utils.responses import ApiResult
-from database.mock_db import *
 from database.schema_DB import *
 import json
 
