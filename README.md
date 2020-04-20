@@ -4,6 +4,7 @@
 ## Dependencies
     1. Python 3.8.0    
     2. pip3 19.03
+    3. python venv
     
 ## Setup Environment File
 
@@ -31,11 +32,20 @@ OAUTHLIB_INSECURE_TRANSPORT=true
 FLASK_SECRET_KEY="your-server-secret-key" 
 FLASK_SALT="your-server-salt"
 ```
+The variables for `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` require the creation on a google project on
+the (Google Cloud Console)[https://console.cloud.google.com/]. For instructions on how to create the credentials please
+follow this tutorial to generate client ID and client secret. 
+
+https://developers.google.com/adwords/api/docs/guides/authentication#webapp
+
+Once the credentials have been created, replace them in the environment file. As for the `FLASK_SECRET_KEY` and 
+`FLASK_SALT`, use any random string.
+
 
 ## Development Setup: Linux Environment
 
-Ensure that you have `Python 3.8.0` installed. Once you have cloned the repository locally, create a virtual environment
-by running ```python3 -m venv venv```. This will create a folder named **venv**. 
+Ensure that you have `Python 3.8.0` installed and have the `venv` package installed.Once you have cloned the repository 
+locally, create a virtual environment by running ```python3 -m venv venv```. This will create a folder named **venv**. 
 
 To access the virtual environment run ```source ./venv/bin/activate```. You will see that you terminal has a prefix 
 ```(venv)``` in the console line.
