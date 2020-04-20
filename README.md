@@ -33,7 +33,7 @@ FLASK_SECRET_KEY="your-server-secret-key"
 FLASK_SALT="your-server-salt"
 ```
 The variables for `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` require the creation on a google project on
-the (Google Cloud Console)[https://console.cloud.google.com/]. For instructions on how to create the credentials please
+the [Google Cloud Console](https://console.cloud.google.com/). For instructions on how to create the credentials please
 follow this tutorial to generate client ID and client secret. 
 
 https://developers.google.com/adwords/api/docs/guides/authentication#webapp
