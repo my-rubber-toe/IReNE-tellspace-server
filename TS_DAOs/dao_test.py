@@ -19,7 +19,7 @@ import init_db_test
 # secdoc = Section(secTitle = "sec.title", content = "sec.content")
 # sectionDoc = [secdoc]
 # post_create_doc_DAO(creatoriD = "HEJB482ND9bbY9hYV",author = authlist,actor = actlist, timeline = timelineDoc,
-# section = sectionDoc, title = "The", description = "Description about case study", language='English', 
+# section = sectionDoc, title = "The amaizing title", description = "Description about case study", language='English', 
 # incidentDate = '2009-09-20',creationDate = '2011-07-12', lastModificationDate='2015-10-13',
 # tagsDoc = ["tag1","tag2"], infrasDocList = ["infras10"], damageDocList = ["dam10"], location = ["loc10"])
 
@@ -39,8 +39,7 @@ import init_db_test
 # for x in collabID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# collab = ''
+# collab = ids[0]
 # list_docs = get_doc_collab(collab)
 # print(list_docs)
 
@@ -52,8 +51,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc = "5e93df65d5a7e105bb954dda"
+# doc = ids[0]
 # get_doc = get_doc(doc)
 # print(get_doc)
 
@@ -66,9 +64,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
 # change_title = "Into the unknown"
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # current_title = get = DocumentCase.objects.get(id =doc_id)
 # print("old title: " + current_title.title)
 # put_doc_title(doc_id, change_title)
@@ -84,9 +81,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
 # change_description = "It was really bad what happened"
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # current = DocumentCase.objects.get(id =doc_id)
 # print("old des: " + current.description)
 # put_doc_des(doc_id, change_description)
@@ -103,8 +99,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # change_timel1 = Timeline(event = "this is the event1", eventStartDate = "2018-09-19", eventEndDate= '2018-10-01')
 # change_timel2 = Timeline(event = "this is the event2", eventStartDate = "2019-09-19", eventEndDate= '2019-10-01')
 # change_list_timel = [change_timel1, change_timel2]
@@ -125,8 +120,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # change_section1 = Section(secTitle = "Title", content = "content1")
 # change_section2 = Section(secTitle = "title2", content = "content2")
 # change_list_section = [change_section1, change_section2]
@@ -147,8 +141,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # change_list_damage = ["change_damage1", "change_damage2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old damagelist ', current.damageDocList)
@@ -165,8 +158,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # change_list_infra = ["infra1", "infra2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old infraslist ', current.infrasDocList)
@@ -183,8 +175,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # change_list_tags = ["tag1", "tag2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old tagslist ', current.tagsDoc)
@@ -202,8 +193,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # change_list_loc = ["loc1", "loc2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old locations ', current.location)
@@ -220,8 +210,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # change_actor1 = Actor(actor_FN = "name1", actor_LN = "lname1", role = "role1")
 # change_actor2 = Actor(actor_FN = "name2", actor_LN = "lname2", role = "role2")
 # change_list_actor = [change_actor1, change_actor2]
@@ -242,8 +231,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = "5e93df65d5a7e105bb954dda"
+# doc_id = ids[0]
 # current = DocumentCase.objects.get(id = doc_id)
 # for x in range(0, len(current.author)):
 #     print('old author ',x, ': ',current.author[x].author_FN, current.author[x].author_LN,
@@ -275,8 +263,7 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# print(ids)
-# doc_id = '5e9400bea9de4e0d0ba11f37'
+# doc_id = ids[0]
 # current_titles = DocumentCase.objects()
 # print('current titles:')
 # for x in current_titles:
