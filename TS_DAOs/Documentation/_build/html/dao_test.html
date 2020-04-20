@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>dao_test module &#8212; TellSpace DAOs 2.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="init_db_test module" href="init_db_test.html" />
+    <link rel="prev" title="dao_TS module" href="dao_TS.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="dao-test-module">
+<h1>dao_test module<a class="headerlink" href="#dao-test-module" title="Permalink to this headline">¶</a></h1>
+<ul>
+<li><dl>
+<dt>DAO_TS_1 (Dao which creates a Document)</dt><dd><ul class="simple">
+<li><p>post_create_doc_DAO(creatoriD = creatoriD,author = authlist,actor = actlist, timeline = timelineDoc,</p></li>
+</ul>
+<p>section = sectionDoc, title = title, description = description, language= language,
+incidentDate = incidentDate,creationDate = creationDate, lastModificationDate=lastModificationDate,
+tagsDoc = tagsDoclist, infrasDocList = infrasDocList, damageDocList = infrasDocList, location = location)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_2 (Dao returns a json object with the information of a collaborator)</dt><dd><ul class="simple">
+<li><p>get_me(collab)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_5 (Dao returns a json object with the information of a document created by the collaborator provided as argument)</dt><dd><ul class="simple">
+<li><p>get_doc_collab(collab)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_6 (Dao returns a json object with the information of a specific document</dt><dd><ul class="simple">
+<li><p>get_doc(docID)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_7 (Dao updates the title of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_title(doc_id, change_title)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_8 (Dao updates the description of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_des(doc_id, change_description)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_9 (Dao updates the timeline of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_timeline(doc_id, change_list_timel)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_10 (Dao updates the section of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_section(doc_id, change_list_section)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_11 (Dao updates the damagelist of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_damageType(doc_id, change_list_damage)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_12 (Dao updates the infraslist of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_infrasType(doc_id, change_list_infra)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_13 (Dao updates the tags of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_tags(doc_id, change_list_tags)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_14 (Dao updates the locationlist of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_locations(doc_id, change_list_loc)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_15 (Dao updates the actors of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_actors(doc_id, change_list_actor)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_16 (Dao updates the authors of a doc)</dt><dd><ul class="simple">
+<li><p>put_doc_authors(doc_id, change_list_author)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_17 (Dao return lists of different categories)</dt><dd><ul class="simple">
+<li><p>get_infrastructure_list()</p></li>
+<li><p>get_damage_list()</p></li>
+<li><p>get_tags_list()</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_18 (Dao deletes a document)</dt><dd><ul class="simple">
+<li><p>remove_doc(doc_id)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>DAO_TS_19 (DAO that returns a list of documents based on a category infras given)</dt><dd><ul class="simple">
+<li><p>get_doc_infrastructure_type(category)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<span class="target" id="module-dao_test"></span></div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TellSpace DAOs</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dao_TS.html">dao_TS module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">dao_test module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="init_db_test.html">init_db_test module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema_DB.html">schema_DB module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">&lt;no title&gt;</a><ul>
+      <li>Previous: <a href="dao_TS.html" title="previous chapter">dao_TS module</a></li>
+      <li>Next: <a href="init_db_test.html" title="next chapter">init_db_test module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jainel M. Torres Santos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.0+/08dab41</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/dao_test.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
