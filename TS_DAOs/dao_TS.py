@@ -1,5 +1,5 @@
 from mongoengine import *
-from schema_DB import *
+from TS_DAOs.schema_DB import *
 import datetime
 import json
 
@@ -25,8 +25,7 @@ def get_me(email_collab):
     """
         DAO that returns a json object with the information about a collaborator
     """
-    get_collab = Collaborator.objects.get(email = email_collab)
-    return json.loads(get_collab.to_json())
+    return Collaborator.objects.get(email = email_collab)
 
 
 def get_doc_collab(collabid):
