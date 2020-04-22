@@ -63,9 +63,6 @@ def get_tokens(google_token: str):
 
     collab: Collaborator = get_me(id_info['email'])
     if (not collab.banned) and collab.approved:
-
-        # TODO: Change token lifetime to hours
-
         access_token_ttl = 5
         refresh_token_ttl = 10
 
@@ -96,8 +93,8 @@ def auth_me():
                 Exception class for authentication errors.
 
     """
-    # Use DAOs to look for user in the database.
     email = get_jwt_identity()
+
     collab: Collaborator = get_me(email)
 
     if (not collab.banned) and collab.approved:
@@ -144,7 +141,7 @@ def auth_logout():
                 Exception class for authentication errors.
     """
     jti = get_raw_jwt()['jti']
-    blacklist[jti] = True  # Add the jti to the cache with value true #
+    blacklist[jti] = True
     return ApiResult(message="Successfully logged out.")
 
 
@@ -173,39 +170,38 @@ def check_if_token_in_blacklist(decrypted_token):
     entry = blacklist.get(jti)
     return entry
 
-
-@bp.route("/get-invalid-token")
-def get_invalid_token():
-    invalid_token = create_access_token(identity='iamnotinthedatabase@email.com', expires_delta=timedelta(days=1))
-    invalid_token = invalid_token + ''.join(random.choice(string.ascii_lowercase) for i in range(random.randint(1, 10)))
-    return ApiResult(
-        invalid_token=invalid_token
-    )
-
-
-@bp.route("/get-expired-token")
-def get_expired_token():
-    return ApiResult(
-        expired_token=create_access_token(identity='iamexpired@email.com', expires_delta=timedelta(seconds=1))
-    )
-
-
-@bp.route("/get-invalid-user-token")
-def get_invalid_user_token():
-    return ApiResult(
-        invalid_token=create_access_token(identity='invaliduser@email.com', expires_delta=timedelta(days=30))
-    )
-
-
-@bp.route("/get-banned-user-token")
-def get_banned_user_token():
-    return ApiResult(
-        banned_user_token=create_access_token(identity='banneduser@upr.edu', expires_delta=timedelta(days=30))
-    )
-
-
-@bp.route("/get-notapproved-user-token")
-def get_notapproved_user_token():
-    return ApiResult(
-        notapproved_user_token=create_access_token(identity='notapproved@upr.edu', expires_delta=timedelta(days=30))
-    )
+# @bp.route("/get-invalid-token")
+# def get_invalid_token():
+#     invalid_token = create_access_token(identity='iamnotinthedatabase@email.com', expires_delta=timedelta(days=1))
+#     invalid_token = invalid_token + ''.join(random.choice(string.ascii_lowercase) for i in range(random.randint(1, 10)))
+#     return ApiResult(
+#         invalid_token=invalid_token
+#     )
+#
+#
+# @bp.route("/get-expired-token")
+# def get_expired_token():
+#     return ApiResult(
+#         expired_token=create_access_token(identity='iamexpired@email.com', expires_delta=timedelta(seconds=1))
+#     )
+#
+#
+# @bp.route("/get-invalid-user-token")
+# def get_invalid_user_token():
+#     return ApiResult(
+#         invalid_token=create_access_token(identity='invaliduser@email.com', expires_delta=timedelta(days=30))
+#     )
+#
+#
+# @bp.route("/get-banned-user-token")
+# def get_banned_user_token():
+#     return ApiResult(
+#         banned_user_token=create_access_token(identity='banneduser@upr.edu', expires_delta=timedelta(days=30))
+#     )
+#
+#
+# @bp.route("/get-notapproved-user-token")
+# def get_notapproved_user_token():
+#     return ApiResult(
+#         notapproved_user_token=create_access_token(identity='notapproved@upr.edu', expires_delta=timedelta(days=30))
+#     )
