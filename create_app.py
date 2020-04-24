@@ -1,22 +1,28 @@
+"""
+create_app.py
+====================================
+Holds the configuration functions for blueprints, routes, cors, error catching and much more.
+"""
+
 from werkzeug.utils import find_modules, import_string
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, render_template
 
 from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
 from marshmallow import ValidationError
 
 from flask_jwt_extended import JWTManager
+from flask_jwt_extended.exceptions import *
 
 from flask_cors import CORS
-
-from mongoengine import DoesNotExist
 
 
 class ApiFlask(Flask):
     """
         Custom class extended from the Flask app object. 
-        Overrides the make response method to add custom error classes ApiResult and ApiException support  
+        Overrides the make response method to add custom error classes ApiResult and ApiException support.
     """
+
     def make_response(self, rv):
         if isinstance(rv, ApiResult):
             return rv.to_response()
@@ -27,17 +33,18 @@ class ApiFlask(Flask):
 
 def create_app(config=None):
     """Creates and returns a Flask app instance.
-
-    Keyword Arguments:
-        config {string} --  (default: {None})
-
-    Returns:
-        [flask_application] -- instance of a flask app
+        Parameters
+        ----------
+            config
+                the file to be used as the configuration file
+        Returns
+        -------
+            app
+                Instance of the ApiFlask class.
     """
     app = ApiFlask(__name__)
 
     with app.app_context():
-
         # Set all variables from the config file passed as a parameter
         app.config.from_object(config or {})
 
@@ -49,39 +56,30 @@ def create_app(config=None):
         app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
         app.__setattr__("jwt", JWTManager(app))
 
-        # TODO: Setup CORS for all endpoints
-        # register_cors(app)
+        # Setup CORS for cross site requests and more
+        register_cors(app)
 
-        # TODO: Setup database configuration
-        # db.init_app(app)
-
-        # TODO: Setup authentication strategy for Google oAuth
-        # auth_setup.init_app(app)
-
-        # Setup validator plugins
-        # validator.init_app(app)
-
-        # Setup blueprints to establish all endpoint routes
+        # Setup and register blueprints to establish all endpoint routes
         register_blueprints(app)
 
-        # Register the error handlers
-        # register_error_handlers(app)
+        # Setup the error handlers
+        register_error_handlers(app)
 
-        # register '/api endpoint'
-        # register_base_url(app)
+        # Setup and register '/ endpoint'
+        register_base_url(app)
 
-        # Setup app request teardown process
-        register_request_teardown(app)
+        # Setup app request teardown process if needed
+        # register_request_teardown(app)
 
-        return app
+    return app
 
 
 def register_blueprints(app: ApiFlask):
-    """Register all blueprints under the {.blueprint} module in the passed application instance. The authentication
-        blueprint will be treated differently
-
-    Arguments:
-        app {flask application} -- application instance
+    """Register all blueprints under the {.blueprint} module in the passed application instance.
+        Parameters
+        ----------
+            app
+                the ApiFlask application instance.
     """
     for name in find_modules('blueprints'):
         mod = import_string(name)
@@ -90,12 +88,13 @@ def register_blueprints(app: ApiFlask):
 
 
 def register_error_handlers(app: ApiFlask):
-    """Register error daos to flask application instance.
-
-    Arguments:
-        app {flask application} -- application instance
+    """Register exception classes to flask application instance.
+        Parameters
+        ----------
+            app
+                the ApiFlask application instance.
     """
-    if app.config['FLASK_DEBUG']:
+    if False:
         @app.errorhandler(TellSpaceError)
         def handle_error(error):
             return ApiException(
@@ -120,11 +119,28 @@ def register_error_handlers(app: ApiFlask):
                 status=error.status
             )
 
+        # JWT Error Handler
+        @app.errorhandler(JWTExtendedException)
+        def request_token_errors(error):
+            return ApiException(
+                error_type='JWTTokenError',
+                message=error.messages,
+                status=error.status
+            )
+
         @app.errorhandler(ValidationError)
-        def request_validator_error(err):
+        def request_validator_error(error):
             return ApiException(
                 error_type='ValidationError',
-                message=err.messages,
+                message=error.messages,
+                status=400
+            )
+
+        @app.errorhandler(ValueError)
+        def request_value_error(error):
+            return ApiException(
+                error_type='ValidationError',
+                message=error.messages,
                 status=400
             )
 
@@ -136,8 +152,8 @@ def register_error_handlers(app: ApiFlask):
                 status=500
             )
             return ApiException(
-                error_type='UnexpectedException',
-                message='An unexpected error has occurred. Please verify error logs',
+                error_type='UnexpectedError',
+                message=str(error),
                 status=500
             )
 
@@ -160,28 +176,35 @@ def register_error_handlers(app: ApiFlask):
         )
 
 
+def register_base_url(app: ApiFlask):
+    """
+        Base url to perform server health check.
+        Parameters
+        ----------
+            app
+                the ApiFlask Instance
+    """
 
-def register_base_url(app: Flask):
-    @app.route('/api/')
+    @app.route('/')
     def api():
-        return ApiResult(
-            {
-                'message': 'You have reached the TellSpace API. To make other requests please use all routes under /api'
-            },
-            status=200
-        )
+        return "Health-Check ---> OK"
 
 
 def register_request_teardown(app: ApiFlask):
     @app.teardown_request
     def do_the_thing(exeption):
         pass
+
     pass
 
 
 def register_cors(app: ApiFlask):
     """
-        Setup CORS , cross-origin-resource-sharing settings
+        Setup CORS, cross-origin-resource-sharing settings
+        Parameters
+        ----------
+            app
+                the ApiFlask application instance.
     """
 
     origins_list = '*'
@@ -206,7 +229,7 @@ def register_cors(app: ApiFlask):
 
     CORS(
         app=app,
-        resources={r"/api/*": {"origins": origins_list}},
+        resources={r"/*": {"origins": origins_list}},
         methods=methods_list,
         allowed_headers=allowed_headers_list,
         supports_credentials=True

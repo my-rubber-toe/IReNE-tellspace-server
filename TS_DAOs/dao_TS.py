@@ -1,7 +1,8 @@
 from mongoengine import *
-from schema_DB import *
+from TS_DAOs.schema_DB import *
 import datetime
 import json
+from TS_DAOs.init_db_test import *
 
 
 def post_create_doc_DAO (**docatr):
@@ -10,13 +11,13 @@ def post_create_doc_DAO (**docatr):
     """
     doc1 = DocumentCase(creatoriD = docatr["creatoriD"],title = docatr["title"], description = docatr["description"],
     incidentDate = docatr["incidentDate"], creationDate = docatr["creationDate"], lastModificationDate = docatr["lastModificationDate"],
-    tagsDoc = docatr["tagsDoc"], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
-    location = docatr["location"], author = docatr["author"], actor = docatr["actor"], 
-    section = docatr["section"], timeline = docatr["timeline"], language=docatr["language"])
-    for tag in docatr["tagsDoc"]:
-        if not Tag.objects(tagItem=tag):
-            newTag = Tag(tagItem=tag)
-            newTag.save()
+    tagsDoc = [], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
+    location = [], author = docatr["author"], actor = docatr["actor"], 
+    section = [], timeline = [], language=docatr["language"])
+    # for tag in docatr["tagsDoc"]:
+    #     if not Tag.objects(tagItem=tag):
+    #         newTag = Tag(tagItem=tag)
+    #         newTag.save()
     doc1.save()
     print('Document created successfully')
 
@@ -26,7 +27,7 @@ def get_me(email_collab):
         DAO that returns a json object with the information about a collaborator
     """
     get_collab = Collaborator.objects.get(email = email_collab)
-    return json.loads(get_collab.to_json())
+    return get_collab
 
 
 def get_doc_collab(collabid):
@@ -86,6 +87,13 @@ def put_doc_section(docid, sec):
         DAO that updates the section of a document
     """
     DocumentCase.objects(id = docid).update_one(set__section = sec)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+
+def put_doc_incidentDate(docid, inDate):
+    """
+        DAO that updates the incident of a document
+    """
+    DocumentCase.objects(id = docid).update_one(set__incidentDate = inDate)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
 
 def put_doc_damageType(docid, damType):

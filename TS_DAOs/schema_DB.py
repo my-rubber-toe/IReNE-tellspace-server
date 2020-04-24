@@ -1,10 +1,10 @@
 from mongoengine import *
 import datetime
-import regex
+# import regex
 #Connection to the Database
-connect('IReNEdb')
+#connect('IReNEdb')
 #connec the db for testing purposes
-#connect('IReNEdb', host='mongomock://localhost:27017')
+connect('IReNEdb', host='mongomock://localhost:27017')
 
 
 class Collaborator(Document):

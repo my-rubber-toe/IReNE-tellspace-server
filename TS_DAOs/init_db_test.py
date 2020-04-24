@@ -1,11 +1,11 @@
 from mongoengine import *
-from schema_DB import *
+from TS_DAOs.schema_DB import *
 
 def Collabs():
     """
         Fills the db with 5 Collaborators mock-data
     """
-    collab1 = Collaborator(first_name="Jainel", last_name="Torres", email="jainel.torres@upr.edu", approved=True)
+    collab1 = Collaborator(first_name="Jainel", last_name="Torres", email="jainel.torres@upr.edu", approved=True, banned=False)
     collab1.save()
     collab2 = Collaborator(first_name="Roberto", last_name="Guzman", email="roberto.guzman3@upr.edu", approved=True)
     collab2.save()
@@ -68,7 +68,8 @@ def Documents():
     """
         Fills the db with Documents mock-data
     """                                                                                                                                                                                                                                             
-    get_collab1 = Collaborator.objects.get(first_name= "Jainel")
+    get_collab1 = Collaborator.objects.get(email= "jainel.torres@upr.edu")
+    print(get_collab1.id)
     authorDoc1 = Author(author_FN = get_collab1.first_name, author_LN = get_collab1.last_name, 
     author_email = get_collab1.email, author_faculty="ICOM")
     actorDoc1 = Actor(actor_FN = "Victoria", actor_LN = "Black", role = "Mayor")
