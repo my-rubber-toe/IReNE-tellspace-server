@@ -135,8 +135,7 @@ class LocationsValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/locations"""
     locations = fields.List(
         fields.String(required=True, validate=validate.Length(min=1)),
-        required=True,
-        validate=validate.Length(min=1)
+        required=True
     )
 
 
