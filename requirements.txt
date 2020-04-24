@@ -11,5 +11,6 @@ pymongo
 mongomock
 google-auth
 sphinx
+gunicorn
 
 

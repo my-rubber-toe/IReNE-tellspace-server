@@ -62,6 +62,7 @@ def get_tokens(google_token: str):
         raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
 
     collab: Collaborator = get_me(id_info['email'])
+    
     if (not collab.banned) and collab.approved:
         access_token_ttl = 5
         refresh_token_ttl = 10

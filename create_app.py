@@ -16,6 +16,8 @@ from flask_jwt_extended.exceptions import *
 
 from flask_cors import CORS
 
+from TS_DAOs import init_db
+
 
 class ApiFlask(Flask):
     """
@@ -192,7 +194,7 @@ def register_base_url(app: ApiFlask):
 
     @app.route('/')
     def api():
-        return "Health-Check ---> OK"
+        return ApiResult(message="Welcome to the TellSpace-Server API. Pleaer refer to the documentation.")
 
 
 def register_request_teardown(app: ApiFlask):

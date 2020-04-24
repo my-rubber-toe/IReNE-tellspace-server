@@ -95,7 +95,7 @@ class DescriptionValidator(Schema):
 
 class TimelineValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/timeline"""
-    timeline = fields.List(fields.Nested(TimeLineEvent), required=True, validate=validate.Length(min=1))
+    timeline = fields.List(fields.Nested(TimeLineEvent), required=True)
 
 
 class EditSectionValidator(Schema):
@@ -159,6 +159,5 @@ class TagsValidator(Schema):
         fields.String(
             required=True, validate=validate.Length(min=1, max=20)
         ),
-        required=True,
-        validate=validate.Length(min=1)
+        required=True
     )
