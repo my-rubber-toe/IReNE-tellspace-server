@@ -217,7 +217,7 @@ def register_cors(app: ApiFlask):
 
     origins_list = '*'
 
-    methods_list = ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS']
+    methods_list = ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS']
 
     allowed_headers_list = [
         'Access-Control-Allow-Credentials',
