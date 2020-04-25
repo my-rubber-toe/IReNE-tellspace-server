@@ -2,17 +2,27 @@ from mongoengine import *
 from TS_DAOs.schema_DB import *
 import datetime
 import json
-from TS_DAOs.init_db_test import *
+# from TS_DAOs.init_db_test import *
 
 
 def post_create_doc_DAO (**docatr):
     """
         DAO that posts a Doc into the DB & any new Tag is added to Tag Document
     """
+    authorList = []
+    for author in docatr['author']:
+        authorBody = Author(author_FN= author['first_name'] , author_LN= author['last_name'], 
+            author_email= author['email'], author_faculty= author['faculty'])
+        authorList.append(authorBody)
+    actorList = []
+    for actor in docatr['actor']:
+        actorBody = Actor(actor_FN= actor['first_name'], actor_LN= actor['last_name'], 
+            role= actor['role'])
+        actorList.append(actorBody)
     doc1 = DocumentCase(creatoriD = docatr["creatoriD"],title = docatr["title"], description = docatr["description"],
     incidentDate = docatr["incidentDate"], creationDate = docatr["creationDate"], lastModificationDate = docatr["lastModificationDate"],
     tagsDoc = [], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
-    location = [], author = docatr["author"], actor = docatr["actor"], 
+    location = [], author = authorList, actor = actorList, 
     section = [], timeline = [], language=docatr["language"])
     # for tag in docatr["tagsDoc"]:
     #     if not Tag.objects(tagItem=tag):
@@ -20,6 +30,7 @@ def post_create_doc_DAO (**docatr):
     #         newTag.save()
     doc1.save()
     print('Document created successfully')
+    return doc1
 
 
 def get_me(email_collab):
@@ -36,7 +47,20 @@ def get_doc_collab(collabid):
         created by a collaborator
     """
     get_docs = DocumentCase.objects.filter(creatoriD= collabid)
-    return json.loads(get_docs.to_json())
+    response = []
+    for doc in get_docs:
+            doc: DocumentCase
+            response.append({
+                "id": str(doc.id),
+                "title": doc.title,
+                "description": doc.description,
+                "published": doc.published,
+                "incidentDate": doc.incidentDate,
+                "creationDate": doc.creationDate,
+                "lastModificationDate": doc.lastModificationDate
+            })
+    return response
+    # return json.loads(response.to_json())
 
 def get_doc(docid):
     """
@@ -66,6 +90,7 @@ def put_doc_title(docid, title):
     """
     DocumentCase.objects(id = docid).update_one(set__title = title)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
 
 def put_doc_des(docid, des):
@@ -74,20 +99,30 @@ def put_doc_des(docid, des):
     """
     DocumentCase.objects(id = docid).update_one(set__description = des)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
-def put_doc_timeline(docid, timeline):
+def put_doc_timeline(**docatr):
     """
         DAO that updates the timeline of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__timeline = timeline)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    timelineList = []
+    for timel in docatr["timeline"]:
+        timelineBody = Timeline(event= timel['event'], 
+        eventStartDate= timel['event_start_date'], 
+        eventEndDate= timel['event_end_date'])
+        timelineList.append(timelineBody)
+    DocumentCase.objects(id = docatr["docid"]).update_one(set__timeline = timelineList)
+    DocumentCase.objects(id = docatr["docid"]).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docatr["docid"])
 
-def put_doc_section(docid, sec):
+def put_doc_section(docid, sec_title, sec_content, i):
     """
         DAO that updates the section of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__section = sec)
+    updateSection = Section(secNum = i, secTitle= sec_title, content= sec_content)
+    DocumentCase.objects(id = docid, section__secNum = i).update_one(set__section__S = updateSection)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
 def put_doc_incidentDate(docid, inDate):
     """
@@ -95,6 +130,7 @@ def put_doc_incidentDate(docid, inDate):
     """
     DocumentCase.objects(id = docid).update_one(set__incidentDate = inDate)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
 def put_doc_damageType(docid, damType):
     """
@@ -102,6 +138,7 @@ def put_doc_damageType(docid, damType):
     """
     DocumentCase.objects(id = docid).update_one(set__damageDocList = damType)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
    
 def put_doc_infrasType(docid,infrasType):
     """
@@ -109,6 +146,7 @@ def put_doc_infrasType(docid,infrasType):
     """
     DocumentCase.objects(id = docid).update_one(set__infrasDocList = infrasType)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
 def put_doc_tags(docid, tags):
     """
@@ -120,6 +158,7 @@ def put_doc_tags(docid, tags):
         if not Tag.objects(tagItem=tag):
             newTag = Tag(tagItem=tag)
             newTag.save()
+    return DocumentCase.objects.get(id = docid)
 
 def put_doc_locations(docid,loc):
     """
@@ -127,20 +166,33 @@ def put_doc_locations(docid,loc):
     """
     DocumentCase.objects(id = docid).update_one(set__location = loc)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
 def put_doc_actors(docid, actors):
     """
         DAO that updates the actors list of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__actor = actors)
+    actorList = []
+    for actor in actors:
+        actorBody = Actor(actor_FN= actor["first_name"], actor_LN= actor["last_name"], 
+            role= actor["role"])
+        actorList.append(actorBody)
+    DocumentCase.objects(id = docid).update_one(set__actor = actorList)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
 def put_doc_authors(docid, authors):
     """
         DAO that updates the authors list of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__author = authors)
+    authorList = []
+    for author in authors:
+        authorBody = Author(author_FN= author["first_name"], author_LN= author["last_name"], 
+            author_email= author["email"], author_faculty= author["faculty"])
+        authorList.append(authorBody)
+    DocumentCase.objects(id = docid).update_one(set__author = authorList)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    return DocumentCase.objects.get(id = docid)
 
 def get_infrastructure_list():
     """
@@ -163,23 +215,35 @@ def get_tags_list():
     tag_objects = Tag.objects()
     return json.loads(tag_objects.to_json())
 
-def post_doc_section(docid,section):
+def post_doc_section(docid):
+    doc = DocumentCase.objects.get(id = docid)
+    new_section = Section()
+    new_section.secNum = len(doc.section) + 1
+    new_section.secTitle = f'Section No. {len(doc.section) + 1}'
+    new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
+        
     post_sec = DocumentCase.objects.get(id = docid)
-    post_sec.section.append(section)
+    post_sec.section.append(new_section)
     post_sec.save()
-
+    return DocumentCase.objects.get(id = docid)
+    
 def remove_doc(docid):
     """
         DAO that removes a document
     """
     doc_del = DocumentCase.objects.get(id = docid)
     doc_del.delete() 
+    return DocumentCase.objects.get(id = docid)
 
-def remove_doc_section(docid, section_title):
+def remove_doc_section(docid, section_num):
     """
         DAO that deletes a section
     """
-    DocumentCase.objects(id = docid).update(pull__section__secTitle= section_title)
+    doc = DocumentCase.objects.get(id = docid)
+    if section_num > len(doc.section) or section_num <= 0:
+        raise TellSpaceApiError(msg='Section No. does not exist.')
+    DocumentCase.objects(id = docid).update(pull__section__secNum= (section_num - 1))
+    return DocumentCase.objects.get(id = docid)
 
 def get_doc_damage_type(damage):
     """

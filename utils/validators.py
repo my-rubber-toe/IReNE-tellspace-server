@@ -11,7 +11,7 @@ class Authors(Schema):
     last_name = fields.String(required=True, validate=validate.Length(min=1))
     email = fields.Email(
         required=True,
-        validate=validate.Regexp("^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$")
+        validate=validate.Regexp('(.*)\.(.*)@upr\.edu')
     )
     faculty = fields.String(required=True, validate=validate.Length(min=1))
 
@@ -25,8 +25,9 @@ class Actors(Schema):
 
 class TimeLineEvent(Schema):
     """Nested Schema"""
-    event_date = fields.Date(required=True)
-    event_description = fields.String(required=True, validate=validate.Length(min=1))
+    event = fields.String(required=True, validate=validate.Length(min=1))
+    event_start_date = fields.String(required=True, validate=validate.Length(min=1))
+    event_end_date = fields.String(required=True, validate=validate.Length(min=1))
 
 
 """Request Body Schemas"""
@@ -91,6 +92,11 @@ class SectionValidator(Schema):
     section_title = fields.String(required=False, validate=validate.Length(min=1))
     section_text = fields.String(required=False, validate=validate.Length(min=1))
 
+class EditSectionValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section/<section_nbr>"""
+    section_title = fields.String(required=False, validate=validate.Length(min=1))
+    section_text = fields.String(required=False, validate=validate.Length(min=1))
+
 
 class InfrastructureTypesValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/infrastructure_types"""
@@ -144,3 +150,8 @@ class TagsValidator(Schema):
         required=True,
         validate=validate.Length(min=1)
     )
+
+class IncidentDateValidator(Schema):
+    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/incidentDates"""
+    incident_date = fields.String(required=True)
+
