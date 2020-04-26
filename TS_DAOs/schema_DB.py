@@ -1,10 +1,13 @@
 from mongoengine import *
 import datetime
-import regex
-#Connection to the Database
+
+# Connection to the Database, make sure you place the correct container name for the database
 connect('IReNEdb')
-#connec the db for testing purposes
-#connect('IReNEdb', host='mongomock://localhost:27017')
+# connect('IReNEdb', host="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin")
+
+
+# connec the db for testing purposes
+# connect('IReNEdb', host='mongomock://localhost', alias='IReNEdb')
 
 
 class Collaborator(Document):
@@ -20,12 +23,13 @@ class Collaborator(Document):
             - banned: <Boolean> <Default=False> When set to true, the Collaborator looses access to Tellspace service.
             - approved: <Boolean> <Default=False>  When set to true, the Collaborator gains access to Tellspace service.     
     """
-    documentsID =  ListField(StringField(required=False))
+    documentsID = ListField(StringField(required=False))
     first_name = StringField(min_length=1, max_length=30, required=True)
     last_name = StringField(min_length=1, max_length=30, required=True)
-    email = EmailField(required=True,max_length=50, unique=True, regex='(.*)\.(.*)@upr\.edu')
-    banned = BooleanField(default=False,required=True)
-    approved = BooleanField(default=False,required=True)
+    email = EmailField(required=True, max_length=50, unique=True, regex='(.*)\.(.*)@upr\.edu')
+    banned = BooleanField(default=False, required=True)
+    approved = BooleanField(default=False, required=True)
+
 
 class Admin(Document):
     """
@@ -36,10 +40,12 @@ class Admin(Document):
             - username: <String>  Admin's username.
                 - username attribute follows this regex: '(^(?=[a-zA-Z0-9])(?=.*[a-z])(?=.*[0-9])(?=.*[\.])(?=.*[A-Z])).*[^.]$' 
             - password: <String> Admin's  password.   
-                - password attribute follows this regex: '(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]))'
+                - password attribute follows this regex: '([a-zA-Z0-9]+)*'
     """
-    username = StringField(min_length=8, max_length=20, required=True, unique=True, regex='(^(?=[a-zA-Z0-9])(?=.*[a-z])(?=.*[0-9])(?=.*[\.])(?=.*[A-Z])).*[^.]$' )
-    password = StringField(min_length=8,max_length=20, required=True, regex='(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])')
+    username = StringField(min_length=8, max_length=20, required=True, unique=True,
+                           regex='(^(?=[a-zA-Z0-9])(?=.*[a-z])(?=.*[0-9])(?=.*[\.])(?=.*[A-Z])).*[^.]$')
+    password = StringField(min_length=8, max_length=20, required=True, regex='([a-zA-Z0-9]+)*')
+
 
 class Tag(Document):
     """
@@ -52,6 +58,7 @@ class Tag(Document):
     """
     tagItem = StringField(min_length=1, max_length=20, required=True, unique=True)
 
+
 class Infrastructure(Document):
     """
         Document Class for Infrastructure. 
@@ -61,8 +68,9 @@ class Infrastructure(Document):
         List of attributes:
             - infrastructureType: <String>  category that can be used in a DocumentCase.   
     """
-    infrastructureType = StringField(min_length=1,max_length=30, required=True, unique=True)
-    
+    infrastructureType = StringField(min_length=1, max_length=30, required=True, unique=True)
+
+
 class Damage(Document):
     """
         Document Class for Damage. 
@@ -72,7 +80,8 @@ class Damage(Document):
         List of attributes:
             - damageType: <String>  category that can be used in a DocumentCase.   
     """
-    damageType = StringField(min_length=1,max_length=30, required=True, unique=True)
+    damageType = StringField(min_length=1, max_length=30, required=True, unique=True)
+
 
 class Author(EmbeddedDocument):
     """
@@ -126,6 +135,7 @@ class Timeline(EmbeddedDocument):
     eventStartDate = StringField(min_length=0, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     eventEndDate = StringField(min_length=0, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
 
+
 class Section(EmbeddedDocument):
     """
         EmbeddedDocument Class for Section. 
@@ -139,6 +149,7 @@ class Section(EmbeddedDocument):
     """
     secTitle = StringField(min_length=0, max_length=250, required=False)
     content = StringField(required=False)
+
 
 class DocumentCase(Document):
     """
@@ -181,6 +192,3 @@ class DocumentCase(Document):
     actor = ListField(EmbeddedDocumentField(Actor))
     section = ListField(EmbeddedDocumentField(Section))
     timeline = ListField(EmbeddedDocumentField(Timeline))
-
-
-

@@ -1,27 +1,27 @@
 from mongoengine import *
-from schema_DB import *
-from dao_TS import *
+from TS_DAOs.schema_DB import *
+from TS_DAOs.dao_TS import *
 import datetime
-import init_db_test
+# import TS_DAOs.init_db_test
 
 """
     DAO_TS_1 (Dao which creates a Document)
 """
-# auth1 = Author(author_FN = "author.first_name1", author_LN = "author.last_name1",
-# author_email = "author.email1@upr.edu", author_faculty = "author.faculty1")
-# auth2 = Author(author_FN = "author.first_name2", author_LN = "author.last_name2",
-# author_email = "author.email2@upr.edu", author_faculty = "author.faculty2")
-# authlist = [auth1,auth2]
-# act1 = Actor(actor_FN = "actor.first_name", actor_LN = "actor.last_name", role = "actor.role")
-# actlist = [act1]
-# timel = Timeline(event = "The timeline title", eventStartDate='2010-09-12', eventEndDate='2010-09-20')
-# timelineDoc = [timel]
-# secdoc = Section(secTitle = "sec.title", content = "sec.content")
-# sectionDoc = [secdoc]
-# post_create_doc_DAO(creatoriD = "HEJB482ND9bbY9hYV",author = authlist,actor = actlist, timeline = timelineDoc,
-# section = sectionDoc, title = "The amaizing title", description = "Description about case study", language='English', 
-# incidentDate = '2009-09-20',creationDate = '2011-07-12', lastModificationDate='2015-10-13',
-# tagsDoc = ["tag1","tag2"], infrasDocList = ["infras10"], damageDocList = ["dam10"], location = ["loc10"])
+auth1 = Author(author_FN = "author.first_name1", author_LN = "author.last_name1",
+author_email = "author.email1@upr.edu", author_faculty = "author.faculty1")
+auth2 = Author(author_FN = "author.first_name2", author_LN = "author.last_name2",
+author_email = "author.email2@upr.edu", author_faculty = "author.faculty2")
+authlist = [auth1,auth2]
+act1 = Actor(actor_FN = "actor.first_name", actor_LN = "actor.last_name", role = "actor.role")
+actlist = [act1]
+timel = Timeline(event = "The timeline title", eventStartDate='2010-09-12', eventEndDate='2010-09-20')
+timelineDoc = [timel]
+secdoc = Section(secTitle = "sec.title", content = "sec.content")
+sectionDoc = [secdoc]
+post_create_doc_DAO(creatoriD = "HEJB482ND9bbY9hYV",author = authlist,actor = actlist, timeline = timelineDoc,
+section = sectionDoc, title = "The New Title", description = "Description about case study", language='English',
+incidentDate = '2009-09-20',creationDate = '2011-07-12', lastModificationDate='2015-10-13',
+tagsDoc = ["tag1","tag2"], infrasDocList = ["infras10"], damageDocList = ["dam10"], location = ["loc10"])
 
 """
     DAO_TS_2 (Dao returns a json object with the information of a collaborator)
@@ -39,7 +39,8 @@ import init_db_test
 # for x in collabID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# collab = ids[0]
+# print(ids)
+# collab = ''
 # list_docs = get_doc_collab(collab)
 # print(list_docs)
 
@@ -51,7 +52,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc = ids[0]
+# print(ids)
+# doc = "5e93df65d5a7e105bb954dda"
 # get_doc = get_doc(doc)
 # print(get_doc)
 
@@ -64,8 +66,9 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
+# print(ids)
 # change_title = "Into the unknown"
-# doc_id = ids[0]
+# doc_id = "5e93df65d5a7e105bb954dda"
 # current_title = get = DocumentCase.objects.get(id =doc_id)
 # print("old title: " + current_title.title)
 # put_doc_title(doc_id, change_title)
@@ -81,8 +84,9 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
+# print(ids)
 # change_description = "It was really bad what happened"
-# doc_id = ids[0]
+# doc_id = "5e93df65d5a7e105bb954dda"
 # current = DocumentCase.objects.get(id =doc_id)
 # print("old des: " + current.description)
 # put_doc_des(doc_id, change_description)
@@ -99,7 +103,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = "5e93df65d5a7e105bb954dda"
 # change_timel1 = Timeline(event = "this is the event1", eventStartDate = "2018-09-19", eventEndDate= '2018-10-01')
 # change_timel2 = Timeline(event = "this is the event2", eventStartDate = "2019-09-19", eventEndDate= '2019-10-01')
 # change_list_timel = [change_timel1, change_timel2]
@@ -120,7 +125,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = "5e93df65d5a7e105bb954dda"
 # change_section1 = Section(secTitle = "Title", content = "content1")
 # change_section2 = Section(secTitle = "title2", content = "content2")
 # change_list_section = [change_section1, change_section2]
@@ -141,7 +147,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = "5e93df65d5a7e105bb954dda"
 # change_list_damage = ["change_damage1", "change_damage2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old damagelist ', current.damageDocList)
@@ -158,7 +165,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = "5e93df65d5a7e105bb954dda"
 # change_list_infra = ["infra1", "infra2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old infraslist ', current.infrasDocList)
@@ -175,7 +183,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = "5e93df65d5a7e105bb954dda"
 # change_list_tags = ["tag1", "tag2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old tagslist ', current.tagsDoc)
@@ -193,7 +202,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = "5e93df65d5a7e105bb954dda"
 # change_list_loc = ["loc1", "loc2"]
 # current = DocumentCase.objects.get(id =doc_id)
 # print('old locations ', current.location)
@@ -210,7 +220,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = "5e93df65d5a7e105bb954dda"
 # change_actor1 = Actor(actor_FN = "name1", actor_LN = "lname1", role = "role1")
 # change_actor2 = Actor(actor_FN = "name2", actor_LN = "lname2", role = "role2")
 # change_list_actor = [change_actor1, change_actor2]
@@ -231,21 +242,22 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
-# current = DocumentCase.objects.get(id = doc_id)
+# print(ids)
+# doc_id = "5e9d110ea210b8a12afb7df6"
+# current = DocumentCase.objects.get(id=doc_id)
 # for x in range(0, len(current.author)):
-#     print('old author ',x, ': ',current.author[x].author_FN, current.author[x].author_LN,
-#     current.author[x].author_email,current.author[x].author_faculty)
-# change_author1 = Author(author_FN = "auname1", author_LN = "aulname1", 
-# author_email = "au.email1@upr.edu", author_faculty = "aufaculty1")
-# change_author2 = Author(author_FN = "auname2", author_LN = "aulname2", 
-# author_email = "au.email2@upr.edu",author_faculty = "aufaculty2")
+#     print('old author ', x, ': ', current.author[x].author_FN, current.author[x].author_LN,
+#           current.author[x].author_email, current.author[x].author_faculty)
+# change_author1 = Author(author_FN="auname1", author_LN="aulname1",
+#                         author_email="au.email1@upr.edu", author_faculty="aufaculty1")
+# change_author2 = Author(author_FN="auname2", author_LN="aulname2",
+#                         author_email="au.email2@upr.edu", author_faculty="aufaculty2")
 # change_list_author = [change_author1, change_author2]
 # put_doc_authors(doc_id, change_list_author)
 # update_author = DocumentCase.objects.get(id=doc_id)
 # for x in range(0, len(update_author.author)):
-#     print('new author ',x, ': ',update_author.author[x].author_FN, update_author.author[x].author_LN, 
-#     update_author.author[x].author_email, update_author.author[x].author_faculty)
+#     print('new author ', x, ': ', update_author.author[x].author_FN, update_author.author[x].author_LN,
+#           update_author.author[x].author_email, update_author.author[x].author_faculty)
 # print("new mod date: " + update_author.lastModificationDate)
 
 """
@@ -263,7 +275,8 @@ import init_db_test
 # for x in docID:
 #     id_string = str(x.id)
 #     ids.append(id_string)
-# doc_id = ids[0]
+# print(ids)
+# doc_id = '5e9400bea9de4e0d0ba11f37'
 # current_titles = DocumentCase.objects()
 # print('current titles:')
 # for x in current_titles:

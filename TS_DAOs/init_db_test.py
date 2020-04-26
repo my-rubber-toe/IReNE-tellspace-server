@@ -1,11 +1,11 @@
 from mongoengine import *
-from schema_DB import *
+from TS_DAOs.schema_DB import *
 
 def Collabs():
     """
         Fills the db with 5 Collaborators mock-data
     """
-    collab1 = Collaborator(first_name="Jainel", last_name="Torres", email="jainel.torres@upr.edu", approved=True, banned=False)
+    collab1 = Collaborator(first_name="Jainel", last_name="Torres", email="jainel.torres@upr.edu", approved=True)
     collab1.save()
     collab2 = Collaborator(first_name="Roberto", last_name="Guzman", email="roberto.guzman3@upr.edu", approved=True)
     collab2.save()
@@ -68,14 +68,13 @@ def Documents():
     """
         Fills the db with Documents mock-data
     """                                                                                                                                                                                                                                             
-    get_collab1 = Collaborator.objects.get(email= "jainel.torres@upr.edu")
-    # print("creator id:" , get_collab1.id)
+    get_collab1 = Collaborator.objects.get(first_name= "Jainel")
     authorDoc1 = Author(author_FN = get_collab1.first_name, author_LN = get_collab1.last_name, 
     author_email = get_collab1.email, author_faculty="ICOM")
     actorDoc1 = Actor(actor_FN = "Victoria", actor_LN = "Black", role = "Mayor")
     timelineDoc1 = Timeline(event = "The rain has started", 
     eventStartDate = "2017-09-17", eventEndDate = "2017-09-19")
-    sectionDoc1 = Section(secNum= 1, secTitle = "Introduction", content = "It was raining a lot")
+    sectionDoc1 = Section(secTitle = "Introduction", content = "It was raining a lot")
     doc1 = DocumentCase(creatoriD = str(get_collab1.id), title = ("The Great Rain"), location=["Coamo, PR"], 
     description = "It was a cold and stormy night...", published= True,
     incidentDate = "2017-09-17", 
@@ -93,7 +92,7 @@ def Documents():
     actorDoc2 = Actor(actor_FN = "Nelson", actor_LN = "Santos", role = "Ingeniero")
     timelineDoc2 = Timeline(event = "El temblor ha comenzado", 
     eventStartDate = "2019-02-09", eventEndDate = "2019-03-10")
-    sectionDoc2 = Section(secNum= 1, secTitle = "Cuerpo", content = "Estaba temblando mucho el suelo")
+    sectionDoc2 = Section(secTitle = "Cuerpo", content = "Estaba temblando mucho el suelo")
     doc2 = DocumentCase(creatoriD = str(get_collab2.id), title = ("El gran Terremoto"), location=["San Juan, PR"], 
     description = "Era un lindo dia soleado...", published= False,
     incidentDate = "2019-02-09", 

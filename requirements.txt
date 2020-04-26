@@ -1,7 +1,6 @@
 
 flask
 flask-cors
-flask-dance
 flask-jwt-extended
 marshmallow
 werkzeug
@@ -9,3 +8,9 @@ python-dotenv
 commitizen
 mongoengine
 pymongo
+mongomock
+google-auth
+sphinx
+gunicorn
+
+

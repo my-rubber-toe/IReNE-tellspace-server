@@ -201,22 +201,31 @@ def get_infrastructure_list():
     """
         DAO that returns the list of infras
     """
-    infra_objects = Infrastructure.objects()
-    return json.loads(infra_objects.to_json())
-   
+    infras = []
+    for infra in Infrastructure.objects():
+        infras.append(infra.infrastructureType)
+    return infras
+
 def get_damage_list():
     """
         DAO that returns the list of damages
     """
-    damage_objects = Damage.objects()
-    return json.loads(damage_objects.to_json())
+    arr = []
+    for d in Damage.objects():
+        d: Damage
+        arr.append(d.damageType)
+    return arr
+
 
 def get_tags_list():
     """
         DAO that returns the list of tags
     """
-    tag_objects = Tag.objects()
-    return json.loads(tag_objects.to_json())
+    arr = []
+    for t in Tag.objects():
+        t: Tag
+        arr.append(t.tagItem)
+    return arr
 
 def post_doc_section(docid):
     """
@@ -272,3 +281,4 @@ def get_doc_tag_type(tag):
     """
     get_docs = DocumentCase.objects.filter(tagsDoc__contains = tag)
     return json.loads(get_docs.to_json()) 
+

@@ -1,9 +1,10 @@
+"""
+exceptions.py
+====================================
+Classes to standardize the exception raising.
+"""
+
 import datetime
-
-import logging
-
-logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger('TellSpaceLogger')
 
 
 class TellSpaceError(Exception):
@@ -11,7 +12,7 @@ class TellSpaceError(Exception):
 
     error_type = 'TellSpaceError'
 
-    def __init__(self, err=None, msg='Error', status=500, user='', action=None):
+    def __init__(self, err=None, msg='Error', status=500, action=None):
         self.msg = msg
         self.status = status
         if err:
@@ -20,18 +21,16 @@ class TellSpaceError(Exception):
             self.error_stack = []
         self.error_stack.append(msg)
         self.err = err
-        self.user = user
         self.action = action
         self.status = status
         self.now = datetime.datetime.now()
         self.log()
 
     def log(self):
-        log_string = '"error":"{}","error_type":"{}","user":"{}","log_action":"{}",' \
+        log_string = '"error":"{}","error_type":"{}","log_action":"{}",' \
                      '"error_description":"{}","status":"{}", "time_stamp": "{}"'.format(
             str(self.err).replace('"', "'"),
             str(self.error_type).replace('"', "'"),
-            str(self.user),
             str(self.action).replace('"', "'"),
             str(self.error_stack),
             str(self.status),
@@ -61,4 +60,3 @@ class TellSpaceRequestValidationError(TellSpaceError):
 class TellSpaceAuthError(TellSpaceError):
     """Error manager for authentication errors"""
     error_type = 'TellSpaceAuthError'
-

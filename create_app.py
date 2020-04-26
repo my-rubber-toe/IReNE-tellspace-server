@@ -16,6 +16,8 @@ from flask_jwt_extended.exceptions import *
 
 from flask_cors import CORS
 
+from TS_DAOs import init_db
+
 
 class ApiFlask(Flask):
     """
@@ -33,10 +35,12 @@ class ApiFlask(Flask):
 
 def create_app(config=None):
     """Creates and returns a Flask app instance.
+
         Parameters
         ----------
             config
                 the file to be used as the configuration file
+
         Returns
         -------
             app
@@ -76,6 +80,7 @@ def create_app(config=None):
 
 def register_blueprints(app: ApiFlask):
     """Register all blueprints under the {.blueprint} module in the passed application instance.
+
         Parameters
         ----------
             app
@@ -89,6 +94,7 @@ def register_blueprints(app: ApiFlask):
 
 def register_error_handlers(app: ApiFlask):
     """Register exception classes to flask application instance.
+
         Parameters
         ----------
             app
@@ -179,6 +185,7 @@ def register_error_handlers(app: ApiFlask):
 def register_base_url(app: ApiFlask):
     """
         Base url to perform server health check.
+
         Parameters
         ----------
             app
@@ -187,7 +194,7 @@ def register_base_url(app: ApiFlask):
 
     @app.route('/')
     def api():
-        return "Health-Check ---> OK"
+        return ApiResult(message="Welcome to the TellSpace-Server API. Pleaer refer to the documentation.")
 
 
 def register_request_teardown(app: ApiFlask):
@@ -201,6 +208,7 @@ def register_request_teardown(app: ApiFlask):
 def register_cors(app: ApiFlask):
     """
         Setup CORS, cross-origin-resource-sharing settings
+
         Parameters
         ----------
             app
@@ -209,7 +217,7 @@ def register_cors(app: ApiFlask):
 
     origins_list = '*'
 
-    methods_list = ['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS']
+    methods_list = ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS']
 
     allowed_headers_list = [
         'Access-Control-Allow-Credentials',

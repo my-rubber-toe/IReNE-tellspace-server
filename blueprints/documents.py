@@ -24,6 +24,7 @@ def get_documents():
     """
         Return a list of documents' metadata belonging to a collaborator. The collaborator ID is extracted from the
         access token.
+
         Returns
         -------
              Response
@@ -96,6 +97,7 @@ def get_document_by_id(doc_id: str):
 def create_document():
     """
         Create a new document using the information from the request body.
+
         Returns
         -------
             ApiResult
@@ -742,6 +744,7 @@ def edit_document_authors(doc_id: str):
     # Verify request parameters
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
+    body = ActorsValidator().load(request.json)
 
     body = AuthorsValidator().load(request.json)
 
