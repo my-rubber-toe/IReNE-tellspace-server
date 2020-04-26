@@ -69,27 +69,27 @@ def get_doc(docid):
     get_doc = DocumentCase.objects.get(id = docid)
     return json.loads(get_doc.to_json())
 
-def current_date():
-    """
-        This is not a DAO, the purpose is to get current date to change lastModificationDate
-    """
-    d = datetime.datetime.today()
-    if(d.month < 10 and d.day > 9):
-        current_date =  str(d.year) + "-0" + str(d.month) + "-" + str(d.day)
-    elif(d.day < 10 and d.month > 9):
-        current_date =  str(d.year) + "-" + str(d.month) + "-0" + str(d.day)
-    elif(d.day < 10 and d.month < 10):
-        current_date =  str(d.year) + "-0" + str(d.month) + "-0" + str(d.day)
-    else:
-        current_date =  str(d.year) + "-" + str(d.month) + "-" + str(d.day)
-    return current_date
+# def current_date():
+#     """
+#         This is not a DAO, the purpose is to get current date to change lastModificationDate
+#     """
+#     d = datetime.datetime.today()
+#     if(d.month < 10 and d.day > 9):
+#         current_date =  str(d.year) + "-0" + str(d.month) + "-" + str(d.day)
+#     elif(d.day < 10 and d.month > 9):
+#         current_date =  str(d.year) + "-" + str(d.month) + "-0" + str(d.day)
+#     elif(d.day < 10 and d.month < 10):
+#         current_date =  str(d.year) + "-0" + str(d.month) + "-0" + str(d.day)
+#     else:
+#         current_date =  str(d.year) + "-" + str(d.month) + "-" + str(d.day)
+#     return current_date
 
 def put_doc_title(docid, title):
     """
         DAO that updates the title of a document
     """
     DocumentCase.objects(id = docid).update_one(set__title = title)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 
@@ -98,7 +98,7 @@ def put_doc_des(docid, des):
         DAO that updates the description of a document
     """
     DocumentCase.objects(id = docid).update_one(set__description = des)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def put_doc_timeline(**docatr):
@@ -112,16 +112,19 @@ def put_doc_timeline(**docatr):
         eventEndDate= timel['event_end_date'])
         timelineList.append(timelineBody)
     DocumentCase.objects(id = docatr["docid"]).update_one(set__timeline = timelineList)
-    DocumentCase.objects(id = docatr["docid"]).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docatr["docid"]).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docatr["docid"])
 
-def put_doc_section(docid, sec_title, sec_content, i):
+def put_doc_section(docid, sec_title, sec_content, sec_num):
     """
         DAO that updates the section of a document
     """
-    updateSection = Section(secNum = i, secTitle= sec_title, content= sec_content)
-    DocumentCase.objects(id = docid, section__secNum = i).update_one(set__section__S = updateSection)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    doc = DocumentCase.objects.get(id = docid)
+    updateSection = Section(secTitle= sec_title, content= sec_content)
+    doc.section[sec_num - 1] = section
+    doc.save()
+    # DocumentCase.objects(id = docid, section__secNum = i).update_one(set__section__S = updateSection)
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def put_doc_incidentDate(docid, inDate):
@@ -129,7 +132,7 @@ def put_doc_incidentDate(docid, inDate):
         DAO that updates the incident of a document
     """
     DocumentCase.objects(id = docid).update_one(set__incidentDate = inDate)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def put_doc_damageType(docid, damType):
@@ -137,7 +140,7 @@ def put_doc_damageType(docid, damType):
         DAO that updates the damagelist of a document
     """
     DocumentCase.objects(id = docid).update_one(set__damageDocList = damType)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
    
 def put_doc_infrasType(docid,infrasType):
@@ -145,7 +148,7 @@ def put_doc_infrasType(docid,infrasType):
         DAO that updates the infrastructure list of a document
     """
     DocumentCase.objects(id = docid).update_one(set__infrasDocList = infrasType)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def put_doc_tags(docid, tags):
@@ -153,7 +156,7 @@ def put_doc_tags(docid, tags):
         DAO that updates the tags list of a document
     """
     DocumentCase.objects(id = docid).update_one(set__tagsDoc = tags)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     for tag in tags:
         if not Tag.objects(tagItem=tag):
             newTag = Tag(tagItem=tag)
@@ -165,7 +168,7 @@ def put_doc_locations(docid,loc):
         DAO that updates the location list of a document
     """
     DocumentCase.objects(id = docid).update_one(set__location = loc)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def put_doc_actors(docid, actors):
@@ -178,7 +181,7 @@ def put_doc_actors(docid, actors):
             role= actor["role"])
         actorList.append(actorBody)
     DocumentCase.objects(id = docid).update_one(set__actor = actorList)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def put_doc_authors(docid, authors):
@@ -191,7 +194,7 @@ def put_doc_authors(docid, authors):
             author_email= author["email"], author_faculty= author["faculty"])
         authorList.append(authorBody)
     DocumentCase.objects(id = docid).update_one(set__author = authorList)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = current_date())
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def get_infrastructure_list():
@@ -216,15 +219,18 @@ def get_tags_list():
     return json.loads(tag_objects.to_json())
 
 def post_doc_section(docid):
+    """
+        DAO that creates a new section 
+    """
     doc = DocumentCase.objects.get(id = docid)
     new_section = Section()
-    new_section.secNum = len(doc.section) + 1
     new_section.secTitle = f'Section No. {len(doc.section) + 1}'
     new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
         
     post_sec = DocumentCase.objects.get(id = docid)
     post_sec.section.append(new_section)
     post_sec.save()
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
     
 def remove_doc(docid):
@@ -243,6 +249,7 @@ def remove_doc_section(docid, section_num):
     if section_num > len(doc.section) or section_num <= 0:
         raise TellSpaceApiError(msg='Section No. does not exist.')
     DocumentCase.objects(id = docid).update(pull__section__secNum= (section_num - 1))
+    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 
 def get_doc_damage_type(damage):

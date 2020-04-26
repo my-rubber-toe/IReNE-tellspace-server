@@ -137,7 +137,6 @@ class Section(EmbeddedDocument):
             - secTitle: <String>  Section's title. 
             - content: <String>  Section's body.  
     """
-    secNum = IntField(min_value=0,required=False)
     secTitle = StringField(min_length=0, max_length=250, required=False)
     content = StringField(required=False)
 
