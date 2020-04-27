@@ -126,7 +126,7 @@ def create_document():
         doc.title = body['title']
         doc.creatoriD = str(collab.id)
         doc.location = []
-        doc.description = body['description']
+        doc.description = ""
         doc.incidentDate = str(body['incident_date'])
         doc.creationDate = datetime.today().strftime('%Y-%m-%d')
         doc.lastModificationDate = datetime.today().strftime('%Y-%m-%d')

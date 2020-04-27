@@ -127,7 +127,7 @@ def auth_refresh():
     return ApiResult(access_token=access_token)
 
 
-@bp.route("/logout")
+@bp.route("/logout", methods=["DELETE"])
 @jwt_required
 def auth_logout():
     """

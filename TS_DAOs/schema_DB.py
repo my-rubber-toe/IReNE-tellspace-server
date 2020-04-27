@@ -2,8 +2,8 @@ from mongoengine import *
 import datetime
 
 # Connection to the Database, make sure you place the correct container name for the database
-connect('IReNEdb')
-# connect('IReNEdb', host="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin")
+# connect('IReNEdb')
+connect('IReNEdb', host="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin")
 
 
 # connec the db for testing purposes

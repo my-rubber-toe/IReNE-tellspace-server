@@ -159,3 +159,6 @@ def run():
     doc.timeline = [sample_timeline_pair, sample_timeline_pair]
     doc.published = False
     doc.save()
+
+if __name__ == '__main__':
+    run()
