@@ -1,9 +1,10 @@
 from mongoengine import *
-import datetime
+from config.development import DB_HOST
 
 # Connection to the Database, make sure you place the correct container name for the database
 # connect('IReNEdb')
-connect('IReNEdb', host="mongodb://testuser:testpassword@localhost:27017/?authSource=admin")
+# connect('IReNEdb', host="mongodb://testuser:testpassword@localhost:27017/?authSource=admin")
+connect('IReNEdb', host=DB_HOST)
 
 
 # connec the db for testing purposes
@@ -183,7 +184,7 @@ class DocumentCase(Document):
     language = StringField(min_length=0, required=False)
     location = ListField(StringField(min_length=0, required=False))
     description = StringField(min_length=0, max_length=500, required=False)
-    published = BooleanField(default=False, required=True)
+    published = BooleanField(default=True, required=True)
     incidentDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     creationDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     lastModificationDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')

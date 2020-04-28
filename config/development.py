@@ -8,7 +8,7 @@ FLASK_ENV = os.getenv("FLASK_ENV")
 PORT = os.getenv("PORT")
 
 FLASK_DEBUG = os.getenv("FLASK_DEBUG")
-DB = os.getenv("DB")
+DB_HOST = os.getenv("DB_HOST")
 
 
 # Authorization
