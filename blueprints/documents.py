@@ -119,7 +119,7 @@ def create_document():
 
     # TODO: Verify that the infrastrucutres and damage types exist in the database
     # TODO: Verify if tags exist in the database, if not... add them and create document.
-    
+
     if not collab.banned and collab.approved:
         # authorList = []
         # for author in body['authors']:
@@ -131,12 +131,20 @@ def create_document():
         #     actorBody = Actor(actor_FN= actor['first_name'], actor_LN= actor['last_name'], 
         #         role= actor['role'])
         #     actorList.append(actorBody)
-        doc = post_create_doc_DAO(creatoriD = str(collab.id), author = body['authors'], 
-        actor = body['actors'], title = body['title'], description = body['description'], 
-        language=body['language'], incidentDate = str(body['incident_date']), 
-        creationDate = datetime.datetime.today().strftime('%Y-%m-%d'), 
-        lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'),
-        tagsDoc = [], infrasDocList=body['infrastructure_type'], damageDocList = body['damage_type'])
+        doc = post_create_doc_DAO(
+            creatoriD=str(collab.id),
+            author=body['authors'],
+            actor=body['actors'],
+            title=body['title'],
+            description="", # Description empty upon creation
+            language=body['language'],
+            incidentDate=str(body['incident_date']),
+            creationDate=datetime.datetime.today().strftime('%Y-%m-%d'),
+            lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'),
+            tagsDoc=[],
+            infrasDocList=body['infrastructure_type'],
+            damageDocList=body['damage_type'])
+
         return ApiResult(docId=str(doc.id))
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -167,11 +175,11 @@ def remove_document(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
-        doc = remove_doc(doc_id)
+        doc = remove_doc(doc_id, collab.id)
         # doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # doc.delete()
 
-        return ApiResult(id=str(doc_id))
+        return ApiResult(id=doc_id)
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
 
@@ -288,12 +296,12 @@ def edit_document_timeline(doc_id: str):
     if not collab.banned and collab.approved:
         # timelineList = []
         # for timeline in body['timeline']:
-        #     timelineBody = Timeline(event= time_pair['event'], 
-        #     eventStartDate= str(time_pair['event_start_date']), 
+        #     timelineBody = Timeline(event= time_pair['event'],
+        #     eventStartDate= str(time_pair['event_start_date']),
         #     eventEndDate= str(time_pair['event_end_date']))
         #     timelineList.append(timelineBody)
 
-        doc = put_doc_timeline(docid= doc_id, timeline = body['timeline'])
+        doc = put_doc_timeline(docid=doc_id, timeline=body['timeline'])
         # doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # new_timeline = []
         # new_time_pair = Timeline()
@@ -331,7 +339,6 @@ def create_document_section(doc_id: str):
     email = get_jwt_identity()
     collab: Collaborator = get_me(email)
     if not collab.banned:
-        
         # new_section = Section()
         # new_section.secTitle = f'Section No. {len(doc.section) + 1}'
         # new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
@@ -366,13 +373,10 @@ def remove_document_section(doc_id: str, section_nbr: str):
     collab: Collaborator = get_me(email)
 
     # No such thing as a negative section or section 0
-    #TODO: consult this with Roberto
+    # TODO: consult this with Roberto
     if not collab.banned:
-        
         doc = remove_doc_section(doc_id, int(section_nbr))
         # Check if section to pop is larger that the total number of sections
-        # if int(section_nbr) > len(doc.section) or int(section_nbr) <= 0:
-        #     raise TellSpaceApiError(msg='Section No. does not exist.')
 
         # Remember that lists start with index 0
         # doc.section.pop(int(section_nbr) - 1)
@@ -472,7 +476,7 @@ def edit_document_infrastructure_types(doc_id: str):
         Infrastructure.objects.get(infrastructureType=infra)
 
     if not collab.banned:
-        doc = put_doc_infrasType(doc_id,body['infrastructure_types'])
+        doc = put_doc_infrasType(doc_id, body['infrastructure_types'])
         # doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # doc.infrasDocList = body['infrastructure_types']
         # doc.save()
@@ -517,7 +521,7 @@ def edit_document_damage_types(doc_id: str):
         Damage.objects.get(damageType=damage)
 
     if not collab.banned:
-        doc  = put_doc_damageType(doc_id,body['damage_types'])
+        doc = put_doc_damageType(doc_id, body['damage_types'])
 
         # doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # doc.damageDocList = body['damage_types']
@@ -560,7 +564,7 @@ def edit_document_locations(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        doc = put_doc_locations(doc_id,body.get('locations'))
+        doc = put_doc_locations(doc_id, body.get('locations'))
         # doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # doc.location = body.get('locations')
         # doc.save()
@@ -654,7 +658,6 @@ def edit_document_incident_date(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-
         doc = put_doc_incidentDate(doc_id, body["incident_date"])
         # doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # doc.incidentDate = str(body['incident_date'])
@@ -694,7 +697,6 @@ def edit_document_actors(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        
         # actorList = []
         # for actor in body['actors']:
         #     actorBody = Actor(actor_FN= actor.first_name, actor_LN= actor.last_name, 
@@ -744,7 +746,6 @@ def edit_document_authors(doc_id: str):
     # Verify request parameters
     if request.json == {}:
         raise TellSpaceApiError(msg='No request body data.', status=400)
-    body = ActorsValidator().load(request.json)
 
     body = AuthorsValidator().load(request.json)
 
@@ -752,7 +753,6 @@ def edit_document_authors(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-
         # authorList = []
         # for author in body['authors']:
         #     authorBody = Author(author_FN= author.first_name, author_LN= author.last_name, 

@@ -3,7 +3,7 @@ import datetime
 
 # Connection to the Database, make sure you place the correct container name for the database
 # connect('IReNEdb')
-connect('IReNEdb', host="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin")
+connect('IReNEdb', host="mongodb://testuser:testpassword@localhost:27017/?authSource=admin")
 
 
 # connec the db for testing purposes
@@ -96,10 +96,11 @@ class Author(EmbeddedDocument):
             - author_email: <String>  Author's Email.
             - author_faculty: <String>  Author's Faculty.  
     """
-    author_FN = StringField(min_length=0,max_length=30, required=False)
-    author_LN = StringField(min_length=0,max_length=30, required=False)
-    author_email = EmailField(min_length=0,max_length=50, required=False, regex='(.*)\.(.*)@upr\.edu')
-    author_faculty = StringField(min_length=0,max_length=30, required=False)
+    author_FN = StringField(min_length=0, max_length=30, required=False)
+    author_LN = StringField(min_length=0, max_length=30, required=False)
+    author_email = EmailField(min_length=0, max_length=50, required=False, regex='(.*)\.(.*)@upr\.edu')
+    author_faculty = StringField(min_length=0, max_length=30, required=False)
+
 
 class Actor(EmbeddedDocument):
     """
@@ -114,8 +115,9 @@ class Actor(EmbeddedDocument):
             - role: <String>  Actor's role in the DocumentCase. 
     """
     actor_FN = StringField(min_length=0, max_length=30, required=False)
-    actor_LN = StringField(min_length=0,max_length=30, required=False)
-    role = StringField(min_length=0,max_length=30, required=False)
+    actor_LN = StringField(min_length=0, max_length=30, required=False)
+    role = StringField(min_length=0, max_length=30, required=False)
+
 
 class Timeline(EmbeddedDocument):
     """
@@ -177,17 +179,17 @@ class DocumentCase(Document):
                 
     """
     creatoriD = StringField(min_length=1, required=True)
-    title = StringField(min_length=10, max_length = 250, required=True, unique=True)
+    title = StringField(min_length=10, max_length=250, required=True, unique=True)
     language = StringField(min_length=0, required=False)
-    location = ListField(StringField(min_length=0,required=False))
-    description = StringField(min_length=0, max_length=500,required=False)
-    published = BooleanField(default=False,required=True)
+    location = ListField(StringField(min_length=0, required=False))
+    description = StringField(min_length=0, max_length=500, required=False)
+    published = BooleanField(default=False, required=True)
     incidentDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     creationDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     lastModificationDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    tagsDoc = ListField(StringField(min_length=0,max_length=30,required=False))
-    infrasDocList =  ListField(StringField(min_length=1,max_length=30,required=True))
-    damageDocList =  ListField(StringField(min_length=1,max_length=30,required=True))
+    tagsDoc = ListField(StringField(min_length=0, max_length=30, required=False))
+    infrasDocList = ListField(StringField(min_length=1, max_length=30, required=True))
+    damageDocList = ListField(StringField(min_length=1, max_length=30, required=True))
     author = ListField(EmbeddedDocumentField(Author))
     actor = ListField(EmbeddedDocumentField(Actor))
     section = ListField(EmbeddedDocumentField(Section))
