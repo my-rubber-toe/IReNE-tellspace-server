@@ -7,6 +7,212 @@ from utils.exceptions import TellSpaceApiError
 
 # from TS_DAOs.init_db_test import *
 
+#Revision history
+
+def log_document_edit_author(updated_document, old_authors):
+    oldAuth = []
+    newAuth = []
+    for author in old_authors:
+        oldAuth.append(json.loads(author.to_json()))
+    for author in updated_document.author:
+        newAuth.append(json.loads(author.to_json()))
+    rev = Revision(fields = {
+    'old':oldAuth,
+    'new':newAuth
+    })
+
+    docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Author'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_actor(updated_document, old_actors):
+    oldAct = []
+    newAct = []
+    for act in old_actors:
+        oldAct.append(json.loads(act.to_json()))
+    for act in updated_document.actor:
+        newAct.append(json.loads(act.to_json()))
+    rev = Revision(fields = {
+    'old':oldAct,
+    'new':newAct
+    })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Actor'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_incident(updated_document, old_incident_dates):
+    rev = Revision(fields = {
+    'old': old_incident_dates,
+    'new': updated_document.incidentDate
+    })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Incident Date'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_tags(updated_document, old_tags):
+    rev = Revision(fields = {
+    'old': old_tags,
+    'new': updated_document.tagsDoc
+    })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Tag'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_location(updated_document, old_locations):
+    rev = Revision(fields = {
+    'old': old_locations,
+    'new': updated_document.location
+    })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Location'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_damage(updated_document, old_damages):
+    rev = Revision( fields={
+    'old': old_damages,
+    'new': updated_document.damageDocList
+    })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Damage'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_infrastructure(updated_document, old_infrastructures):
+    rev = Revision(fields = {
+    'old':old_infrastructures,
+    'new':updated_document.infrasDocList
+    })
+    
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Infrastructure'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_section(updated_document, old_section, sec_num):
+    rev = Revision(fields = {'old':{
+            'secTitle': old_section.secTitle,
+            'content': old_section.content
+        },
+        'new':{
+            'secTitle': updated_document.section[sec_num - 1].secTitle,
+            'content': updated_document.section[sec_num - 1].content
+            }
+        })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Section'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_deletion_section(updated_document, old_section):
+    rev = Revision(fields = {'old':{
+        'secTitle': old_section.secTitle,
+        'content': old_section.content
+        },
+    'new':{}
+    })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Section'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_creation_section(updated_document, new_section):
+    rev = Revision(fields = {'old':{},
+        'new':{
+            'secTitle': new_section.secTitle,
+            'content': new_section.content
+            }
+        })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Section'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_timeline(updated_document, oldDates):
+    newDates = updated_document.timeline
+    oldTimeline = []
+    newTimeline = []
+    for timeline in oldDates:
+        oldTimeline.append(json.loads(timeline.to_json()))
+    for timeline in newDates:
+        newTimeline.append(json.loads(timeline.to_json()))
+    rev = Revision(fields = {
+    'old':oldTimeline,
+    'new':newTimeline
+    })
+    docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Timeline'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_description(updated_document, previousDescription):
+    rev = Revision(fields = {'old': previousDescription, 'new': updated_document.description})
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Description'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_title(updated_document, previousTitle):
+    rev = Revision(fields = {'old': previousTitle, 'new': updated_document.title})
+    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Title'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_creation(document):
+    docRevision = DocumentCaseRevision()
+    docRevision.docId = str(document.id)
+    docRevision.creatorId = str(document.creatoriD)
+    dictDoc = document.to_mongo().to_dict()
+    rev = Revision(fields = dictDoc)
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Creation'
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_deletion(document):
+    docRevision = DocumentCaseRevision.objects.get(docId = str(document.id))
+    rev = Revision()
+    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    rev.revType = 'Deletion'
+    rev.fields = {}
+    docRevision.revisions.append(rev)
+    docRevision.save()
+    print(json.dumps(json.loads(rev.to_json())))
+
+#End Document Revision__________________________________________________________________
+
 
 def post_create_doc_DAO(**docatr):
     """
@@ -33,6 +239,8 @@ def post_create_doc_DAO(**docatr):
     #         newTag = Tag(tagItem=tag)
     #         newTag.save()
     doc1.save()
+    #Revision History
+    log_document_creation(doc1)
     print('Document created successfully')
     return doc1
 
@@ -94,24 +302,31 @@ def put_doc_title(docid, title):
     """
         DAO that updates the title of a document
     """
+    previousTitle = DocumentCase.objects.get(id=docid).title
     DocumentCase.objects(id=docid).update_one(set__title=title)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updatedDoc = DocumentCase.objects.get(id=docid)
+    log_document_edit_title(updatedDoc, previousTitle)
+    return updatedDoc
 
 
 def put_doc_des(docid, des):
     """
         DAO that updates the description of a document
     """
+    previousDescription = DocumentCase.objects.get(id=docid).description
     DocumentCase.objects(id=docid).update_one(set__description=des)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updatedDoc = DocumentCase.objects.get(id=docid)
+    log_document_edit_description(updatedDoc, previousDescription)
+    return updatedDoc
 
 
 def put_doc_timeline(**docatr):
     """
         DAO that updates the timeline of a document
     """
+    oldTimeline = DocumentCase.objects.get(id=docatr["docid"]).timeline
     timelineList = []
     for timel in docatr["timeline"]:
         timelineBody = Timeline(
@@ -123,7 +338,9 @@ def put_doc_timeline(**docatr):
     DocumentCase.objects(id=docatr["docid"]).update_one(set__timeline=timelineList)
     DocumentCase.objects(id=docatr["docid"]).update_one(
         set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docatr["docid"])
+    updatedDoc = DocumentCase.objects.get(id=docatr["docid"])
+    log_document_edit_timeline(updatedDoc, oldTimeline)
+    return updatedDoc
 
 
 def put_doc_section(docid, sec_title, sec_content, sec_num):
@@ -131,11 +348,13 @@ def put_doc_section(docid, sec_title, sec_content, sec_num):
         DAO that updates the section of a document
     """
     doc = DocumentCase.objects.get(id=docid)
+    old_section = doc.section[sec_num - 1]
     updateSection = Section(secTitle=sec_title, content=sec_content)
     doc.section[sec_num - 1] = updateSection
     doc.save()
     # DocumentCase.objects(id = docid, section__secNum = i).update_one(set__section__S = updateSection)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
+    log_document_edit_section(doc, old_section, sec_num)
     return DocumentCase.objects.get(id=docid)
 
 
@@ -143,55 +362,71 @@ def put_doc_incidentDate(docid, inDate):
     """
         DAO that updates the incident of a document
     """
+    old_incident_dates = DocumentCase.objects.get(id=docid).incidentDate
     DocumentCase.objects(id=docid).update_one(set__incidentDate=inDate)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updated_document = DocumentCase.objects.get(id=docid)
+    log_document_edit_incident(updated_document, old_incident_dates)
+    return updated_document
 
 
 def put_doc_damageType(docid, damType):
     """
         DAO that updates the damagelist of a document
     """
+    old_damages = DocumentCase.objects.get(id=docid).damageDocList
     DocumentCase.objects(id=docid).update_one(set__damageDocList=damType)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updated_document = DocumentCase.objects.get(id=docid)
+    log_document_edit_damage(updated_document, old_damages)
+    return updated_document
 
 
 def put_doc_infrasType(docid, infrasType):
     """
         DAO that updates the infrastructure list of a document
     """
+    old_infrastructures = DocumentCase.objects.get(id=docid).infrasDocList
     DocumentCase.objects(id=docid).update_one(set__infrasDocList=infrasType)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updated_doc = DocumentCase.objects.get(id=docid)
+    log_document_edit_infrastructure(updated_doc, old_infrastructures)
+    return updated_doc
 
 
 def put_doc_tags(docid, tags):
     """
         DAO that updates the tags list of a document
     """
+    old_tags = DocumentCase.objects.get(id=docid).tagsDoc
     DocumentCase.objects(id=docid).update_one(set__tagsDoc=tags)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
     for tag in tags:
         if not Tag.objects(tagItem=tag):
             newTag = Tag(tagItem=tag)
             newTag.save()
-    return DocumentCase.objects.get(id=docid)
+    updated_document = DocumentCase.objects.get(id=docid)
+    log_document_edit_tags(updated_document, old_tags)
+    return updated_document
 
 
 def put_doc_locations(docid, loc):
     """
         DAO that updates the location list of a document
     """
+    old_locations = DocumentCase.objects.get(id=docid).location
     DocumentCase.objects(id=docid).update_one(set__location=loc)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updated_document = DocumentCase.objects.get(id=docid)
+    log_document_edit_location(updated_document, old_locations)
+    return updated_document
 
 
 def put_doc_actors(docid, actors):
     """
         DAO that updates the actors list of a document
     """
+    old_actors = DocumentCase.objects.get(id=docid).actor
     actorList = []
     for actor in actors:
         actorBody = Actor(actor_FN=actor["first_name"], actor_LN=actor["last_name"],
@@ -199,13 +434,16 @@ def put_doc_actors(docid, actors):
         actorList.append(actorBody)
     DocumentCase.objects(id=docid).update_one(set__actor=actorList)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updated_document = DocumentCase.objects.get(id=docid)
+    log_document_edit_actor(updated_document, old_actors)
+    return updated_document
 
 
 def put_doc_authors(docid, authors):
     """
         DAO that updates the authors list of a document
     """
+    old_authors = DocumentCase.objects.get(id=docid).author
     authorList = []
     for author in authors:
         authorBody = Author(author_FN=author["first_name"], author_LN=author["last_name"],
@@ -213,7 +451,9 @@ def put_doc_authors(docid, authors):
         authorList.append(authorBody)
     DocumentCase.objects(id=docid).update_one(set__author=authorList)
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updated_document = DocumentCase.objects.get(id=docid)
+    log_document_edit_author(updated_document, old_authors)
+    return updated_document
 
 
 def get_infrastructure_list():
@@ -261,7 +501,9 @@ def post_doc_section(docid):
     post_sec.section.append(new_section)
     post_sec.save()
     DocumentCase.objects(id=docid).update_one(set__lastModificationDate=datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id=docid)
+    updated_doc = DocumentCase.objects.get(id=docid)
+    log_document_creation_section(updated_doc, new_section)
+    return updated_doc
 
 
 def remove_doc(doc_id, collab_id):
@@ -269,6 +511,8 @@ def remove_doc(doc_id, collab_id):
         DAO that removes a document
     """
     doc_del = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id)).delete()
+    #Revision History
+    log_document_deletion(doc_del)
     return doc_del
 
 
@@ -279,9 +523,10 @@ def remove_doc_section(docid, section_num):
     doc = DocumentCase.objects.get(id=docid)
     if int(section_num) > len(doc.section) or int(section_num) <= 0:
         raise TellSpaceApiError(msg='Section No. does not exist.')
-    doc.section.pop(int(section_num) - 1)
+    section = doc.section.pop(int(section_num) - 1)
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     doc.save()
+    log_document_deletion_section(doc, section)
     return doc
 
 
@@ -307,3 +552,5 @@ def get_doc_tag_type(tag):
     """
     get_docs = DocumentCase.objects.filter(tagsDoc__contains=tag)
     return json.loads(get_docs.to_json())
+
+
