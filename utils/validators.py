@@ -43,8 +43,6 @@ class CreateDocumentValidator(Schema):
     """ Request body schema for the endpoint /api/documents/create"""
     title = fields.String(required=True, validate=validate.Length(min=10, max=250))
 
-    description = fields.String(required=False, validate=validate.Length(min=10, max=500))
-
     authors = fields.List(
         fields.Nested(Authors),
         required=False,

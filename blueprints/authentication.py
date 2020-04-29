@@ -21,7 +21,6 @@ from cachetools import TTLCache
 from datetime import timedelta
 
 from TS_DAOs.dao_TS import *
-from TS_DAOs.schema_DB import *
 
 bp = Blueprint('authentication', __name__, url_prefix='/auth')
 
@@ -127,7 +126,7 @@ def auth_refresh():
     return ApiResult(access_token=access_token)
 
 
-@bp.route("/logout")
+@bp.route("/logout", methods=["DELETE"])
 @jwt_required
 def auth_logout():
     """

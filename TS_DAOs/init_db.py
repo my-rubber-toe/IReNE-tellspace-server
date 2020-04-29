@@ -160,4 +160,5 @@ def run():
     doc.published = False
     doc.save()
 
-run()
+if __name__ == '__main__':
+    run()
