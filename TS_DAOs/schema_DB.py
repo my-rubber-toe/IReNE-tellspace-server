@@ -2,12 +2,12 @@ from mongoengine import *
 import datetime
 
 # Connection to the Database, make sure you place the correct container name for the database
-connect('IReNEdb')
+#connect('IReNEdb')
 # connect('IReNEdb', host="mongodb://testuser:testpassword@irene-db:27017/?authSource=admin")
 
-
+disconnect()
 # connec the db for testing purposes
-# connect('IReNEdb', host='mongomock://localhost', alias='IReNEdb')
+connect('IReNEdb', host='mongomock://localhost:27017')
 
 
 class Collaborator(Document):
@@ -194,3 +194,14 @@ class DocumentCase(Document):
     actor = ListField(EmbeddedDocumentField(Actor))
     section = ListField(EmbeddedDocumentField(Section))
     timeline = ListField(EmbeddedDocumentField(Timeline))
+
+
+class Revision(EmbeddedDocument):
+    revDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    revType = StringField(required=True)
+    fields = DictField(required=True)
+
+class DocumentCaseRevision(Document):
+    creatorId = StringField(min_length=1, required=True)
+    docId =  StringField(min_length=1, required=True)
+    revisions = ListField(EmbeddedDocumentField(Revision))

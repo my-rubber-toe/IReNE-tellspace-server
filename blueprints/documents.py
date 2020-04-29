@@ -11,7 +11,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.validators import *
 from utils.exceptions import TellSpaceApiError, TellSpaceAuthError
-from database.schema_DB import *
+from TS_DAOs.schema_DB import *
 from datetime import datetime
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
@@ -141,6 +141,19 @@ def create_document():
         doc.published = True
         doc.save()
 
+
+#Revision History________________________________________
+        docRevision = DocumentCaseRevision()
+        docRevision.docId = str(doc.id)
+        docRevision.creatorId = str(collab.id)
+        dictDoc = doc.to_mongo().to_dict()
+        rev = Revision(fields = dictDoc)
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Creation'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        body = json.loads(json.dumps(rev.to_json()))
+        print(str(doc.id))
         return ApiResult(docId=str(doc.id))
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -175,9 +188,18 @@ def remove_document(doc_id: str):
     collab: Collaborator = Collaborator.objects.get(email=email)
 
     if not collab.banned and collab.approved:
+        docId = str(doc.id)
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         doc.delete()
 
+#Revision History_________________________________________________________________
+        docRevision = DocumentCaseRevision.objects.get(docId = docId)
+        rev = Revision()
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Deletion'
+        rev.fields = {}
+        docRevision.revisions.append(rev)
+        docRevision.save()
         return ApiResult(id=str(doc.id))
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -214,9 +236,17 @@ def edit_document_title(doc_id: str):
     collab: Collaborator = Collaborator.objects.get(email=email)
     if not collab.banned and collab.approved:
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
-
+        rev = Revision(fields = {'old': doc.title, 'new': body['title']})
         doc.title = body['title']
         doc.save()
+
+#Revision History_________________________________________________________________
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Title'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(message=f'Updated document {doc.id} title to: {doc.title}')
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -254,9 +284,17 @@ def edit_document_description(doc_id: str):
 
     if not collab.banned and collab.approved:
         doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        rev = Revision(fields = {'old': doc.description, 'new': body['description']})
         doc.description = body['description']
         doc.save()
 
+#Revision History_________________________________________________________________
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Description'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(message=f'Updated document {doc.id} description to: {doc.description}')
 
     raise TellSpaceAuthError(msg='Banned collaborator.')
@@ -312,9 +350,31 @@ def edit_document_timeline(doc_id: str):
             new_time_pair.eventEndDate = str(time_pair['event_end_date'])
             new_time_pair.event = time_pair['event']
             new_timeline.append(new_time_pair)
+
+
+#Revision History_________________________________________________________________        
+        oldDates = doc.timeline
+
         doc.timeline = new_timeline
         doc.save()
 
+        newDates = doc.timeline
+        oldTimeline = []
+        newTimeline = []
+        for timeline in oldDates:
+            oldTimeline.append(json.loads(timeline.to_json()))
+        for timeline in newDates:
+            newTimeline.append(json.loads(timeline.to_json()))
+        rev = Revision(fields = {
+        'old':oldTimeline,
+        'new':newTimeline
+        })
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Timeline'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(message=f'Updated document {doc.id} timeline.')
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -350,6 +410,20 @@ def create_document_section(doc_id: str):
         new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
         doc.section.append(new_section)
         doc.save()
+
+#Revision History_________________________________________________________________        
+        rev = Revision(fields = {'old':{},
+        'new':{
+            'secTitle': new_section.secTitle,
+            'content': new_section.content
+            }
+        })
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Section'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}')
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -393,8 +467,22 @@ def remove_document_section(doc_id: str, section_nbr: str):
             raise TellSpaceApiError(msg='Section No. does not exist.')
 
         # Remember that lists start with index 0
-        doc.section.pop(int(section_nbr) - 1)
+        section = doc.section.pop(int(section_nbr) - 1)
         doc.save()
+
+#Revision History_________________________________________________________________        
+        rev = Revision(fields = {'old':{
+            'secTitle': section.secTitle,
+            'content': section.content
+            },
+        'new':{}
+        })
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Section'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(
             message=f'Removed section {section_nbr} from {doc.id}. Total No. of sections left {len(doc.section)}'
         )
@@ -445,11 +533,27 @@ def edit_document_section(doc_id, section_nbr):
         section = Section()
         section.secTitle = body['section_title']
         section.content = body['section_text']
-
+        rev = Revision(fields = {'old':{
+            'secTitle': doc.section[int(section_nbr) - 1].secTitle,
+            'content': doc.section[int(section_nbr) - 1].content
+        },
+        'new':{
+            'secTitle': section.secTitle,
+            'content': section.content
+            }
+        })
         # Remember that lists start with index 0
         doc.section[int(section_nbr) - 1] = section
         doc.save()
 
+#Revision History_________________________________________________________________        
+
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Section'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(
             message=f'Edited section {section_nbr} from the document {doc.id}.'
         )
@@ -496,9 +600,25 @@ def edit_document_infrastructure_types(doc_id: str):
 
     if not collab.banned:
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+
+#Revision History_________________________________________________________________
+        oldInfra = doc.infrasDocList
+
         doc.infrasDocList = body['infrastructure_types']
         doc.save()
 
+        newInfra = doc.infrasDocList
+        rev = Revision(fields = {
+        'old':oldInfra,
+        'new':newInfra
+        })
+        
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Infrastructure'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(
             message=f'Edited infrastructure types of the document {doc.id}.'
         )
@@ -538,13 +658,29 @@ def edit_document_damage_types(doc_id: str):
     # Extract collaborator with identity
     collab: Collaborator = Collaborator.objects.get(email=email)
 
-    for damage in body['damage_types']:
-        Damage.objects.get(damageType=damage)
+    # for damage in body['damage_types']:
+    #     Damage.objects.get(damageType=damage)
 
     if not collab.banned:
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+
+#Revision History_________________________________________________________________        
+        old = doc.damageDocList
+
         doc.damageDocList = body['damage_types']
         doc.save()
+
+        new = doc.damageDocList
+        rev = Revision( fields={
+        'old': old,
+        'new': new
+        })
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Damage'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(
             message=f'Edited damage types of the document {doc.id}.'
         )
@@ -587,8 +723,21 @@ def edit_document_locations(doc_id: str):
 
     if not collab.banned:
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        rev = Revision(fields = {
+        'old': doc.location,
+        'new': body.get('locations')
+        })
         doc.location = body.get('locations')
         doc.save()
+
+#Revision History_________________________________________________________________        
+        
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Location'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(
             message=f'Edited locations of the document {doc.id}.'
         )
@@ -637,9 +786,22 @@ def edit_document_tags(doc_id: str):
             if not Tag.objects(tagItem=tag):
                 newTag = Tag(tagItem=tag)
                 newTag.save()
-
+        
+        rev = Revision(fields = {
+        'old': doc.tagsDoc,
+        'new': body['tags']
+        })
         doc.tagsDoc = body['tags']
         doc.save()
+
+#Revision History_________________________________________________________________        
+        
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Tag'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(message=f'Edited tags of the document {doc.id}.')
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -686,8 +848,21 @@ def edit_document_incident_date(doc_id: str):
 
     if not collab.banned:
         doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
+        rev = Revision(fields = {
+        'old': doc.incidentDate,
+        'new': str(body['incident_date'])
+        })
         doc.incidentDate = str(body['incident_date'])
         doc.save()
+
+#Revision History_________________________________________________________________        
+        
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Incident Date'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(message=f'Edited incident date of the document {doc.id}.')
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
@@ -735,8 +910,31 @@ def edit_document_actors(doc_id: str):
             actor.role = a['role']
             actor_list.append(actor)
 
+
+#Revision History_________________________________________________________________             
+        oldActors = doc.actor
+
         doc.actor = actor_list
         doc.save()
+
+        newActors = doc.actor
+        oldAct = []
+        newAct = []
+        for act in oldActors:
+            oldAct.append(json.loads(act.to_json()))
+        for act in newActors:
+            newAct.append(json.loads(act.to_json()))
+        rev = Revision(fields = {
+        'old':oldAct,
+        'new':newAct
+        })
+   
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Actor'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(
             message=f'Edited actors of the document {doc.id}.'
         )
@@ -788,9 +986,34 @@ def edit_document_authors(doc_id: str):
             new_author.author_email = a['email']
             new_author.author_faculty = a['faculty']
             authors_list.append(new_author)
+        rev = Revision(fields = {
+        'old': doc.author,
+        'new': body['authors']
+        })
 
+        oldAuthors = doc.author
         doc.author = authors_list
         doc.save()
+
+#Revision History_________________________________________________________________        
+        newAuthors = doc.actor
+        oldAuth = []
+        newAuth = []
+        for author in oldAuthors:
+            oldAuth.append(json.loads(author.to_json()))
+        for author in newAuthors:
+            newAuth.append(json.loads(author.to_json()))
+        rev = Revision(fields = {
+        'old':oldAuth,
+        'new':newAuth
+        })
+
+        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
+        rev.revDate = datetime.today().strftime('%Y-%m-%d')
+        rev.revType = 'Author'
+        docRevision.revisions.append(rev)
+        docRevision.save()
+        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(id=str(doc.id))
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')

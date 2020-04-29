@@ -87,10 +87,10 @@ def run():
     collaborator1.save()
 
     collaborator2 = Collaborator()
-    collaborator2.first_name = 'BannedUser'
-    collaborator2.last_name = 'BannedUser'
-    collaborator2.email = 'banned.user@upr.edu'
-    collaborator2.banned = True
+    collaborator2.first_name = 'Yomar'
+    collaborator2.last_name = 'Ruiz'
+    collaborator2.email = 'yomar.ruiz@upr.edu'
+    collaborator2.banned = False
     collaborator2.approved = True
     collaborator2.save()
 
@@ -159,3 +159,5 @@ def run():
     doc.timeline = [sample_timeline_pair, sample_timeline_pair]
     doc.published = False
     doc.save()
+
+run()

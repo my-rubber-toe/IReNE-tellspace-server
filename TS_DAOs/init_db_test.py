@@ -13,7 +13,7 @@ def Collabs():
     collab3.save()
     collab4 = Collaborator(first_name="Alejandro", last_name="Vasquez", email="alejandro.vasquez@upr.edu",approved=True, banned=True )
     collab4.save()
-    collab5 = Collaborator(first_name="Yomar", last_name="Ruiz", email="yomar.ruiz@upr.edu")
+    collab5 = Collaborator(first_name="Yomar", last_name="Ruiz", email="yomar.ruiz@upr.edu", approved=True, banned = False)
     collab5.save()
 
 Collabs()

@@ -12,7 +12,11 @@ DB = os.getenv("DB")
 
 
 # Authorization
-GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
-GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
-FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
-FLASK_SALT = os.getenv("FLASK_SALT")
+GOOGLE_OAUTH_CLIENT_ID="125759116505-flugvdnnv7lm6q6htj62uic5ut70e594.apps.googleusercontent.com"
+GOOGLE_OAUTH_CLIENT_SECRET="eHJTs2-KrUEBiyXC9E5r1y3D"
+OAUTHLIB_RELAX_TOKEN_SCOPE= True
+
+# Set to TRUE for testing purpouses
+OAUTHLIB_INSECURE_TRANSPORT= True
+FLASK_SECRET_KEY="SuPeRsEcReTkEyThAtNoOnEcAnCrAcK"
+FLASK_SALT="Justasaltysaltthatisverysalty"
