@@ -88,7 +88,7 @@ class TitleValidator(Schema):
 
 class DescriptionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/description"""
-    description = fields.String(required=True, validate=validate.Length(min=10, max=500))
+    description = fields.String(required=True, validate=validate.Length(min=0, max=500))
 
 
 class TimelineValidator(Schema):
