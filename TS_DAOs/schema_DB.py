@@ -3,7 +3,7 @@ from config.development import DB_HOST
 
 # Connection to the Database, make sure you place the correct container name for the database
 # connect('IReNEdb')
-# connect('IReNEdb', host="mongodb://testuser:testpassword@localhost:27017/?authSource=admin")
+# connect('IReNEdb', host="mongodb://testuser:testpassword@test.irene.uprm.edu:27017/?authSource=admin")
 connect('IReNEdb', host=DB_HOST)
 
 
