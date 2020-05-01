@@ -112,9 +112,10 @@ def put_doc_timeline(**docatr):
     """
         DAO that updates the timeline of a document
     """
+    # TODO: Cotejar el orden de fechas de un timeline event
     timelineList = []
     for timel in docatr["timeline"]:
-        timelineBody = Timeline(
+        timelineBody: Timeline = Timeline(
             event=timel['event'],
             eventStartDate=timel['event_start_date'].strftime('%Y-%m-%d'),
             eventEndDate=timel['event_end_date'].strftime('%Y-%m-%d')

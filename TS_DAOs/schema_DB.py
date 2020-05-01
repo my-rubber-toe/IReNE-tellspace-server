@@ -2,19 +2,9 @@ from mongoengine import *
 from config.development import DB_HOST
 
 # Connection to the Database, make sure you place the correct container name for the database
-<<<<<<< HEAD
-# connect('IReNEdb')
-# connect('IReNEdb', host="mongodb://testuser:testpassword@test.irene.uprm.edu:27017/?authSource=admin")
-connect('IReNEdb', host=DB_HOST)
-=======
 connect('IReNEdb')
-# connect('IReNEdb', host="mongodb://testuser:testpassword@test.irene.uprm.edu:27017/?authSource=admin")
 # connect('IReNEdb', host=DB_HOST)
->>>>>>> 1789eeafbeb0f969ab50b993788c2cc97dfe91b2
 
-
-# connec the db for testing purposes
-# connect('IReNEdb', host='mongomock://localhost', alias='IReNEdb')
 
 
 class Collaborator(Document):
