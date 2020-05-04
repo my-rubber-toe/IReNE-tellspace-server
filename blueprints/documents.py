@@ -44,8 +44,10 @@ def get_documents():
         documents = get_doc_collab(str(collab.id))
         return jsonify(documents)
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>', methods=['GET'])
 @jwt_required
@@ -69,9 +71,12 @@ def get_document_by_id(doc_id: str):
 
     if not collab.banned and collab.approved:
         doc = get_doc(doc_id, str(collab.id))
-        return doc, 200
+        return jsonify(doc)
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 
 @bp.route('/create', methods=['POST'])
@@ -115,8 +120,10 @@ def create_document():
 
         return ApiResult(docId=str(doc.id))
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/remove/<doc_id>', methods=['DELETE'])
 @jwt_required
@@ -146,8 +153,10 @@ def remove_document(doc_id: str):
         deleted_id = remove_doc(doc_id, collab.id)
         return ApiResult(message=f'Deleted document {deleted_id}')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/title', methods=['PUT'])
 @jwt_required
@@ -178,8 +187,10 @@ def edit_document_title(doc_id: str):
         saved_id = put_doc_title(collab.id, doc_id, body['title'])
         return ApiResult(message=f'Updated document: {saved_id}')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/description', methods=['PUT'])
 @jwt_required
@@ -211,8 +222,10 @@ def edit_document_description(doc_id: str):
         saved_id = put_doc_des(collab.id, doc_id, body['description'])
         return ApiResult(message=f'Updated document description.')
 
-    raise TellSpaceAuthError(msg='Banned collaborator.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/timeline', methods=['PUT'])
 @jwt_required
@@ -255,8 +268,10 @@ def edit_document_timeline(doc_id: str):
         saved_id = put_doc_timeline(collab_id=collab.id, doc_id=doc_id, timeline=body['timeline'])
         return ApiResult(message=f'Updated document {saved_id} timeline.')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/section/create', methods=['POST'])
 @jwt_required
@@ -282,8 +297,10 @@ def create_document_section(doc_id: str):
         doc = post_doc_section(collab.id, doc_id)
         return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/section/remove/<section_nbr>', methods=['DELETE'])
 @jwt_required
@@ -313,8 +330,10 @@ def remove_document_section(doc_id: str, section_nbr: str):
         saved_id = remove_doc_section(collab.id, doc_id, int(section_nbr))
         return ApiResult(message=f'Removed section from document {saved_id}.')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/section/<section_nbr>', methods=['PUT'])
 @jwt_required
@@ -348,8 +367,10 @@ def edit_document_section(doc_id, section_nbr):
 
         return ApiResult(message=f'Edited section from the document {saved_id}.')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])
 @jwt_required
@@ -395,8 +416,10 @@ def edit_document_infrastructure_types(doc_id):
             message=f'Edited infrastructure types of the document {saved_id}.'
         )
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/damage_types', methods=['PUT'])
 @jwt_required
@@ -439,8 +462,10 @@ def edit_document_damage_types(doc_id: str):
             message=f'Edited damage types of the document {saved_id}.'
         )
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/locations', methods=['PUT'])
 @jwt_required
@@ -477,8 +502,10 @@ def edit_document_locations(doc_id: str):
 
         return ApiResult(message=f'Edited locations of the document {saved_id}.')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/tags', methods=['PUT'])
 @jwt_required
@@ -515,8 +542,10 @@ def edit_document_tags(doc_id: str):
 
         return ApiResult(message=f'Edited tags of the document {saved_id}.')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/incident_date', methods=['PUT'])
 @jwt_required
@@ -558,8 +587,10 @@ def edit_document_incident_date(doc_id: str):
 
         return ApiResult(message=f'Edited incident date of the document {saved_id}.')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/actors', methods=['PUT'])
 @jwt_required
@@ -594,8 +625,10 @@ def edit_document_actors(doc_id: str):
         saved_id = put_doc_actors(collab.id, doc_id, body['actors'])
         return ApiResult(message=f'Updated actors on document {saved_id}.')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.route('/<doc_id>/edit/authors', methods=['PUT'])
 @jwt_required
@@ -632,8 +665,10 @@ def edit_document_authors(doc_id: str):
 
         return ApiResult(body=f'Updated authors on document: {saved_id}')
 
-    raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
-
+    raise TellSpaceAuthError(
+        msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
+        status=401
+    )
 
 @bp.before_request
 def before_requests():

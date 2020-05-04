@@ -68,8 +68,17 @@ def get_doc(docid, collabId):
     """
         DAO that returns a json object with the information about a specific document
     """
-    get_doc = DocumentCase.objects.get(id=docid, creatoriD=collabId)
-    return json.loads(get_doc.to_json())
+    doc = DocumentCase.objects.get(id=docid, creatoriD=collabId)
+
+    # Only return address names
+    location_names = []
+    for l in doc.location:
+        location_names.append(l['address'])
+
+    doc_json = json.loads(doc.to_json())
+    doc_json['location'] = location_names
+
+    return doc_json
 
 
 def put_doc_title(collab_id, doc_id, title):
