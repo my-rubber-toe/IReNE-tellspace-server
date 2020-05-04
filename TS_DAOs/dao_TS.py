@@ -2,30 +2,36 @@ from mongoengine import *
 from TS_DAOs.schema_DB import *
 import datetime
 import json
-# from TS_DAOs.init_db_test import *
+from utils.exceptions import TellSpaceApiError
 
 
-def post_create_doc_DAO (**docatr):
+def post_create_doc_DAO(**docatr):
     """
         DAO that posts a Doc into the DB & any new Tag is added to Tag Document
     """
-    authorList = []
+    author_list = []
     for author in docatr['author']:
-        authorBody = Author(author_FN= author['first_name'] , author_LN= author['last_name'], 
-            author_email= author['email'], author_faculty= author['faculty'])
-        authorList.append(authorBody)
-    actorList = []
+        author_list.append(Author(author_FN=author['first_name'], author_LN=author['last_name'],
+                                  author_email=author['email'], author_faculty=author['faculty']))
+    actor_list = []
     for actor in docatr['actor']:
-        actorBody = Actor(actor_FN= actor['first_name'], actor_LN= actor['last_name'], 
-            role= actor['role'])
-        actorList.append(actorBody)
-    doc1 = DocumentCase(creatoriD = docatr["creatoriD"],title = docatr["title"], description = docatr["description"],
-    incidentDate = docatr["incidentDate"], creationDate = docatr["creationDate"], lastModificationDate = docatr["lastModificationDate"],
-    tagsDoc = [], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
-    location = [], author = authorList, actor = actorList, 
-    section = [], timeline = [], language=docatr["language"])
+        actor_list.append(Actor(actor_FN=actor['first_name'], actor_LN=actor['last_name'], role=actor['role']))
+
+    doc1 = DocumentCase(
+        creatoriD=docatr["creatoriD"],
+        title=docatr["title"],
+        incidentDate=docatr["incidentDate"],
+        creationDate=docatr["creationDate"],
+        lastModificationDate=docatr["lastModificationDate"],
+        tagsDoc=[],
+        infrasDocList=docatr["infrasDocList"],
+        damageDocList=docatr["damageDocList"],
+        location=[], author=author_list, actor=actor_list,
+        section=[],
+        timeline=[],
+        language=docatr["language"]
+    )
     doc1.save()
-    print('Document created successfully')
     return doc1
 
 
@@ -33,156 +39,207 @@ def get_me(email_collab):
     """
         DAO that returns a json object with the information about a collaborator
     """
-    get_collab = Collaborator.objects.get(email = email_collab)
+    get_collab = Collaborator.objects.get(email=email_collab)
     return get_collab
 
 
-def get_doc_collab(collabid):
+def get_doc_collab(collab_id):
     """
         DAO that returns a json object with the information about documents 
         created by a collaborator
     """
-    get_docs = DocumentCase.objects.filter(creatoriD= collabid)
+    get_docs = DocumentCase.objects.filter(creatoriD=collab_id)
     response = []
     for doc in get_docs:
-            doc: DocumentCase
-            response.append({
-                "id": str(doc.id),
-                "title": doc.title,
-                "description": doc.description,
-                "published": doc.published,
-                "incidentDate": doc.incidentDate,
-                "creationDate": doc.creationDate,
-                "lastModificationDate": doc.lastModificationDate
-            })
+        doc: DocumentCase
+        response.append({
+            "id": str(doc.id),
+            "title": doc.title,
+            "description": doc.description,
+            "published": doc.published,
+            "incidentDate": doc.incidentDate,
+            "creationDate": doc.creationDate,
+            "lastModificationDate": doc.lastModificationDate
+        })
     return response
-    # return json.loads(response.to_json())
 
-def get_doc(docid):
+
+def get_doc(docid, collabId):
     """
         DAO that returns a json object with the information about a specific document
     """
-    get_doc = DocumentCase.objects.get(id = docid)
+    get_doc = DocumentCase.objects.get(id=docid, creatoriD=collabId)
     return json.loads(get_doc.to_json())
 
-def put_doc_title(docid, title):
+
+def put_doc_title(collab_id, doc_id, title):
     """
         DAO that updates the title of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__title = title)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.title = title
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
 
 
-def put_doc_des(docid, des):
+def put_doc_des(collab_id, doc_id, des):
     """
         DAO that updates the description of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__description = des)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.description = des
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
 
-def put_doc_timeline(**docatr):
+
+def put_doc_timeline(collab_id, doc_id, timeline):
     """
         DAO that updates the timeline of a document
     """
-    timelineList = []
-    for timel in docatr["timeline"]:
-        timelineBody = Timeline(event= timel['event'], 
-        eventStartDate= timel['event_start_date'], 
-        eventEndDate= timel['event_end_date'])
-        timelineList.append(timelineBody)
-    DocumentCase.objects(id = docatr["docid"]).update_one(set__timeline = timelineList)
-    DocumentCase.objects(id = docatr["docid"]).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docatr["docid"])
+    new_timeline_list = []
+    for timel in timeline:
+        timelineBody = Timeline(event=timel['event'],
+                                eventStartDate=str(timel['event_start_date']),
+                                eventEndDate=str(timel['event_end_date']))
+        new_timeline_list.append(timelineBody)
 
-def put_doc_section(docid, sec_title, sec_content, sec_num):
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.timeline = new_timeline_list
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
+
+
+def put_doc_section(collab_id, doc_id, sec_title, sec_content, sec_num):
     """
         DAO that updates the section of a document
     """
-    doc = DocumentCase.objects.get(id = docid)
-    updateSection = Section(secTitle= sec_title, content= sec_content)
-    doc.section[sec_num - 1] = section
-    doc.save()
-    # DocumentCase.objects(id = docid, section__secNum = i).update_one(set__section__S = updateSection)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
 
-def put_doc_incidentDate(docid, inDate):
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+
+    # Section doesn't exist
+    if sec_num > len(doc.section) or sec_num <= 0:
+        raise TellSpaceApiError(err='SectionError', msg='Section No. does not exist.')
+
+    new_section_content = Section(secTitle=sec_title, content=sec_content)
+    doc.section[sec_num - 1] = new_section_content
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
+
+
+def put_doc_incidentDate(collab_id, doc_id, inDate):
     """
         DAO that updates the incident of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__incidentDate = inDate)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
 
-def put_doc_damageType(docid, damType):
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.incidentDate = str(inDate)
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+
+    return doc.id
+
+
+def put_doc_damageType(collab_id, doc_id, damType):
     """
         DAO that updates the damagelist of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__damageDocList = damType)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
-   
-def put_doc_infrasType(docid,infrasType):
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.damageDocList = damType
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
+
+
+def put_doc_infrasType(collab_id, doc_id, infrasType):
     """
         DAO that updates the infrastructure list of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__infrasDocList = infrasType)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.infrasDocList = infrasType
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
 
-def put_doc_tags(docid, tags):
+
+def put_doc_tags(collab_id, doc_id, tags):
     """
         DAO that updates the tags list of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__tagsDoc = tags)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+
+    # Create tag if it doesnt exist in the database
     for tag in tags:
         if not Tag.objects(tagItem=tag):
             newTag = Tag(tagItem=tag)
             newTag.save()
-    return DocumentCase.objects.get(id = docid)
 
-def put_doc_locations(docid,loc):
+    doc.tagsDoc = tags
+    doc.save()
+
+    return doc.id
+
+
+def put_doc_locations(collab_id, doc_id, locations_list):
     """
         DAO that updates the location list of a document
     """
-    locList = []
-    for location in loc:
-        citypr = CityPR.objects.get(city = location)
-        locBody = Location(address= citypr.city, latitude= citypr.latitude, 
-            longitude= citypr.longitude)
-        locList.append(locBody)
-    DocumentCase.objects(id = docid).update_one(set__location = locList)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
 
-def put_doc_actors(docid, actors):
+    repeated_hash = dict()
+    new_locations = []
+    for location in locations_list:
+        # Check repeated locations
+        if repeated_hash.__contains__(location):
+            raise TellSpaceApiError('RepeatedContentError', msg='One of the given locations is repeated')
+
+        # Todo: Change to only get location instance with one query search
+        city_pr = CityPR.objects.get(city=location)
+        loc_body = Location(address=city_pr.city, latitude=city_pr.latitude, longitude=city_pr.longitude)
+        new_locations.append(loc_body)
+
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.location = new_locations
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+
+    return doc.id
+
+
+def put_doc_actors(collab_id, doc_id, actors):
     """
         DAO that updates the actors list of a document
     """
-    actorList = []
+    new_actors = []
     for actor in actors:
-        actorBody = Actor(actor_FN= actor["first_name"], actor_LN= actor["last_name"], 
-            role= actor["role"])
-        actorList.append(actorBody)
-    DocumentCase.objects(id = docid).update_one(set__actor = actorList)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
+        actor_body = Actor(actor_FN=actor["first_name"], actor_LN=actor["last_name"], role=actor["role"])
+        new_actors.append(actor_body)
 
-def put_doc_authors(docid, authors):
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.actor = new_actors
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
+
+
+def put_doc_authors(collab_id, doc_id, authors):
     """
         DAO that updates the authors list of a document
     """
-    authorList = []
+    new_author_list = []
     for author in authors:
-        authorBody = Author(author_FN= author["first_name"], author_LN= author["last_name"], 
-            author_email= author["email"], author_faculty= author["faculty"])
-        authorList.append(authorBody)
-    DocumentCase.objects(id = docid).update_one(set__author = authorList)
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
+        author_body = Author(author_FN=author["first_name"], author_LN=author["last_name"],
+                             author_email=author["email"], author_faculty=author["faculty"])
+        new_author_list.append(author_body)
+
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+    doc.author = new_author_list
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
+
 
 def get_infrastructure_list():
     """
@@ -192,6 +249,7 @@ def get_infrastructure_list():
     for infra in Infrastructure.objects():
         infras.append(infra.infrastructureType)
     return infras
+
 
 def get_damage_list():
     """
@@ -214,58 +272,72 @@ def get_tags_list():
         arr.append(t.tagItem)
     return arr
 
-def post_doc_section(docid):
+
+def post_doc_section(collab_id, docid):
     """
         DAO that creates a new section 
     """
-    doc = DocumentCase.objects.get(id = docid)
+    doc: DocumentCase = DocumentCase.objects.get(id=docid, creatoriD=str(collab_id))
+
+    # Section limit reached
+    if len(doc.section) == 10:
+        raise TellSpaceApiError(err='SectionError', msg='Section limit reached')
+
     new_section = Section()
     new_section.secTitle = f'Section No. {len(doc.section) + 1}'
     new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
-        
-    post_sec = DocumentCase.objects.get(id = docid)
-    post_sec.section.append(new_section)
-    post_sec.save()
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
-    
-def remove_doc(docid):
+    doc.section.append(new_section)
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return DocumentCase.objects.get(id=docid)
+
+
+def remove_doc(collab_id, doc_id):
     """
         DAO that removes a document
     """
-    doc_del = DocumentCase.objects.get(id = docid)
-    doc_del.delete() 
-    return DocumentCase.objects.get(id = docid)
+    doc_del: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=collab_id)
+    doc_del.delete()
+    return doc_del.id
 
-def remove_doc_section(docid, section_num):
+
+def remove_doc_section(collab_id, doc_id, section_num):
     """
         DAO that deletes a section
     """
-    doc = DocumentCase.objects.get(id = docid)
+
+    doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
+
+    # Section doesn't exist
     if section_num > len(doc.section) or section_num <= 0:
-        raise TellSpaceApiError(msg='Section No. does not exist.')
-    DocumentCase.objects(id = docid).update(pull__section__secNum= (section_num - 1))
-    DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
-    return DocumentCase.objects.get(id = docid)
+        raise TellSpaceApiError(err='SectionError', msg='Section No. does not exist.')
+
+    # Remember that lists start with index 0
+    doc.section.pop(int(section_num) - 1)
+    doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
+    doc.save()
+    return doc.id
+
 
 def get_doc_damage_type(damage):
     """
         DAO that returns the documents containing damage category
     """
-    get_docs = DocumentCase.objects.filter(damageDocList__contains = damage)
+    get_docs = DocumentCase.objects.filter(damageDocList__contains=damage)
     return json.loads(get_docs.to_json())
+
 
 def get_doc_infrastructure_type(infras):
     """
         DAO that returns the documents containing infras category
     """
-    get_docs = DocumentCase.objects.filter(infrasDocList__contains = infras)
+    get_docs = DocumentCase.objects.filter(infrasDocList__contains=infras)
     return json.loads(get_docs.to_json())
+
 
 def get_doc_tag_type(tag):
     """
         DAO that returns the documents containing tag category
     """
-    get_docs = DocumentCase.objects.filter(tagsDoc__contains = tag)
-    return json.loads(get_docs.to_json()) 
-
+    get_docs = DocumentCase.objects.filter(tagsDoc__contains=tag)
+    return json.loads(get_docs.to_json())

@@ -5,7 +5,7 @@ Holds the configuration functions for blueprints, routes, cors, error catching a
 """
 
 from werkzeug.utils import find_modules, import_string
-from flask import Flask, request, current_app, render_template
+from flask import Flask
 
 from utils.exceptions import TellSpaceError, TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
@@ -15,8 +15,6 @@ from flask_jwt_extended import JWTManager
 from flask_jwt_extended.exceptions import *
 
 from flask_cors import CORS
-
-from TS_DAOs import init_db
 
 
 class ApiFlask(Flask):
@@ -217,7 +215,7 @@ def register_cors(app: ApiFlask):
 
     origins_list = '*'
 
-    methods_list = ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS']
+    methods_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 
     allowed_headers_list = [
         'Access-Control-Allow-Credentials',

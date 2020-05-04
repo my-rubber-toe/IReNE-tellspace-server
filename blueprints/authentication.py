@@ -10,10 +10,8 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
     jwt_required, get_jwt_identity, get_raw_jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
-import random
-import string
 
-from utils.responses import ApiResult, ApiException
+from utils.responses import ApiResult
 from utils.exceptions import TellSpaceAuthError
 
 from cachetools import TTLCache
