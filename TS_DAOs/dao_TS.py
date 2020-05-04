@@ -24,10 +24,6 @@ def post_create_doc_DAO (**docatr):
     tagsDoc = [], infrasDocList = docatr["infrasDocList"], damageDocList = docatr["damageDocList"],
     location = [], author = authorList, actor = actorList, 
     section = [], timeline = [], language=docatr["language"])
-    # for tag in docatr["tagsDoc"]:
-    #     if not Tag.objects(tagItem=tag):
-    #         newTag = Tag(tagItem=tag)
-    #         newTag.save()
     doc1.save()
     print('Document created successfully')
     return doc1
@@ -68,21 +64,6 @@ def get_doc(docid):
     """
     get_doc = DocumentCase.objects.get(id = docid)
     return json.loads(get_doc.to_json())
-
-# def current_date():
-#     """
-#         This is not a DAO, the purpose is to get current date to change lastModificationDate
-#     """
-#     d = datetime.datetime.today()
-#     if(d.month < 10 and d.day > 9):
-#         current_date =  str(d.year) + "-0" + str(d.month) + "-" + str(d.day)
-#     elif(d.day < 10 and d.month > 9):
-#         current_date =  str(d.year) + "-" + str(d.month) + "-0" + str(d.day)
-#     elif(d.day < 10 and d.month < 10):
-#         current_date =  str(d.year) + "-0" + str(d.month) + "-0" + str(d.day)
-#     else:
-#         current_date =  str(d.year) + "-" + str(d.month) + "-" + str(d.day)
-#     return current_date
 
 def put_doc_title(docid, title):
     """
@@ -167,7 +148,13 @@ def put_doc_locations(docid,loc):
     """
         DAO that updates the location list of a document
     """
-    DocumentCase.objects(id = docid).update_one(set__location = loc)
+    locList = []
+    for location in loc:
+        citypr = CityPR.objects.get(city = location)
+        locBody = Location(address= citypr.city, latitude= citypr.latitude, 
+            longitude= citypr.longitude)
+        locList.append(locBody)
+    DocumentCase.objects(id = docid).update_one(set__location = locList)
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
 

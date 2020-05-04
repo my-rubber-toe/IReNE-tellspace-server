@@ -21,7 +21,6 @@ app = create_app('config.development')
 
 if __name__ == '__main__':
     app.run(host='localhost', port=app.config['PORT'], debug=app.config['FLASK_DEBUG'])
-=======
 """
 app.py
 ====================================

@@ -15,6 +15,7 @@ from TS_DAOs.schema_DB import *
 from datetime import datetime
 from TS_DAOs.dao_TS import *
 
+
 bp = Blueprint('documents', __name__, url_prefix='/documents')
 
 
@@ -560,12 +561,20 @@ def edit_document_locations(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
+        for city in body.get('locations'):
+            if(not(CityPR.objects.filter(city__contains=city))):
+                return ApiResult(
+                    message=f'Invalid Address: {city}.') 
+        
         doc = put_doc_locations(doc_id,body.get('locations'))
+        
+        
         # doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # doc.location = body.get('locations')
         # doc.save()
+        #{doc.id}
         return ApiResult(
-            message=f'Edited locations of the document {doc.id}.'
+            message=f'Edited locations of the document {doc.id}.' 
         )
 
     raise TellSpaceAuthError(msg='Authorization Error. Collaborator is banned or has not been approved by the admin.')
