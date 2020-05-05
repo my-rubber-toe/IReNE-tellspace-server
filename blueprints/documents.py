@@ -168,7 +168,7 @@ def remove_document(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
-        doc = remove_doc(doc_id)
+        doc = remove_doc(doc_id, collab.id)
         # doc = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab.id))
         # doc.delete()
 

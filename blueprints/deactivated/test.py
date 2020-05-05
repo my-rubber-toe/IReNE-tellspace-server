@@ -1,20 +1,25 @@
-<<<<<<< HEAD:blueprints/test.py
 """
 general.py
-====================================
 Blueprint class that holds the endpoints that allows the retrieval of non sensitive information. Holds a blueprint object
  that is used to create the routes for this module.
 """
 
-from flask import Blueprint, jsonify
-from utils.responses import ApiResult
 # from database.mock_db import *
 from TS_DAOs.schema_DB import *
 from TS_DAOs.dao_TS import *
 import json
+from flask import Blueprint, g, current_app, request, session, make_response, jsonify
+from utils.responses import ApiResult, ApiException
+from datetime import timedelta
 
+from flask_jwt_extended import jwt_required, create_access_token, \
+    create_refresh_token, get_jwt_identity, jwt_refresh_token_required, get_raw_jwt
 
-bp = Blueprint('general', __name__, url_prefix='/general')
+route_prefix = '/api/test'
+
+bp = Blueprint('test', __name__, url_prefix=route_prefix)
+
+blacklist = set()
 
 
 @bp.route("/infrastructure_types", methods=['GET'])
@@ -70,23 +75,6 @@ def get_tags():
         list.append(t.tagItem)
     return jsonify(list)
     
-=======
-"""Use this class as you testing playground"""
-
-
-from flask import Blueprint, g, current_app, request, session, make_response, jsonify
-from utils.responses import ApiResult, ApiException
-from datetime import timedelta
-
-from flask_jwt_extended import jwt_required, create_access_token, \
-    create_refresh_token, get_jwt_identity, jwt_refresh_token_required, get_raw_jwt
-
-
-route_prefix = '/api/test'
-
-bp = Blueprint('test', __name__, url_prefix=route_prefix)
-
-blacklist = set()
 
 
 @current_app.jwt.token_in_blacklist_loader
@@ -149,4 +137,3 @@ def protected():
 def before_requests():
     print('Before requests in /api/test/')
 
->>>>>>> 84c7208d2b1db84fa2deac94a2aea8ef11af8c6a:blueprints/deactivated/test.py

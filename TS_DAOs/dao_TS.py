@@ -25,6 +25,7 @@ def post_create_doc_DAO (**docatr):
     location = [], author = authorList, actor = actorList, 
     section = [], timeline = [], language=docatr["language"])
     doc1.save()
+    Collaborator.objects(id = docatr["creatoriD"]).update_one(push__documentsID = str(doc.id))
     print('Document created successfully')
     return doc1
 
@@ -229,12 +230,13 @@ def post_doc_section(docid):
     DocumentCase.objects(id = docid).update_one(set__lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d'))
     return DocumentCase.objects.get(id = docid)
     
-def remove_doc(docid):
+def remove_doc(docid, collabid):
     """
         DAO that removes a document
     """
     doc_del = DocumentCase.objects.get(id = docid)
     doc_del.delete() 
+    Collaborator.objects(id = docatr["creatoriD"]).update_one(pull__documentsID = str(doc.id))
     return DocumentCase.objects.get(id = docid)
 
 def remove_doc_section(docid, section_num):
