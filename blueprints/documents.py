@@ -106,7 +106,7 @@ def create_document():
 
     if not collab.banned and collab.approved:
         doc = post_create_doc_DAO(
-            creatoriD=str(collab.id),
+            creatoriD=collab.id,
             author=body['authors'],
             actor=body['actors'],
             title=body['title'],
