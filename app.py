@@ -1,6 +1,5 @@
 """
 app.py
-====================================
 Main file that holds the entry point for this server application.
 """
 

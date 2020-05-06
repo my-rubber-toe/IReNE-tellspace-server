@@ -87,10 +87,10 @@ def run():
     collaborator1.save()
 
     collaborator2 = Collaborator()
-    collaborator2.first_name = 'Yomar'
-    collaborator2.last_name = 'Ruiz'
-    collaborator2.email = 'yomar.ruiz@upr.edu'
-    collaborator2.banned = False
+    collaborator2.first_name = 'BannedUser'
+    collaborator2.last_name = 'BannedUser'
+    collaborator2.email = 'banned.user@upr.edu'
+    collaborator2.banned = True
     collaborator2.approved = True
     collaborator2.save()
 
@@ -104,7 +104,7 @@ def run():
 
     # Documents
     doc = DocumentCase()
-    doc.creatoriD = collaborator1.id
+    doc.creatoriD = str(collaborator1.id)
     doc.title = "Document 1"
     doc.location = []
     doc.description = "Lorem ipsum dolor sit amet."
@@ -123,7 +123,7 @@ def run():
     doc.save()
 
     doc = DocumentCase()
-    doc.creatoriD = collaborator1.id
+    doc.creatoriD = str(collaborator1.id)
     doc.title = "Document 2"
     doc.location = ["San Juan, PR", "Fajardo, PR"]
     doc.description = "Lorem ipsum dolor sit amet."
@@ -142,7 +142,7 @@ def run():
     doc.save()
 
     doc = DocumentCase()
-    doc.creatoriD = collaborator2.id
+    doc.creatoriD = str(collaborator2.id)
     doc.title = "COVID-19: Puerto Rico en alerta."
     doc.location = ["San Juan, PR", "Ponce, PR"]
     doc.description = "Lorem ipsum dolor sit amet."

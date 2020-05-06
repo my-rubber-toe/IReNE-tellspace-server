@@ -15,10 +15,7 @@ class Authors(Schema):
     """Authors Validator."""
     first_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
     last_name = fields.String(required=True, validate=validate.Length(min=1, max=30))
-    email = fields.Email(
-        required=True,
-        # validate=validate.Regexp('(.*)\.(.*)@upr\.edu')
-    )
+    email = fields.Email(required=True)
     faculty = fields.String(required=True, validate=validate.Length(min=1, max=30))
 
 
@@ -88,7 +85,7 @@ class TitleValidator(Schema):
 
 class DescriptionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/description"""
-    description = fields.String(required=True, validate=validate.Length(min=10, max=500))
+    description = fields.String(required=True, validate=validate.Length(min=0, max=500))
 
 
 class TimelineValidator(Schema):
@@ -104,11 +101,7 @@ class EditSectionValidator(Schema):
 
 class InfrastructureTypesValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/infrastructure_types"""
-    infrastructure_types = fields.List(
-        fields.String(required=True, validate=validate.Length(min=1, max=30)),
-        required=True,
-        validate=validate.Length(min=1)
-    )
+    infrastructure_types = fields.List(fields.String(required=True), required=True, validate=validate.Length(min=1))
 
 
 class DamageTypesValidator(Schema):
@@ -152,9 +145,4 @@ class AuthorsValidator(Schema):
 
 class TagsValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/tags"""
-    tags = fields.List(
-        fields.String(
-            required=True, validate=validate.Length(min=1, max=20)
-        ),
-        required=True
-    )
+    tags = fields.List(fields.String(required=True, validate=validate.Length(min=1, max=50)), required=True)
