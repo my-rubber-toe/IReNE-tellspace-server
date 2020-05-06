@@ -104,7 +104,7 @@ def run():
 
     # Documents
     doc = DocumentCase()
-    doc.creatoriD = str(collaborator1.id)
+    doc.creatoriD = collaborator1.id
     doc.title = "Document 1"
     doc.location = []
     doc.description = "Lorem ipsum dolor sit amet."
@@ -123,7 +123,7 @@ def run():
     doc.save()
 
     doc = DocumentCase()
-    doc.creatoriD = str(collaborator1.id)
+    doc.creatoriD = collaborator1.id
     doc.title = "Document 2"
     doc.location = ["San Juan, PR", "Fajardo, PR"]
     doc.description = "Lorem ipsum dolor sit amet."
@@ -142,7 +142,7 @@ def run():
     doc.save()
 
     doc = DocumentCase()
-    doc.creatoriD = str(collaborator2.id)
+    doc.creatoriD = collaborator2.id
     doc.title = "COVID-19: Puerto Rico en alerta."
     doc.location = ["San Juan, PR", "Ponce, PR"]
     doc.description = "Lorem ipsum dolor sit amet."

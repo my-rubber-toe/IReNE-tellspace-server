@@ -132,7 +132,7 @@ def create_document():
         #         role= actor['role'])
         #     actorList.append(actorBody)
         doc = post_create_doc_DAO(
-            creatoriD=str(collab.id),
+            creatoriD=collab.id,
             author=body['authors'],
             actor=body['actors'],
             title=body['title'],
@@ -435,14 +435,6 @@ def edit_document_section(doc_id, section_nbr):
         # doc.section[int(section_nbr) - 1] = section
         # doc.save()
 
-#Revision History_________________________________________________________________        
-
-        docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
-        rev.revDate = datetime.today().strftime('%Y-%m-%d')
-        rev.revType = 'Section'
-        docRevision.revisions.append(rev)
-        docRevision.save()
-        print(json.dumps(json.loads(rev.to_json())))
         return ApiResult(
             message=f'Edited section {section_nbr} from the document {doc.id}.'
         )

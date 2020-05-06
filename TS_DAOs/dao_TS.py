@@ -9,207 +9,151 @@ from utils.exceptions import TellSpaceApiError
 
 #Revision history
 
-def log_document_edit_author(updated_document, old_authors):
-    oldAuth = []
-    newAuth = []
-    for author in old_authors:
-        oldAuth.append(json.loads(author.to_json()))
-    for author in updated_document.author:
-        newAuth.append(json.loads(author.to_json()))
-    rev = Revision(fields = {
-    'old':oldAuth,
-    'new':newAuth
-    })
+def create_revision_document(updated_document, revision_type):
+    return DocumentCaseRevision(
+        creatorId = updated_document.creatoriD,
+        docId = updated_document.id,
+        creator_name = updated_document.creatoriD.first_name + " " + updated_document.creatoriD.last_name,
+        creator_email = updated_document.creatoriD.email,
+        document_title = updated_document.title,
+        revision_date = datetime.datetime.today().strftime('%Y-%m-%d'),
+        revision_number = str(DocumentCaseRevision.objects(creatorId = updated_document.creatoriD, docId = updated_document.id).count()),
+        revision_type = revision_type
+    )
 
-    docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Author'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+
+def log_document_edit_author(updated_document, old_authors):
+    revDoc = create_revision_document(updated_document, 'Author')
+    revDoc.field_changed = FieldsEmbedded(
+        new = AuthorEmbedded(author = updated_document.author),
+        old = AuthorEmbedded(author = old_authors))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_actor(updated_document, old_actors):
-    oldAct = []
-    newAct = []
-    for act in old_actors:
-        oldAct.append(json.loads(act.to_json()))
-    for act in updated_document.actor:
-        newAct.append(json.loads(act.to_json()))
-    rev = Revision(fields = {
-    'old':oldAct,
-    'new':newAct
-    })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Actor'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Actor')
+    revDoc.field_changed = FieldsEmbedded(
+        new = ActorEmbedded(actor = updated_document.actor),
+        old = ActorEmbedded(actor = old_actors))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_incident(updated_document, old_incident_dates):
-    rev = Revision(fields = {
-    'old': old_incident_dates,
-    'new': updated_document.incidentDate
-    })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Incident Date'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Incident Date')
+    revDoc.field_changed = FieldsEmbedded(
+        new = IncidentEmbedded(incidentDate = updated_document.incidentDate),
+        old = IncidentEmbedded(incidentDate = old_incident_dates))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
+
 
 def log_document_edit_tags(updated_document, old_tags):
-    rev = Revision(fields = {
-    'old': old_tags,
-    'new': updated_document.tagsDoc
-    })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Tag'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Tag')
+    revDoc.field_changed = FieldsEmbedded(
+        new = TagEmbedded(tagsDoc = updated_document.tagsDoc),
+        old = TagEmbedded(tagsDoc = old_tags))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_location(updated_document, old_locations):
-    rev = Revision(fields = {
-    'old': old_locations,
-    'new': updated_document.location
-    })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Location'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Location')
+    revDoc.field_changed = FieldsEmbedded(
+        new = LocationEmbedded(location = updated_document.location),
+        old = LocationEmbedded(location = old_locations))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_damage(updated_document, old_damages):
-    rev = Revision( fields={
-    'old': old_damages,
-    'new': updated_document.damageDocList
-    })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Damage'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Damage')
+    revDoc.field_changed = FieldsEmbedded(
+        new = DamageEmbedded(damageDocList = updated_document.damageDocList),
+        old = DamageEmbedded(damageDocList = old_damages))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_infrastructure(updated_document, old_infrastructures):
-    rev = Revision(fields = {
-    'old':old_infrastructures,
-    'new':updated_document.infrasDocList
-    })
-    
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Infrastructure'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Infrastructure')
+    revDoc.field_changed = FieldsEmbedded(
+        new = InfrastructureEmbedded(infrasDocList = updated_document.infrasDocList),
+        old = InfrastructureEmbedded(infrasDocList = old_infrastructures))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_section(updated_document, old_section, sec_num):
-    rev = Revision(fields = {'old':{
-            'secTitle': old_section.secTitle,
-            'content': old_section.content
-        },
-        'new':{
-            'secTitle': updated_document.section[sec_num - 1].secTitle,
-            'content': updated_document.section[sec_num - 1].content
-            }
-        })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Section'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Section')
+    revDoc.field_changed = FieldsEmbedded(
+        new = SectionEmbedded(section = updated_document.section[sec_num-1]),
+        old = SectionEmbedded(section = old_section))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_deletion_section(updated_document, old_section):
-    rev = Revision(fields = {'old':{
-        'secTitle': old_section.secTitle,
-        'content': old_section.content
-        },
-    'new':{}
-    })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Section'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Section')
+    revDoc.field_changed = FieldsEmbedded(
+        new = SectionEmbedded(section = None),
+        old = SectionEmbedded(section = old_section))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_creation_section(updated_document, new_section):
-    rev = Revision(fields = {'old':{},
-        'new':{
-            'secTitle': new_section.secTitle,
-            'content': new_section.content
-            }
-        })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Section'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Section')
+    revDoc.field_changed = FieldsEmbedded(
+        new = SectionEmbedded(section = new_section),
+        old = SectionEmbedded(section = None))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
+
 
 def log_document_edit_timeline(updated_document, oldDates):
-    newDates = updated_document.timeline
-    oldTimeline = []
-    newTimeline = []
-    for timeline in oldDates:
-        oldTimeline.append(json.loads(timeline.to_json()))
-    for timeline in newDates:
-        newTimeline.append(json.loads(timeline.to_json()))
-    rev = Revision(fields = {
-    'old':oldTimeline,
-    'new':newTimeline
-    })
-    docRevision = DocumentCaseRevision.objects.get(docId = str(doc.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Timeline'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Timeline')
+    revDoc.field_changed = FieldsEmbedded(
+        new = TimelineEmbedded(timeline = updated_document.timeline),
+        old = TimelineEmbedded(timeline = oldDates))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_description(updated_document, previousDescription):
-    rev = Revision(fields = {'old': previousDescription, 'new': updated_document.description})
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Description'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Description')
+    revDoc.field_changed = FieldsEmbedded(
+        new = DescriptionEmbedded(description = updated_document.description),
+        old = DescriptionEmbedded(description = previousDescription))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_edit_title(updated_document, previousTitle):
-    rev = Revision(fields = {'old': previousTitle, 'new': updated_document.title})
-    docRevision = DocumentCaseRevision.objects.get(docId = str(updated_document.id))
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Title'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(updated_document, 'Title')
+    revDoc.field_changed = FieldsEmbedded(
+        new = TitleEmbedded(title = updated_document.title),
+        old = TitleEmbedded(title = previousTitle))
+    revDoc.save()
+    DocumentCaseRevision.objects(docId = updated_document.id, creatorId = updated_document.creatoriD).update(document_title = updated_document.title )
+    print(revDoc.field_changed.to_json())
 
 def log_document_creation(document):
-    docRevision = DocumentCaseRevision()
-    docRevision.docId = str(document.id)
-    docRevision.creatorId = str(document.creatoriD)
-    dictDoc = document.to_mongo().to_dict()
-    rev = Revision(fields = dictDoc)
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Creation'
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(document, 'Creation')
+    revDoc.field_changed = FieldsEmbedded(
+        new = CreationEmbedded(creatoriD=document.creatoriD, title=document.title, description=document.description,
+                        incidentDate=document.incidentDate, creationDate=document.creationDate,
+                        lastModificationDate=document.lastModificationDate,
+                        tagsDoc=[], infrasDocList=document.infrasDocList, damageDocList=document.damageDocList,
+                        location=[], author=document.author, actor=document.actor,
+                        section=[], timeline=[], language=document.language),
+        old = CreationEmbedded())
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 def log_document_deletion(document):
-    docRevision = DocumentCaseRevision.objects.get(docId = str(document.id))
-    rev = Revision()
-    rev.revDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    rev.revType = 'Deletion'
-    rev.fields = {}
-    docRevision.revisions.append(rev)
-    docRevision.save()
-    print(json.dumps(json.loads(rev.to_json())))
+    revDoc = create_revision_document(document, 'Deletion')
+    revDoc.field_changed = FieldsEmbedded(
+        new = CreationEmbedded(),
+        old = CreationEmbedded(creatoriD=document.creatoriD, title=document.title, description=document.description,
+                        incidentDate=document.incidentDate, creationDate=document.creationDate,
+                        lastModificationDate=document.lastModificationDate,
+                        tagsDoc=document.tagsDoc, infrasDocList=document.infrasDocList, damageDocList=document.damageDocList,
+                        location=document.location, author=document.author, actor=document.actor,
+                        section=document.section, timeline=document.timeline, language=document.language))
+    revDoc.save()
+    print(revDoc.field_changed.to_json())
 
 #End Document Revision__________________________________________________________________
 
