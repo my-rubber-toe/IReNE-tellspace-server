@@ -3,7 +3,7 @@ app.py
 Main file that holds the entry point for this server application.
 """
 
-from create_app import create_app
+from create_app import create_app, ApiFlask
 '''
 To run this server in development
     $ export FLASK_APP=`pwd`/app.py
@@ -11,16 +11,15 @@ To run this server in development
 creating flask app instance
 
 parameters could be
+    config.environment
     config.development
-    config.testing
-    config.production
 
 depending on that input the app will be initialized with the
 corresponding database queries files and database driver
 '''
 
 # Set config file accordingly
-app = create_app('config.development')
+app = create_app('config.environment')
 
 if __name__ == '__main__':
     app.run(host='localhost', port=app.config['PORT'], debug=app.config['FLASK_DEBUG'])

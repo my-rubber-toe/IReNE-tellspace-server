@@ -70,10 +70,7 @@ def create_app(config=None):
         # Setup and register '/ endpoint'
         register_base_url(app)
 
-        # Setup app request teardown process if needed
-        # register_request_teardown(app)
-
-    return app
+        return app
 
 
 def register_blueprints(app: ApiFlask):
@@ -98,86 +95,78 @@ def register_error_handlers(app: ApiFlask):
             app
                 the ApiFlask application instance.
     """
-    if False:
-        @app.errorhandler(TellSpaceError)
-        def handle_error(error):
-            return ApiException(
-                error_type=error.__class__.__name__,
-                message=error.error_stack,
-                status=error.status
-            )
-    else:
-        @app.errorhandler(TellSpaceApiError)
-        def handle_api_error(error):
-            return ApiException(
-                error_type=error.__class__.__name__,
-                message=error.msg,
-                status=error.status
-            )
 
-        @app.errorhandler(TellSpaceAuthError)
-        def handle_custom_errors(error):
-            return ApiException(
-                error_type=error.__class__.__name__,
-                message=error.msg,
-                status=error.status
-            )
-
-        # JWT Error Handler
-        @app.errorhandler(JWTExtendedException)
-        def request_token_errors(error):
-            return ApiException(
-                error_type='JWTTokenError',
-                message=error.messages,
-                status=error.status
-            )
-
-        @app.errorhandler(ValidationError)
-        def request_validator_error(error):
-            return ApiException(
-                error_type='ValidationError',
-                message=error.messages,
-                status=400
-            )
-
-        @app.errorhandler(ValueError)
-        def request_value_error(error):
-            return ApiException(
-                error_type='ValidationError',
-                message=error.messages,
-                status=400
-            )
-
-        @app.errorhandler(Exception)
-        def handle_unexpected_error(error):
-            TellSpaceError(
-                err=error,
-                msg='An unexpected error has occurred.',
-                status=500
-            )
-            return ApiException(
-                error_type='UnexpectedError',
-                message=str(error),
-                status=500
-            )
-
-        app.register_error_handler(
-            400,
-            lambda err: ApiException(message=str(
-                err), status=400, error_type='Bad request')
+    @app.errorhandler(TellSpaceApiError)
+    def handle_api_error(error):
+        return ApiException(
+            error_type=error.__class__.__name__,
+            message=error.msg,
+            status=error.status
         )
 
-        app.register_error_handler(
-            404,
-            lambda err: ApiException(message=str(
-                err), status=404, error_type='Not found')
+    @app.errorhandler(TellSpaceAuthError)
+    def handle_custom_errors(error):
+        return ApiException(
+            error_type=error.__class__.__name__,
+            message=error.msg,
+            status=error.status
         )
 
-        app.register_error_handler(
-            405,
-            lambda err: ApiException(message=str(
-                err), status=405, error_type='Request method')
+    # JWT Error Handler
+    @app.errorhandler(JWTExtendedException)
+    def request_token_errors(error):
+        return ApiException(
+            error_type='JWTTokenError',
+            message=error.messages,
+            status=error.status
         )
+
+    @app.errorhandler(ValidationError)
+    def request_validator_error(error):
+        return ApiException(
+            error_type='ValidationError',
+            message=error.messages,
+            status=400
+        )
+
+    @app.errorhandler(ValueError)
+    def request_value_error(error):
+        return ApiException(
+            error_type='ValidationError',
+            message=error.messages,
+            status=400
+        )
+
+    @app.errorhandler(Exception)
+    def handle_unexpected_error(error):
+        TellSpaceError(
+            err=error,
+            msg='An unexpected error has occurred.',
+            status=500
+        )
+        return ApiException(
+            error_type='UnexpectedError',
+            message=str(error),
+            status=500
+        )
+
+    app.register_error_handler(
+        400,
+        lambda err: ApiException(message=str(
+            err), status=400, error_type='Bad request')
+    )
+
+    app.register_error_handler(
+        404,
+        lambda err: ApiException(message=str(
+            err), status=404, error_type='Not found')
+    )
+
+    app.register_error_handler(
+        405,
+        lambda err: ApiException(message=str(
+            err), status=405, error_type='Request method')
+    )
 
 
 def register_base_url(app: ApiFlask):
@@ -192,15 +181,7 @@ def register_base_url(app: ApiFlask):
 
     @app.route('/')
     def api():
-        return ApiResult(message="Welcome to the TellSpace-Server API. Pleaer refer to the documentation.")
-
-
-def register_request_teardown(app: ApiFlask):
-    @app.teardown_request
-    def do_the_thing(exeption):
-        pass
-
-    pass
+        return ApiResult(message="Welcome to the TellSpace-Server API. Please refer to the documentation.")
 
 
 def register_cors(app: ApiFlask):

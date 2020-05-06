@@ -19,6 +19,7 @@ def post_create_doc_DAO(**docatr):
 
     doc1 = DocumentCase(
         creatoriD=docatr["creatoriD"],
+        description="",
         title=docatr["title"],
         incidentDate=docatr["incidentDate"],
         creationDate=docatr["creationDate"],
@@ -39,8 +40,8 @@ def get_me(email_collab):
     """
         DAO that returns a json object with the information about a collaborator
     """
-    get_collab = Collaborator.objects.get(email=email_collab)
-    return get_collab
+    collab = Collaborator.objects.get(email=email_collab)
+    return collab
 
 
 def get_doc_collab(collab_id):
@@ -204,7 +205,6 @@ def put_doc_locations(collab_id, doc_id, locations_list):
         if repeated_hash.__contains__(location):
             raise TellSpaceApiError('RepeatedContentError', msg='One of the given locations is repeated')
 
-        # Todo: Change to only get location instance with one query search
         city_pr = CityPR.objects.get(city=location)
         loc_body = Location(address=city_pr.city, latitude=city_pr.latitude, longitude=city_pr.longitude)
         new_locations.append(loc_body)

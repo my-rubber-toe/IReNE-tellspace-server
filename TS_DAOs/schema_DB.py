@@ -1,14 +1,8 @@
 from mongoengine import *
+from config import environment
 
-
-# import datetime
-# Connection to the Database
-connect('IReNEdb')
-
-
-# connec the db for testing purposes
-# connect('IReNEdb', host='mongomock://localhost:27017')
-
+# Connection
+connect('IReNEdb', host=environment.DB_HOST)
 
 class Collaborator(Document):
     """
@@ -210,7 +204,7 @@ class DocumentCase(Document):
             - timeline: List<Timeline> of timeline objects, this will consist of the events that happened within the case study.
                 
     """
-    creatoriD = StringField(min_length=1, required=True)
+    creatoriD = ReferenceField('Collaborator')
     title = StringField(min_length=10, max_length=100, required=True, unique=True)
     language = StringField(min_length=1, required=True)
     description = StringField(min_length=1, max_length=500, required=False)
@@ -263,8 +257,8 @@ class DocumentCaseRevision(Document):
             - revision_type: <String> Type of change.
             - field_changed: <Revision> embedded document which contains the old & new changes made
     """
-    creatorId = StringField(min_length=1, required=True)
-    docId = StringField(min_length=1, required=True)
+    creatorId = ReferenceField('Collaborator')
+    docId = ReferenceField('DocumentCase')
     creator_name = StringField(min_length=1, max_length=30, required=True)
     creator_email = EmailField(required=True, max_length=50, unique=True, regex='.*(@upr\.edu)$')
     document_title = StringField(min_length=10, max_length=100, required=True, unique=True)
