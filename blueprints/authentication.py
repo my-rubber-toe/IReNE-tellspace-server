@@ -58,7 +58,7 @@ def get_tokens(google_token: str):
         raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
 
     collab: Collaborator = get_me(id_info['email'])
-    
+
     if (not collab.banned) and collab.approved:
         access_token_ttl = 5
         refresh_token_ttl = 10
@@ -75,6 +75,7 @@ def get_tokens(google_token: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/me', methods=['GET'])
 @jwt_required
@@ -107,6 +108,7 @@ def auth_me():
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/refresh', methods=["GET"])
 @jwt_refresh_token_required
@@ -167,6 +169,5 @@ def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
     if blacklist.currsize == 0:
         return False
-    # search for the jti on the blacklist#
     entry = blacklist.get(jti)
     return entry

@@ -6,9 +6,6 @@ values or type errors.
 """
 
 from marshmallow import Schema, fields, validate
-import re
-
-"""Nested Schemas"""
 
 
 class Authors(Schema):
@@ -39,9 +36,6 @@ class TimeLineEvent(Schema):
     event = fields.String(required=True, validate=validate.Length(min=10, max=100))
     event_start_date = fields.Date('%Y-%m-%d', required=True)
     event_end_date = fields.Date('%Y-%m-%d', required=True)
-
-
-"""Request Body Schemas"""
 
 
 class CreateDocumentValidator(Schema):
@@ -85,23 +79,23 @@ class RemoveDocumentValidator(Schema):
 
 
 class TitleValidator(Schema):
-    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/title"""
+    """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/title"""
     title = fields.String(
         required=True,
         validate=[
             validate.Length(min=10, max=100),
-            validate.Regexp("^[A-Za-zÀ-ÿ][A-Z a-z 0-9 À-ÿ : \-]*[A-Za-z0-9À-ÿ]$")
+            validate.Regexp("^([A-Z\\u00C0-\\u00DC]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
         ]
     )
 
 
 class DescriptionValidator(Schema):
-    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/description"""
+    """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/description"""
     description = fields.String(required=True, validate=validate.Length(min=0, max=500))
 
 
 class TimelineValidator(Schema):
-    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/timeline"""
+    """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/timeline"""
     timeline = fields.List(fields.Nested(TimeLineEvent), required=True)
 
 
@@ -120,7 +114,7 @@ class InfrastructureTypesValidator(Schema):
 
 
 class DamageTypesValidator(Schema):
-    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/damage_types"""
+    """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/damage_types"""
     damage_types = fields.List(
         fields.String(required=True, validate=validate.Length(min=1, max=50)),
         required=True,
@@ -129,7 +123,7 @@ class DamageTypesValidator(Schema):
 
 
 class ActorsValidator(Schema):
-    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/actors"""
+    """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/actors"""
     actors = fields.List(
         fields.Nested(Actors),
         required=True,
@@ -138,7 +132,7 @@ class ActorsValidator(Schema):
 
 
 class LocationsValidator(Schema):
-    """ Request body schema for the endpoint /api/documents/<doc_id>/edit/locations"""
+    """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/locations"""
     locations = fields.List(
         fields.String(required=True, validate=validate.Length(min=1)),
         required=True,
@@ -147,6 +141,7 @@ class LocationsValidator(Schema):
 
 
 class IncidentDateValidator(Schema):
+    """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/incident_date"""
     incident_date = fields.Date('%Y-%m-%d', required=True)
 
 

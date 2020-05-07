@@ -5,12 +5,11 @@ All operations performed on these endpoints must have a valid access token to pr
 approved and is not banned.
 """
 
-from flask import Blueprint, request, json, jsonify
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.validators import *
-from utils.exceptions import TellSpaceApiError, TellSpaceAuthError
-from TS_DAOs.schema_DB import *
+from utils.exceptions import TellSpaceAuthError
 from datetime import datetime
 from TS_DAOs.dao_TS import *
 
@@ -36,12 +35,11 @@ def get_documents():
     # Get user identity
     email = get_jwt_identity()
 
-    # # Extract collaborator with identity
+    # Extract collaborator with identity
     collab: Collaborator = get_me(email)
 
-    # print("collab id:" , collab.id)
     if (not collab.banned) and collab.approved:
-        documents = get_doc_collab(str(collab.id))
+        documents = get_doc_collab(collab)
         return jsonify(documents)
 
     raise TellSpaceAuthError(
@@ -71,7 +69,7 @@ def get_document_by_id(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
-        doc = get_doc(doc_id, str(collab.id))
+        doc = get_doc(doc_id, collab)
         return jsonify(doc)
 
     raise TellSpaceAuthError(
@@ -107,7 +105,7 @@ def create_document():
 
     if not collab.banned and collab.approved:
         doc = post_create_doc_DAO(
-            creatoriD=str(collab.id),
+            creatoriD=collab,
             author=body['authors'],
             actor=body['actors'],
             title=body['title'],
@@ -150,7 +148,7 @@ def remove_document(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
-        deleted_id = remove_doc(collab.id, doc_id)
+        deleted_id = remove_doc(collab, doc_id)
         return ApiResult(message=f'Deleted document {deleted_id}')
 
     raise TellSpaceAuthError(
@@ -184,7 +182,7 @@ def edit_document_title(doc_id: str):
 
     collab: Collaborator = get_me(email)
     if not collab.banned and collab.approved:
-        saved_id = put_doc_title(collab.id, doc_id, body['title'])
+        saved_id = put_doc_title(collab, doc_id, body['title'])
         return ApiResult(message=f'Updated document: {saved_id}')
 
     raise TellSpaceAuthError(
@@ -219,7 +217,7 @@ def edit_document_description(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
-        saved_id = put_doc_des(collab.id, doc_id, body['description'])
+        saved_id = put_doc_des(collab, doc_id, body['description'])
         return ApiResult(message=f'Updated document description.')
 
     raise TellSpaceAuthError(
@@ -265,7 +263,7 @@ def edit_document_timeline(doc_id: str):
 
     # If collaborator is NOT banned and its approved, then do the thing
     if not collab.banned and collab.approved:
-        saved_id = put_doc_timeline(collab_id=collab.id, doc_id=doc_id, timeline=body['timeline'])
+        saved_id = put_doc_timeline(collab_id=collab, doc_id=doc_id, timeline=body['timeline'])
         return ApiResult(message=f'Updated document {saved_id} timeline.')
 
     raise TellSpaceAuthError(
@@ -294,7 +292,7 @@ def create_document_section(doc_id: str):
     email = get_jwt_identity()
     collab: Collaborator = get_me(email)
     if not collab.banned:
-        doc = post_doc_section(collab.id, doc_id)
+        doc = post_doc_section(collab, doc_id)
         return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}')
 
     raise TellSpaceAuthError(
@@ -327,7 +325,7 @@ def remove_document_section(doc_id: str, section_nbr: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        saved_id = remove_doc_section(collab.id, doc_id, int(section_nbr))
+        saved_id = remove_doc_section(collab, doc_id, int(section_nbr))
         return ApiResult(message=f'Removed section from document {saved_id}.')
 
     raise TellSpaceAuthError(
@@ -363,7 +361,7 @@ def edit_document_section(doc_id, section_nbr):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        saved_id = put_doc_section(collab.id, doc_id, body['section_title'], body['section_text'], int(section_nbr))
+        saved_id = put_doc_section(collab, doc_id, body['section_title'], body['section_text'], int(section_nbr))
 
         return ApiResult(message=f'Edited section from the document {saved_id}.')
 
@@ -410,7 +408,7 @@ def edit_document_infrastructure_types(doc_id):
         return ApiException(error_type='EditingError', message='Unable to find infrastructure', status=500)
 
     if not collab.banned:
-        saved_id = put_doc_infrasType(str(collab.id), doc_id, body['infrastructure_types'])
+        saved_id = put_doc_infrasType(collab, doc_id, body['infrastructure_types'])
 
         return ApiResult(
             message=f'Edited infrastructure types of the document {saved_id}.'
@@ -457,7 +455,7 @@ def edit_document_damage_types(doc_id: str):
         return ApiException(error_type='EditingError', message='Unable to find damage type', status=500)
 
     if not collab.banned:
-        saved_id = put_doc_damageType(collab.id, doc_id, body['damage_types'])
+        saved_id = put_doc_damageType(collab, doc_id, body['damage_types'])
         return ApiResult(
             message=f'Edited damage types of the document {saved_id}.'
         )
@@ -498,7 +496,7 @@ def edit_document_locations(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        saved_id = put_doc_locations(collab.id, doc_id, body['locations'])
+        saved_id = put_doc_locations(collab, doc_id, body['locations'])
 
         return ApiResult(message=f'Edited locations of the document {saved_id}.')
 
@@ -538,7 +536,7 @@ def edit_document_tags(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        saved_id = put_doc_tags(collab.id, doc_id, body['tags'])
+        saved_id = put_doc_tags(collab, doc_id, body['tags'])
 
         return ApiResult(message=f'Edited tags of the document {saved_id}.')
 
@@ -583,7 +581,7 @@ def edit_document_incident_date(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        saved_id = put_doc_incidentDate(collab.id, doc_id, body["incident_date"])
+        saved_id = put_doc_incidentDate(collab, doc_id, body["incident_date"])
 
         return ApiResult(message=f'Edited incident date of the document {saved_id}.')
 
@@ -622,7 +620,7 @@ def edit_document_actors(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        saved_id = put_doc_actors(collab.id, doc_id, body['actors'])
+        saved_id = put_doc_actors(collab, doc_id, body['actors'])
         return ApiResult(message=f'Updated actors on document {saved_id}.')
 
     raise TellSpaceAuthError(
@@ -661,7 +659,7 @@ def edit_document_authors(doc_id: str):
     collab: Collaborator = get_me(email)
 
     if not collab.banned:
-        saved_id = put_doc_authors(collab.id, doc_id, body['authors'])
+        saved_id = put_doc_authors(collab, doc_id, body['authors'])
 
         return ApiResult(body=f'Updated authors on document: {saved_id}')
 
@@ -669,8 +667,3 @@ def edit_document_authors(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
-
-@bp.before_request
-def before_requests():
-    """Method to setup variables and route dependencies if needed."""
-    pass
