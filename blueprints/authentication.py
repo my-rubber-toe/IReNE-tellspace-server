@@ -169,6 +169,5 @@ def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
     if blacklist.currsize == 0:
         return False
-    # search for the jti on the blacklist#
     entry = blacklist.get(jti)
     return entry

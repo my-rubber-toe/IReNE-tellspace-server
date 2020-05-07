@@ -5,12 +5,11 @@ All operations performed on these endpoints must have a valid access token to pr
 approved and is not banned.
 """
 
-from flask import Blueprint, request, json, jsonify
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.responses import ApiResult, ApiException
 from utils.validators import *
-from utils.exceptions import TellSpaceApiError, TellSpaceAuthError
-from TS_DAOs.schema_DB import *
+from utils.exceptions import TellSpaceAuthError
 from datetime import datetime
 from TS_DAOs.dao_TS import *
 
@@ -36,10 +35,9 @@ def get_documents():
     # Get user identity
     email = get_jwt_identity()
 
-    # # Extract collaborator with identity
+    # Extract collaborator with identity
     collab: Collaborator = get_me(email)
 
-    # print("collab id:" , collab.id)
     if (not collab.banned) and collab.approved:
         documents = get_doc_collab(str(collab.id))
         return jsonify(documents)
@@ -669,8 +667,3 @@ def edit_document_authors(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
-
-@bp.before_request
-def before_requests():
-    """Method to setup variables and route dependencies if needed."""
-    pass

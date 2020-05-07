@@ -1,22 +1,14 @@
 from mongoengine import *
-from config.development import DB_HOST
+from config.environment import DB_HOST
 import json
 
-disconnect()
 # Connection to the Database, make sure you place the correct container name for the database
-#connect('IReNEdb')
-# connect('IReNEdb', host="mongodb://testuser:testpassword@localhost:27017/?authSource=admin")
-#connect('IReNEdb', host=DB_HOST)
-
-
-# connec the db for testing purposes
-#connect('IReNEdb', host='mongomock://localhost:27017')
-
+connect('IReNEdb', host=DB_HOST)
 
 
 class Collaborator(Document):
     """
-        Document Class for Collaborators. 
+        Document Class for Collaborators.
         Collaborators are the users that will Create/Edit Case Studies.
         List of attributes:
             - documentsID: list<String>  of document ids that the Collaborator created.
@@ -25,7 +17,7 @@ class Collaborator(Document):
             - email: <String> Collaborator's email. It must be a @upr.edu email.
                 - email attribute follows this regex: '.*(@upr\.edu)$'
             - banned: <Boolean> <Default=False> When set to true, the Collaborator looses access to Tellspace service.
-            - approved: <Boolean> <Default=False>  When set to true, the Collaborator gains access to Tellspace service.     
+            - approved: <Boolean> <Default=False>  When set to true, the Collaborator gains access to Tellspace service.
     """
     documentsID = ListField(StringField(required=False), max_length=10)
     first_name = StringField(min_length=1, max_length=30, required=True)
@@ -37,13 +29,13 @@ class Collaborator(Document):
 
 class Admin(Document):
     """
-        Document Class for Admin. 
+        Document Class for Admin.
         Admin are the users that will have access to the Admin Dashboard.
         These attributes will be the credentials of the Admins for them to enter the Admin Dashboard.
         List of attributes:
             - username: <String>  Admin's username.
-                - username attribute follows this regex: '(^(?=[a-zA-Z0-9])(?=.*[a-z])(?=.*[0-9])(?=.*[\.])(?=.*[A-Z])).*[^.]$' 
-            - password: <String> Admin's  password.   
+                - username attribute follows this regex: '(^(?=[a-zA-Z0-9])(?=.*[a-z])(?=.*[0-9])(?=.*[\.])(?=.*[A-Z])).*[^.]$'
+            - password: <String> Admin's  password.
                 - password attribute follows this regex: '(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]))'
     """
     username = StringField(min_length=8, max_length=20, required=True, unique=True,
@@ -53,48 +45,48 @@ class Admin(Document):
 
 class Tag(Document):
     """
-        Document Class for Tag. 
+        Document Class for Tag.
         Tag are the tags available for used as keywords for the DocumentCase.
         There will be some pre-defined by the Team, and the majority will be created by the
         Collaborators.
         List of attributes:
-            - tagItem: <String>  Tag that can be used in a DocumentCase.   
+            - tagItem: <String>  Tag that can be used in a DocumentCase.
     """
     tagItem = StringField(min_length=1, max_length=50, required=True, unique=True)
 
 
 class Infrastructure(Document):
     """
-        Document Class for Infrastructure. 
+        Document Class for Infrastructure.
         These are going to be the categories available for the description of the
         infrastructure in the DocumentCase.
         All of them  will be pre-defined by the Team.
         List of attributes:
-            - infrastructureType: <String>  category that can be used in a DocumentCase.   
+            - infrastructureType: <String>  category that can be used in a DocumentCase.
     """
     infrastructureType = StringField(min_length=1, max_length=50, required=True, unique=True)
 
 
 class Damage(Document):
     """
-        Document Class for Damage. 
+        Document Class for Damage.
         These are going to be the categories available for the description of the
         Damage in the DocumentCase.
         All of them  will be pre-defined by the Team.
         List of attributes:
-            - damageType: <String>  category that can be used in a DocumentCase.   
+            - damageType: <String>  category that can be used in a DocumentCase.
     """
     damageType = StringField(min_length=1, max_length=50, required=True, unique=True)
 
 
 class CityPR(Document):
     """
-        Document Class for CityPR. 
+        Document Class for CityPR.
         These are going to be the list of cities of Puerto Rico for the use of selection location
         for DocumentCase & as a filter list for a visualization.
         All of them  will be pre-defined by the Team.
         List of attributes:
-            - damageType: <String>  category that can be used in a DocumentCase.   
+            - damageType: <String>  category that can be used in a DocumentCase.
     """
     city = StringField(min_length=1, max_length=30, required=True, unique=True)
     latitude = DecimalField(min_value=17.87, max_value=18.53, required=True)
@@ -103,16 +95,16 @@ class CityPR(Document):
 
 class Author(EmbeddedDocument):
     """
-        EmbeddedDocument Class for Author. 
+        EmbeddedDocument Class for Author.
         These are going to be the authors of a DocumentCase, the ones who wrote it.
         An EmbeddedDocument is a Document Class that is defined inside another document.
-        This one is going to be defined, and stored inside the DocumentCase Class. 
+        This one is going to be defined, and stored inside the DocumentCase Class.
         The reason for this technique is that the Author Class has its own schema.
         List of attributes:
-            - author_FN: <String>  Author's First Name. 
+            - author_FN: <String>  Author's First Name.
             - author_LN: <String>  Author's Last Name.
             - author_email: <String>  Author's Email.
-            - author_faculty: <String>  Author's Faculty.  
+            - author_faculty: <String>  Author's Faculty.
     """
     author_FN = StringField(min_length=1, max_length=30, required=True)
     author_LN = StringField(min_length=1, max_length=30, required=True)
@@ -122,15 +114,15 @@ class Author(EmbeddedDocument):
 
 class Actor(EmbeddedDocument):
     """
-        EmbeddedDocument Class for Actor. 
+        EmbeddedDocument Class for Actor.
         These are going to be the Actor of a DocumentCase, the ones having a role in the DocumentCase.
         An EmbeddedDocument is a Document Class that is defined inside another document.
-        This one is going to be defined, and stored inside the DocumentCase Class. 
+        This one is going to be defined, and stored inside the DocumentCase Class.
         The reason for this technique is that the Actor Class has its own schema.
         List of attributes:
-            - actor_FN: <String>  Actor's First Name. 
+            - actor_FN: <String>  Actor's First Name.
             - actor_LN: <String>  Actor's Last Name.
-            - role: <String>  Actor's role in the DocumentCase. 
+            - role: <String>  Actor's role in the DocumentCase.
     """
     actor_FN = StringField(min_length=1, max_length=30, required=True)
     actor_LN = StringField(min_length=1, max_length=30, required=True)
@@ -139,13 +131,13 @@ class Actor(EmbeddedDocument):
 
 class Timeline(EmbeddedDocument):
     """
-        EmbeddedDocument Class for Timeline. 
+        EmbeddedDocument Class for Timeline.
         These will consist of the Timeline of a DocumentCase, describing the events followed.
         An EmbeddedDocument is a Document Class that is defined inside another document.
-        This one is going to be defined, and stored inside the DocumentCase Class. 
+        This one is going to be defined, and stored inside the DocumentCase Class.
         The reason for this technique is that the Timeline Class has its own schema.
         List of attributes:
-            - event: <String>  Event happend within the DocumentCase. 
+            - event: <String>  Event happend within the DocumentCase.
             - eventStartDate: <String>  Date when the event started, it has to have the following format: 'YYYY-MM-DD'.
                  - eventStartDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
             - eventEndDate: <String>  Date when the event ended, it has to have the following format: 'YYYY-MM-DD'.
@@ -158,14 +150,14 @@ class Timeline(EmbeddedDocument):
 
 class Section(EmbeddedDocument):
     """
-        EmbeddedDocument Class for Section. 
+        EmbeddedDocument Class for Section.
         These are going to be the body of the Document Case.
         An EmbeddedDocument is a Document Class that is defined inside another document.
-        This one is going to be defined, and stored inside the DocumentCase Class. 
+        This one is going to be defined, and stored inside the DocumentCase Class.
         The reason for this technique is that the Section Class has its own schema.
         List of attributes:
-            - secTitle: <String>  Section's title. 
-            - content: <String>  Section's body.  
+            - secTitle: <String>  Section's title.
+            - content: <String>  Section's body.
     """
     secTitle = StringField(min_length=0, max_length=100, required=True)
     content = StringField(required=True)
@@ -173,15 +165,15 @@ class Section(EmbeddedDocument):
 
 class Location(EmbeddedDocument):
     """
-        EmbeddedDocument Class for Location. 
+        EmbeddedDocument Class for Location.
         These are going to be the body of the Document Case.
         An EmbeddedDocument is a Document Class that is defined inside another document.
-        This one is going to be defined, and stored inside the DocumentCase Class. 
+        This one is going to be defined, and stored inside the DocumentCase Class.
         The reason for this technique is that the Location Class has its own schema.
         List of attributes:
-            - address: <String>  Location's address. 
+            - address: <String>  Location's address.
             - latitude: <Number>  Location's latitude.
-            - longitude: <Number> Location's Longitude.  
+            - longitude: <Number> Location's Longitude.
     """
     address = StringField(min_length=0, required=True)
     latitude = DecimalField(min_value=17.86, max_value=18.54, required=True)
@@ -190,23 +182,24 @@ class Location(EmbeddedDocument):
 
 class Location(EmbeddedDocument):
     """
-        EmbeddedDocument Class for Location. 
+        EmbeddedDocument Class for Location.
         These are going to be the body of the Document Case.
         An EmbeddedDocument is a Document Class that is defined inside another document.
-        This one is going to be defined, and stored inside the DocumentCase Class. 
+        This one is going to be defined, and stored inside the DocumentCase Class.
         The reason for this technique is that the Location Class has its own schema.
         List of attributes:
-            - address: <String>  Location's address. 
+            - address: <String>  Location's address.
             - latitude: <Number>  Location's latitude.
-            - longitude: <Number> Location's Longitude.  
+            - longitude: <Number> Location's Longitude.
     """
-    address = StringField(min_length=0, required=True)
+    address = StringField(min_length=1, required=True)
     latitude = DecimalField(min_value=17.86, max_value=18.54, required=True)
     longitude = DecimalField(min_value=-67.29, max_value=-65.22, required=True)
 
+
 class DocumentCase(Document):
     """
-        Document Class for DocumentCase. 
+        Document Class for DocumentCase.
         DocumentCase will consist of a Case Study created by a Collaborator.
         List of attributes:
             - creatoriD: <String>  the Collaborator's id which created the Case study.
@@ -217,35 +210,38 @@ class DocumentCase(Document):
             - incidentDate: <String>  Date when the incident happened, it has to have the following format: 'YYYY-MM-DD'.
                  - incidentDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
             - creationDate: <String>  Date when the case study was created, it has to have the following format: 'YYYY-MM-DD'.
-                - creationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' 
+                - creationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
             - lastModificationDate: <String>  Last date when the case study was modified, it has to have the following format: 'YYYY-MM-DD'.
-                - lastModificationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'  
-            - tagsDoc: List<String> of tags from the case study. 
-            - infrasDocList: List<String> of infrastructure categories from the case study. 
-            - damageDocList: List<String> of damage categories from the case study. 
+                - lastModificationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+            - tagsDoc: List<String> of tags from the case study.
+            - infrasDocList: List<String> of infrastructure categories from the case study.
+            - damageDocList: List<String> of damage categories from the case study.
             - location: List<Location> of addresses where the case study took place.
             - author: List<Author> of author objects, the ones who wrote the case study.
             - actor: List<Actor> of actor objects, the ones who plays a role in the case study.
             - section: List<Section> of section objects, this will consist the body of the case study.
             - timeline: List<Timeline> of timeline objects, this will consist of the events that happened within the case study.
-                
+
     """
     creatoriD = ReferenceField('Collaborator')
-    title = StringField(min_length=10, max_length=250, required=True, unique=True)
-    language = StringField(min_length=0, required=False)
-    location = ListField(StringField(min_length=0, required=False))
-    description = StringField(min_length=0, max_length=500, required=False)
+    title = StringField(min_length=10, max_length=100, required=True, unique=True)
+    language = StringField(min_length=1, required=True)
+    description = StringField(min_length=1, max_length=500, required=True)
     published = BooleanField(default=True, required=True)
-    incidentDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    creationDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    lastModificationDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    tagsDoc = ListField(StringField(min_length=0, max_length=30, required=False))
-    infrasDocList = ListField(StringField(min_length=1, max_length=30, required=True))
-    damageDocList = ListField(StringField(min_length=1, max_length=30, required=True))
-    author = ListField(EmbeddedDocumentField(Author))
-    actor = ListField(EmbeddedDocumentField(Actor))
-    section = ListField(EmbeddedDocumentField(Section))
-    timeline = ListField(EmbeddedDocumentField(Timeline))
+    incidentDate = StringField(min_length=9, max_length=11, required=True,
+                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    creationDate = StringField(min_length=9, max_length=11, required=True,
+                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    lastModificationDate = StringField(min_length=9, max_length=11, required=True,
+                                       regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    tagsDoc = ListField(StringField(min_length=0, max_length=50, unique=True), required=False, max_length=10)
+    infrasDocList = ListField(StringField(min_length=1, max_length=50, required=True, unique=True))
+    damageDocList = ListField(StringField(min_length=1, max_length=50, required=True, unique=True))
+    location = ListField(EmbeddedDocumentField(Location), max_length=5, required=False)
+    author = ListField(EmbeddedDocumentField(Author), min_length=1, max_length=10, required=True)
+    actor = ListField(EmbeddedDocumentField(Actor), min_length=1, max_length=5, required=True)
+    section = ListField(EmbeddedDocumentField(Section), max_length=10, required=False)
+    timeline = ListField(EmbeddedDocumentField(Timeline), max_length=5, required=False)
 
 
 class CreationEmbedded(EmbeddedDocument):
@@ -271,7 +267,7 @@ class CreationEmbedded(EmbeddedDocument):
         for author in self.author:
             auth.append(json.loads(author.to_json()))
         return auth
-    
+
     def _actor_to_json(self):
         actor = []
         for act in self.actor:
@@ -293,7 +289,7 @@ class CreationEmbedded(EmbeddedDocument):
         for location in self.location:
             locations.append(location.address)
         return locations
-    
+
     def _section_to_json(self):
         sections = []
         for section in self.section:
@@ -304,12 +300,12 @@ class CreationEmbedded(EmbeddedDocument):
                 }
             )
         return sections
-    
+
     def to_json(self):
-        if(self.title is None):
+        if (self.title is None):
             return {}
         else:
-           return {
+            return {
                 'creatoriD': str(self.creatoriD.id),
                 'title': self.title,
                 'language': self.language,
@@ -328,23 +324,27 @@ class CreationEmbedded(EmbeddedDocument):
                 'timeline': self._timeline_to_json()
             }
 
+
 class TitleEmbedded(EmbeddedDocument):
-    title = StringField(min_length=10, max_length = 100, required=True, unique=True)
+    title = StringField(min_length=10, max_length=100, required=True, unique=True)
 
     def to_json(self):
         return self.title
 
+
 class DescriptionEmbedded(EmbeddedDocument):
     description = StringField(min_length=0, max_length=500, required=False)
-    
+
     def to_json(self):
         return self.description
 
+
 class InfrastructureEmbedded(EmbeddedDocument):
-    infrasDocList =  ListField(StringField(min_length=1,max_length=50,required=True))
+    infrasDocList = ListField(StringField(min_length=1, max_length=50, required=True))
 
     def to_json(self):
         return self.infrasDocList
+
 
 class TimelineEmbedded(EmbeddedDocument):
     timeline = ListField(EmbeddedDocumentField(Timeline))
@@ -359,22 +359,25 @@ class TimelineEmbedded(EmbeddedDocument):
             })
         return timeline
 
+
 class SectionEmbedded(EmbeddedDocument):
     section = EmbeddedDocumentField(Section)
 
     def to_json(self):
-        if(self.section == None):
+        if (self.section == None):
             return {}
         return {
-                'secTitle': self.section.secTitle,
-                'content': self.section.content
-            }
+            'secTitle': self.section.secTitle,
+            'content': self.section.content
+        }
+
 
 class DamageEmbedded(EmbeddedDocument):
-    damageDocList =  ListField(StringField(min_length=1,max_length=50,required=True))
+    damageDocList = ListField(StringField(min_length=1, max_length=50, required=True))
 
     def to_json(self):
         return self.damageDocList
+
 
 class ActorEmbedded(EmbeddedDocument):
     actor = ListField(EmbeddedDocumentField(Actor))
@@ -384,9 +387,10 @@ class ActorEmbedded(EmbeddedDocument):
         for actor in self.actor:
             actors.append(
                 {'actor_FN': actor.actor_FN,
-                'actor_LN': actor.actor_LN,
-                'role': actor.role})
+                 'actor_LN': actor.actor_LN,
+                 'role': actor.role})
         return actors
+
 
 class AuthorEmbedded(EmbeddedDocument):
     author = ListField(EmbeddedDocumentField(Author))
@@ -396,10 +400,11 @@ class AuthorEmbedded(EmbeddedDocument):
         for author in self.author:
             authors.append(
                 {'author_FN': author.author_FN,
-                'author_LN': author.author_LN,
-                'author_email': author.author_email,
-                'author_faculty': author.author_faculty})
+                 'author_LN': author.author_LN,
+                 'author_email': author.author_email,
+                 'author_faculty': author.author_faculty})
         return authors
+
 
 class IncidentEmbedded(EmbeddedDocument):
     incidentDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
@@ -407,24 +412,28 @@ class IncidentEmbedded(EmbeddedDocument):
     def to_json(self):
         return self.incidentDate
 
+
 class TagEmbedded(EmbeddedDocument):
-    tagsDoc = ListField(StringField(min_length=1,max_length=50,required=False))
+    tagsDoc = ListField(StringField(min_length=1, max_length=50, required=False))
 
     def to_json(self):
         return self.tagsDoc
 
+
 class LocationEmbedded(EmbeddedDocument):
     location = ListField(EmbeddedDocumentField(Location), max_length=5, required=False)
-    
+
     def to_json(self):
         locations = []
         for location in self.location:
             locations.append(location.address)
         return locations
 
+
 class FieldsEmbedded(EmbeddedDocument):
     new = GenericEmbeddedDocumentField(required=True)
     old = GenericEmbeddedDocumentField(required=True)
+
 
 class DocumentCaseRevision(Document):
     creatorId = ReferenceField('Collaborator')

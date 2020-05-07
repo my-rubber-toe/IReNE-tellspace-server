@@ -8,7 +8,7 @@ import datetime
 
 
 class TellSpaceError(Exception):
-    """Base Audit Manager Error Class"""
+    """Base Audit Manager Error Class. When called, it will write error logs to the error_logs.log file."""
 
     error_type = 'TellSpaceError'
 
@@ -38,7 +38,6 @@ class TellSpaceError(Exception):
         )
         log_string = '{' + log_string + '},\n'
 
-        # TODO: implement buffer
         with open('error_logs.log', 'a+') as f:
             f.write(log_string)
 
@@ -48,15 +47,10 @@ class TellSpaceError(Exception):
 
 
 class TellSpaceApiError(TellSpaceError):
-    """Audit Manager API error"""
+    """Audit Manager for any error"""
     error_type = 'TellSpaceApiError'
 
 
-class TellSpaceRequestValidationError(TellSpaceError):
-    """Audit Manager API error"""
-    error_type = 'TellSpaceRequestValidationError'
-
-
 class TellSpaceAuthError(TellSpaceError):
-    """Error manager for authentication errors"""
+    """Audit manager for authentication errors"""
     error_type = 'TellSpaceAuthError'

@@ -368,17 +368,16 @@ def put_doc_locations(collab_id, doc_id, locations_list):
         if repeated_hash.__contains__(location):
             raise TellSpaceApiError('RepeatedContentError', msg='One of the given locations is repeated')
 
-        # Todo: Change to only get location instance with one query search
         city_pr = CityPR.objects.get(city=location)
         loc_body = Location(address=city_pr.city, latitude=city_pr.latitude, longitude=city_pr.longitude)
         new_locations.append(loc_body)
 
     doc: DocumentCase = DocumentCase.objects.get(id=doc_id, creatoriD=str(collab_id))
-    previous_locations = doc.location
+    # previous_locations = doc.location
     doc.location = new_locations
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     doc.save()
-    log_document_edit_location(doc, previous_locations)
+    # log_document_edit_location(doc, previous_locations)
     return doc.id
 
 
