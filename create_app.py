@@ -9,11 +9,15 @@ from flask import Flask
 
 from utils.exceptions import TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
+from utils.scheduled_jobs import ScheduledJobs
+from utils.logger import AppLogger
 
 from flask_jwt_extended import JWTManager
 import sys, inspect
 
 from flask_cors import CORS
+
+from database.db_init import register_database
 
 
 class ApiFlask(Flask):
@@ -42,7 +46,8 @@ class ApiFlask(Flask):
 
     def create_app(self, config=None):
         """
-            Sets up this class instance with the respective configuration.
+            Sets up this class instance by configuring database connections, endpoints, cors, secrets, origins, error
+            handlers and JWT manager.
 
             Parameters
             ----------
@@ -79,6 +84,15 @@ class ApiFlask(Flask):
             # Setup and register '/ endpoint'
             self.register_base_url()
 
+            # Register database
+            register_database(self)
+
+            # Register AppLogger
+            # self.__setattr__('app_logger', AppLogger('app.log'))
+
+            # Register ScheduledJobs
+            # ScheduledJobs.job_ping_db()
+
             return self
 
     def register_base_url(self):
@@ -93,6 +107,8 @@ class ApiFlask(Flask):
 
         @self.route('/')
         def api():
+            # logger: AppLogger = self.__getattribute__('app_logger')
+            # logger.log_info('TEST')
             return ApiResult(message="Welcome to the TellSpace-Server API. Please refer to the documentation.")
 
     def register_blueprints(self):
@@ -122,7 +138,7 @@ class ApiFlask(Flask):
                     @self.errorhandler(obj)
                     def handle_jwt_excepions(error):
                         return ApiException(
-                            error_type='TokenError',
+                            error_type='Token Error',
                             message=error.msg,
                             status=error.status
                         )
@@ -133,18 +149,18 @@ class ApiFlask(Flask):
                     @self.errorhandler(obj)
                     def handle_marshmallow_errors(error):
                         return ApiException(
-                            error_type='ValidationError',
+                            error_type='Validation Error',
                             message='Please verify you request body and parameters.',
                             status=400
                         )
 
-            # Register marshmallow validator  exceptions
+            # Register mongoengine  exceptions
             for name, obj in inspect.getmembers(sys.modules['mongoengine.errors']):
                 if inspect.isclass(obj) and not name == 'defaultdict':
                     @self.errorhandler(obj)
                     def handle_database_errors(error):
                         return ApiException(
-                            error_type='DatabaseError',
+                            error_type='Database Connection Error',
                             message='Internal Server Error',
                             status=500
                         )
@@ -152,7 +168,7 @@ class ApiFlask(Flask):
             @self.errorhandler(TellSpaceApiError)
             def handle_api_error(error):
                 return ApiException(
-                    error_type='TellSpaceApiError',
+                    error_type='TellSpace Api Error',
                     message=error.msg,
                     status=error.status
                 )
@@ -160,7 +176,7 @@ class ApiFlask(Flask):
             @self.errorhandler(TellSpaceAuthError)
             def handle_custom_errors(error):
                 return ApiException(
-                    error_type='TellSpaceAuthError',
+                    error_type='TellSpace Authentication Error',
                     message=error.msg,
                     status=error.status
                 )
@@ -168,31 +184,31 @@ class ApiFlask(Flask):
             @self.errorhandler(ValueError)
             def request_value_error(error):
                 return ApiException(
-                    error_type='ValueError',
+                    error_type='Value Error',
                     message=error.messages,
                     status=400
                 )
 
             @self.errorhandler(Exception)
             def handle_unexpected_error(error):
-                return ApiException(error_type='UnexpectedError', message=str(error), status=500)
+                return ApiException(error_type='Unexpected Error', message=str(error), status=500)
 
             self.register_error_handler(
                 400,
                 lambda err: ApiException(message=str(
-                    err), status=400, error_type='Bad request')
+                    err), status=400, error_type='Bad Request')
             )
 
             self.register_error_handler(
                 404,
                 lambda err: ApiException(message=str(
-                    err), status=404, error_type='Not found')
+                    err), status=404, error_type='Not Found')
             )
 
             self.register_error_handler(
                 405,
                 lambda err: ApiException(message=str(
-                    err), status=405, error_type='Request method')
+                    err), status=405, error_type='Request Method')
             )
 
     def register_cors(self):

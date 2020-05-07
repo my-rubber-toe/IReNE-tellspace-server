@@ -11,7 +11,7 @@ from utils.responses import ApiResult, ApiException
 from utils.validators import *
 from utils.exceptions import TellSpaceAuthError
 from datetime import datetime
-from TS_DAOs.dao_TS import *
+from database.daos import *
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
 

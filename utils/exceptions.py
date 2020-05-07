@@ -5,6 +5,8 @@ Classes to standardize the exception raising.
 """
 
 import datetime
+from utils.logger import AppLogger
+from flask import current_app
 
 
 class TellSpaceError(Exception):
@@ -37,9 +39,8 @@ class TellSpaceError(Exception):
             str(self.now.strftime("%a, %d %b %Y %I:%M:%S %p"))
         )
         log_string = '{' + log_string + '},\n'
-
-        with open('error_logs.log', 'a+') as f:
-            f.write(log_string)
+        # logger: AppLogger = current_app.__getattribute__('app_logger')
+        # logger.log_error(log_string)
 
     def __str__(self):
         return f'\nApplication is in DEBUG MODE:\nError Pretty Print:\n\tType:{self.error_type}; Msg:{self.msg}; Status:{self.status}; ' \

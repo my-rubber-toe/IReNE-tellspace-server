@@ -7,8 +7,7 @@ Blueprint class that holds the endpoints that allows the retrieval of non sensit
 
 from flask import Blueprint, jsonify
 from utils.responses import ApiResult
-from TS_DAOs.schema_DB import *
-from TS_DAOs.dao_TS import get_infrastructure_list, get_damage_list, get_tags_list
+from database.daos import get_infrastructure_list, get_damage_list, get_tags_list
 
 bp = Blueprint('general', __name__, url_prefix='/general')
 
@@ -45,9 +44,6 @@ def get_damage_types():
         -------
             ["damage1","damage2", ...]
     """
-    # list = []
-    # for d in Damage.objects():
-    #     list.append(d.damageType)
     return jsonify(get_damage_list())
 
 

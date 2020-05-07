@@ -6,8 +6,8 @@ load_dotenv(verbose=True)
 FLASK_APP = os.getenv("FLASK_APP")
 FLASK_ENV = os.getenv("FLASK_ENV")
 PORT = os.getenv("PORT")
-
 FLASK_DEBUG = os.getenv("FLASK_DEBUG")
+DB_NAME = os.getenv('DB_NAME')
 DB_HOST = os.getenv("DB_HOST")
 
 

@@ -13,13 +13,10 @@ from google.auth.transport import requests
 
 from utils.responses import ApiResult
 from utils.exceptions import TellSpaceAuthError
-
 from cachetools import TTLCache
-
 from datetime import timedelta
-
-from TS_DAOs.dao_TS import *
-from TS_DAOs.schema_DB import *
+from database.daos import *
+from database.schemas import *
 
 bp = Blueprint('authentication', __name__, url_prefix='/auth')
 
