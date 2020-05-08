@@ -1,8 +1,8 @@
 """
-validators.py
-====================================
-Classes that perform the request body validation process. These classes throw message errors according to the missing
-values or type errors.
+Validators: validators.py
+=========================
+Holds the classes that perform the request body validation process. These classes throw message errors according to the
+missing values or type errors.
 """
 
 from marshmallow import Schema, fields, validate

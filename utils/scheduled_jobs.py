@@ -1,7 +1,7 @@
 """
-scheduled_jobs.py
-====================================
-Scheduling operations.
+Scheduled Jobs: scheduled_jobs.py
+=================================
+Holds a class to hold scheduling operations.
 """
 
 from flask import current_app

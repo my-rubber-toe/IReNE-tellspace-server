@@ -1,7 +1,7 @@
 """
-responses.py
-====================================
-Classes to standardize the response methods.
+Responses: responses.py
+=======================
+Holds classes to standardize the response methods.
 """
 
 from flask import jsonify, make_response

@@ -1,6 +1,6 @@
 """
-authentication.py
-====================================
+Authentication Module: authentication.py
+========================================
 Holds the endpoints that perform authentication operations. These endpoints are responsible for
 the generation, refreshing and revoking of access tokens.
 """
@@ -10,10 +10,10 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
     jwt_required, get_jwt_identity, get_raw_jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from utils.responses import ApiResult
-from utils.exceptions import TellSpaceAuthError
 from cachetools import TTLCache
 from datetime import timedelta
+from utils.responses import ApiResult
+from utils.exceptions import TellSpaceAuthError
 from database.daos import *
 from database.schemas import *
 
@@ -39,19 +39,20 @@ def get_tokens(google_token: str):
         -------
             ApiResult
                 the response object containing a JSON Object with two tokens: access_token and refresh_token,
-            respectively.
+                respectively.
 
+        Raises
+        ------
             TellSpaceAuthError
-                Exception Class.
+                error exception class for authentication related errors.
 
     """
-    id_info = id_token.verify_oauth2_token(
+    id_info = id_token.verify_oauth2_token( # Validate that the given token is indeed issued by the app's client id.
         google_token,
         requests.Request(),
         current_app.config['GOOGLE_OAUTH_CLIENT_ID'])
 
-    # Verify that the token was indeed issued by google accounts.
-    if id_info['iss'] != 'accounts.google.com':
+    if id_info['iss'] != 'accounts.google.com':  # Verify that the token was indeed issued by google accounts.
         raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
 
     collab: Collaborator = get_me(id_info['email'])
@@ -61,7 +62,6 @@ def get_tokens(google_token: str):
         refresh_token_ttl = 10
 
         return ApiResult(
-            # access_token=create_access_token(identity=id_info['email'], expires_delta=timedelta(hours=30),
             access_token=create_access_token(identity=collab.email, expires_delta=timedelta(hours=access_token_ttl)),
             refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(hours=refresh_token_ttl)),
             access_token_ttl=access_token_ttl,
@@ -145,7 +145,7 @@ def auth_logout():
     return ApiResult(message="Successfully logged out.")
 
 
-@current_app.jwt.token_in_blacklist_loader
+# @current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """
         Verifies if a token has been blacklisted if the time-to-live cache by extracting

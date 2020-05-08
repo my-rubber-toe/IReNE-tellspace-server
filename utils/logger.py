@@ -1,7 +1,8 @@
 """
-logger.py
-====================================
-Logging operations.
+Logger Module: logger.py
+========================
+This module holds classes responsible for performing standarized log operations.Can be called by any other module to
+log events.
 """
 
 import logging
@@ -47,4 +48,4 @@ class AppLogger:
                 message
                     message string to log
         """
-        self.logger.error(message=message, exc_info=True)
+        self.logger.error(msg=message, exc_info=True)

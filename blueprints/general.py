@@ -1,7 +1,7 @@
 """
-general.py
-====================================
-Blueprint class that holds the endpoints that allows the retrieval of non sensitive information. Holds a blueprint object
+General Module: general.py
+==========================
+Holds the endpoints that allow the retrieval of non sensitive information. Holds a blueprint object
  that is used to create the routes for this module.
 """
 

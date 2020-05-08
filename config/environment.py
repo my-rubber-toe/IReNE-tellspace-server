@@ -1,3 +1,9 @@
+"""
+config.py
+====================================
+Holds the configuration options to be used as environment variables.
+"""
+
 from dotenv import load_dotenv
 import os
 

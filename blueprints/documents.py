@@ -1,5 +1,6 @@
 """
-document.py
+Documents Module: documents.py
+==============================
 Holds the endpoints that perform CRUD operations on the documents present in the database.
 All operations performed on these endpoints must have a valid access token to proceed. Also, said entity retrieved
 from the token must be authorized and not banned in order to perform operations.
@@ -33,13 +34,11 @@ def get_documents():
                 approved.
     """
 
-    # Get user identity
-    email = get_jwt_identity()
+    email = get_jwt_identity()  # Get user identity.
 
-    # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
+    collab: Collaborator = get_me(email)  # Extract collaborator from database.
 
-    if (not collab.banned) and collab.approved:
+    if (not collab.banned) and collab.approved:  # Evaluate collaborator status before proceeding.
         documents = get_doc_collab(collab)
         return jsonify(documents)
 
@@ -62,12 +61,16 @@ def get_document_by_id(doc_id: str):
         -------
             Response
                 JSON object with all the information from a document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
 
     email = get_jwt_identity()
+
     collab: Collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
@@ -90,6 +93,9 @@ def create_document():
         -------
             ApiResult
                 JSON object with the id of the newly created document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
@@ -139,6 +145,9 @@ def remove_document(doc_id: str):
         -------
             ApiResult
                 JSON Object containing the id of the removed document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
@@ -173,6 +182,12 @@ def edit_document_title(doc_id: str):
         -------
             ApiResult
                 JSON Object with message of the updated document with the new title.
+
+        Raises
+        ------
+            TellSpaceApiError
+                Exception Class for unexpected api errors.
+
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
@@ -208,14 +223,15 @@ def edit_document_description(doc_id: str):
         -------
             ApiResult
                 JSON Object with message of the updated document with the new description.
+        Raises
+        ------
+            TellSpaceApiError
+                Exception Class for unexpected api errors.
+
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
-
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
     email = get_jwt_identity()
     body = DescriptionValidator().load(request.json)
 
@@ -245,30 +261,28 @@ def edit_document_timeline(doc_id: str):
         -------
             ApiResult
                 JSON Object with message of the updated document and its id.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
-    email = get_jwt_identity()
 
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
 
     body = TimelineValidator().load(request.json)
 
-    # Check that event_start_date is NOT larger than event_end_date
-    for time_pair in body['timeline']:
+    for time_pair in body['timeline']:  # Check that event_start_date is NOT larger than event_end_date
         if time_pair['event_start_date'] > time_pair['event_end_date']:
             raise TellSpaceApiError(
                 msg='Invalid Timeline Pair. '
                     'Start Date is larger than the end date. One of the dates is larger than today.',
                 status=500
             )
-
+    email = get_jwt_identity()
     collab: Collaborator = get_me(email)
 
-    # If collaborator is NOT banned and its approved, then do the thing
-    if not collab.banned and collab.approved:
+    if not collab.banned and collab.approved:  # If collaborator is NOT banned and its approved, then do the thing
         saved_id = put_doc_timeline(collab_id=collab, doc_id=doc_id, timeline=body['timeline'])
         return ApiResult(message=f'Updated document {saved_id} timeline.')
 
@@ -292,6 +306,9 @@ def create_document_section(doc_id: str):
         -------
             ApiResult
                 JSON Object with message of the updated document id and the new number of sections.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
@@ -324,6 +341,8 @@ def remove_document_section(doc_id: str, section_nbr: str):
             ApiResult
                 JSON Object with message that show the removed section number, the document id and the number of
                 sections left.
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
@@ -357,13 +376,13 @@ def edit_document_section(doc_id, section_nbr):
         -------
             ApiResult
                 JSON Object with message of the updated section and the document id.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
-
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
 
     email = get_jwt_identity()
     body: EditSectionValidator = EditSectionValidator().load(request.json)
@@ -393,25 +412,21 @@ def edit_document_infrastructure_types(doc_id):
         -------
             ApiResult
                 JSON Object with message containing the id of the updated document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
 
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
+    email = get_jwt_identity()  # Get user identity
 
-    # Get user identity
-    email = get_jwt_identity()
+    body = InfrastructureTypesValidator().load(request.json)  # Verify request parameters
 
-    # Verify request parameters
-    body = InfrastructureTypesValidator().load(request.json)
+    collab: Collaborator = get_me(email)  # Extract collaborator with identity
 
-    # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
-
-    # Verify if the given infrastrucutres are in the Infrastrucutre Collection
-    try:
+    try:  # Verify if the given infrastrucutres are in the Infrastrucutre Collection
         for infra in body['infrastructure_types']:
             Infrastructure.objects.get(infrastructureType=infra)
     except:
@@ -443,23 +458,20 @@ def edit_document_damage_types(doc_id: str):
         -------
             ApiResult
                 JSON Object with message containing the id of the updated document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
+    email = get_jwt_identity()  # Get user identity
 
-    # Get user identity
-    email = get_jwt_identity()
+    body = DamageTypesValidator().load(request.json)  # Verify request parameters
 
-    # Verify request parameters
-    body = DamageTypesValidator().load(request.json)
+    collab: Collaborator = Collaborator.objects.get(email=email)  # Extract collaborator with identity
 
-    # Extract collaborator with identity
-    collab: Collaborator = Collaborator.objects.get(email=email)
-
-    try:
+    try:  # Verify that the recieved damage_types exist in the database
         for damage in body['damage_types']:
             Damage.objects.get(damageType=damage)
     except:
@@ -490,22 +502,19 @@ def edit_document_locations(doc_id: str):
         -------
             ApiResult
                 JSON Object with message containing the id of the updated document.
+        Raises
+        ------
+
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
 
-    # Get user identity
-    email = get_jwt_identity()
-
-    # Verify request parameters
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
     body = LocationsValidator().load(request.json)
 
-    # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
+    email = get_jwt_identity()  # Get user identity
+
+    collab: Collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_locations(collab, doc_id, body['locations'])
@@ -531,22 +540,18 @@ def edit_document_tags(doc_id: str):
         -------
             ApiResult
                 JSON Object with message containing the id of the updated document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
+
     """
-
-    # Get user identity
-    email = get_jwt_identity()
-
-    # Verify request parameters
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
     body = TagsValidator().load(request.json)
 
-    # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
+    email = get_jwt_identity()  # Get user identity
+    collab: Collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_tags(collab, doc_id, body['tags'])
@@ -572,27 +577,22 @@ def edit_document_incident_date(doc_id: str):
         -------
             ApiResult
                 JSON Object with message containing the id of the updated document.
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
 
-    # Get user identity
-    email = get_jwt_identity()
-
-    # Verify request parameters
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
     body = IncidentDateValidator().load(request.json)
 
-    # Verify that the date of the incident date is not in the future
     today = datetime.datetime.today().strftime('%Y-%m-%d')
-    if str(body['incident_date']) > today:
+    if str(body['incident_date']) > today:  # Verify that the date of the incident date is not in the future
         raise TellSpaceApiError(msg='Incident date is in the future.')
 
-    # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
+    email = get_jwt_identity()  # Get user identity
+
+    collab: Collaborator = get_me(email)  # Extract collaborator with email identity
 
     if not collab.banned:
         saved_id = put_doc_incidentDate(collab, doc_id, body["incident_date"])
@@ -618,21 +618,18 @@ def edit_document_actors(doc_id: str):
         -------
             ApiResult
                 JSON Object with message containing the id of the updated document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
-
-    # Get user identity
-    email = get_jwt_identity()
-
-    # Verify request parameters
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
     body = ActorsValidator().load(request.json)
 
-    # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
+    email = get_jwt_identity()  # Get user identity
+
+    collab: Collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_actors(collab, doc_id, body['actors'])
@@ -657,22 +654,17 @@ def edit_document_authors(doc_id: str):
         -------
             ApiResult
                 JSON Object with message containing the id of the updated document.
+
+        Raises
+        ------
             TellSpaceAuthError
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
-
-    # Get user identity
-    email = get_jwt_identity()
-
-    # Verify request parameters
-    if request.json == {}:
-        raise TellSpaceApiError(msg='No request body data.', status=400)
-
     body = AuthorsValidator().load(request.json)
 
-    # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
+    email = get_jwt_identity()  # Get user identity
+    collab: Collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_authors(collab, doc_id, body['authors'])
@@ -683,3 +675,21 @@ def edit_document_authors(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
+
+@bp.before_request
+def before_request():
+    """
+        Performs needed request context verifications before executing the actual request. Actions performed:
+
+        1. Verify if a request method is 'POST' or 'PUT'
+        2. If 1 is true, then if request body is empty or None, raise TellSpaceApiError
+
+        Raises
+        ------
+            TellSpaceApiError
+                exception class used to return custom error types and messages.
+    """
+    if request.method == 'POST' or request.method == 'PUT':
+        if request.json == {} or request.json is None:  # Verify request parameters
+            raise TellSpaceApiError(msg='No request body data.', status=400)
