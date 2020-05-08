@@ -14,47 +14,7 @@ Indices and tables
 * :ref:`search`
 
 .. toctree::
-   :maxdepth: 3
-   :caption: Contents:
+   :maxdepth: 2
+   :caption: Contents
 
-Application Configuration
-=========================
-.. automodule:: create_app
-   :members:
-
-
-Blueprints: Authentication
-==========================
-.. automodule:: blueprints.authentication
-   :members:
-
-Blueprints: General
-===================
-
-.. automodule:: blueprints.general
-   :members:
-
-Blueprints: Documents
-=====================
-
-.. automodule:: blueprints.documents
-   :members:
-
-
-Utils: Responses
-================
-
-.. automodule:: utils.responses
-   :members:
-
-Utils: Exceptions
-=================
-
-.. automodule:: utils.exceptions
-   :members:
-
-Utils: Validators
-=================
-
-.. automodule:: utils.validators
-   :members:
+   modules
