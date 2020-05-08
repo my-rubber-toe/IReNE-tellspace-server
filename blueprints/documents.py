@@ -1,8 +1,8 @@
 """
 document.py
-Blueprint class that holds the endpoints that perform CRUD operations on the documents present in the database.
-All operations performed on these endpoints must have a valid access token to proceed with a collaborator that has been
-approved and is not banned.
+Holds the endpoints that perform CRUD operations on the documents present in the database.
+All operations performed on these endpoints must have a valid access token to proceed. Also, said entity retrieved
+from the token must be authorized and not banned in order to perform operations.
 """
 
 from flask import Blueprint, request, jsonify
@@ -14,6 +14,7 @@ from datetime import datetime
 from database.daos import *
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
+"""Instance of a Flask "Blueprint" class to implement a custom endpoint groups."""
 
 
 @bp.route('/', methods=['GET'])
@@ -47,6 +48,7 @@ def get_documents():
         status=401
     )
 
+
 @bp.route('/<doc_id>', methods=['GET'])
 @jwt_required
 def get_document_by_id(doc_id: str):
@@ -64,7 +66,7 @@ def get_document_by_id(doc_id: str):
                 Exception Class with authorization error message. Raised when the collaborator is banned or not
                 approved.
     """
-    
+
     email = get_jwt_identity()
     collab: Collaborator = get_me(email)
 
@@ -123,6 +125,7 @@ def create_document():
         status=401
     )
 
+
 @bp.route('/remove/<doc_id>', methods=['DELETE'])
 @jwt_required
 def remove_document(doc_id: str):
@@ -155,6 +158,7 @@ def remove_document(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/<doc_id>/edit/title', methods=['PUT'])
 @jwt_required
@@ -190,6 +194,7 @@ def edit_document_title(doc_id: str):
         status=401
     )
 
+
 @bp.route('/<doc_id>/edit/description', methods=['PUT'])
 @jwt_required
 def edit_document_description(doc_id: str):
@@ -224,6 +229,7 @@ def edit_document_description(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/<doc_id>/edit/timeline', methods=['PUT'])
 @jwt_required
@@ -271,6 +277,7 @@ def edit_document_timeline(doc_id: str):
         status=401
     )
 
+
 @bp.route('/<doc_id>/edit/section/create', methods=['POST'])
 @jwt_required
 def create_document_section(doc_id: str):
@@ -299,6 +306,7 @@ def create_document_section(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/<doc_id>/edit/section/remove/<section_nbr>', methods=['DELETE'])
 @jwt_required
@@ -332,6 +340,7 @@ def remove_document_section(doc_id: str, section_nbr: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/<doc_id>/edit/section/<section_nbr>', methods=['PUT'])
 @jwt_required
@@ -369,6 +378,7 @@ def edit_document_section(doc_id, section_nbr):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/<doc_id>/edit/infrastructure_types', methods=['PUT'])
 @jwt_required
@@ -419,6 +429,7 @@ def edit_document_infrastructure_types(doc_id):
         status=401
     )
 
+
 @bp.route('/<doc_id>/edit/damage_types', methods=['PUT'])
 @jwt_required
 def edit_document_damage_types(doc_id: str):
@@ -465,6 +476,7 @@ def edit_document_damage_types(doc_id: str):
         status=401
     )
 
+
 @bp.route('/<doc_id>/edit/locations', methods=['PUT'])
 @jwt_required
 def edit_document_locations(doc_id: str):
@@ -505,6 +517,7 @@ def edit_document_locations(doc_id: str):
         status=401
     )
 
+
 @bp.route('/<doc_id>/edit/tags', methods=['PUT'])
 @jwt_required
 def edit_document_tags(doc_id: str):
@@ -544,6 +557,7 @@ def edit_document_tags(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/<doc_id>/edit/incident_date', methods=['PUT'])
 @jwt_required
@@ -590,6 +604,7 @@ def edit_document_incident_date(doc_id: str):
         status=401
     )
 
+
 @bp.route('/<doc_id>/edit/actors', methods=['PUT'])
 @jwt_required
 def edit_document_actors(doc_id: str):
@@ -627,6 +642,7 @@ def edit_document_actors(doc_id: str):
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
         status=401
     )
+
 
 @bp.route('/<doc_id>/edit/authors', methods=['PUT'])
 @jwt_required

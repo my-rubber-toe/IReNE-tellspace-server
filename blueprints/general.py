@@ -10,6 +10,7 @@ from utils.responses import ApiResult
 from database.daos import get_infrastructure_list, get_damage_list, get_tags_list
 
 bp = Blueprint('general', __name__, url_prefix='/general')
+"""Instance of a Flask "Blueprint" class to implement a custom endpoint groups."""
 
 
 @bp.route("/infrastructure_types", methods=['GET'])
@@ -27,7 +28,7 @@ def get_infrastructure_types():
             ["Infra1", "Infra2", ...]
     """
 
-    return jsonify(get_infrastructure_list())
+    return jsonify(get_infrastructure_list()), 200
 
 
 @bp.route("/damage_types", methods=['GET'])
@@ -44,7 +45,7 @@ def get_damage_types():
         -------
             ["damage1","damage2", ...]
     """
-    return jsonify(get_damage_list())
+    return jsonify(get_damage_list()), 200
 
 
 @bp.route("/tags", methods=['GET'])
@@ -61,4 +62,4 @@ def get_tags():
         -------
             ["Tag1", "Tag2", ...]
     """
-    return jsonify(get_tags_list())
+    return jsonify(get_tags_list()), 200

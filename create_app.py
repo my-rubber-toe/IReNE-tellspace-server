@@ -6,17 +6,12 @@ Holds the configuration functions for blueprints, routes, cors, error catching a
 
 from werkzeug.utils import find_modules, import_string
 from flask import Flask
-
+from flask_cors import CORS
 from utils.exceptions import TellSpaceAuthError, TellSpaceApiError
 from utils.responses import ApiException, ApiResult
 from utils.scheduled_jobs import ScheduledJobs
-from utils.logger import AppLogger
-
 from flask_jwt_extended import JWTManager
 import sys, inspect
-
-from flask_cors import CORS
-
 from database.db_init import register_database
 
 
@@ -24,6 +19,11 @@ class ApiFlask(Flask):
     """
         Custom class extended from the Flask app object. 
         Overrides the make response method to add custom error classes ApiResult and ApiException support.
+
+        Parameters
+        ----------
+            import_name
+                name to give the parent class of Flask
     """
 
     def __init__(self, import_name):
@@ -73,65 +73,80 @@ class ApiFlask(Flask):
             self.__setattr__("jwt", JWTManager(self))
 
             # Setup CORS for cross site requests and more
-            self.register_cors()
+            self.__register_cors()
 
             # Setup and register blueprints to establish all endpoint routes
-            self.register_blueprints()
+            self.__register_blueprints()
 
             # Setup the error handlers
-            self.register_error_handlers()
+            self.__register_error_handlers()
 
             # Setup and register '/ endpoint'
-            self.register_base_url()
+            self.__register_base_url()
 
             # Register database
             register_database(self)
 
-            # Register AppLogger
-            # self.__setattr__('app_logger', AppLogger('app.log'))
-
             # Register ScheduledJobs
-            # ScheduledJobs.job_ping_db()
+            ScheduledJobs.job_ping_db()
 
             return self
 
-    def register_base_url(self):
-        """
-            Base url to perform server health check.
 
-            Parameters
-            ----------
-                app
-                    the ApiFlask Instance
-        """
+    def __register_base_url(self):
+        """Base url to perform server health check."""
 
         @self.route('/')
         def api():
-            # logger: AppLogger = self.__getattribute__('app_logger')
-            # logger.log_info('TEST')
-            return ApiResult(message="Welcome to the TellSpace-Server API. Please refer to the documentation.")
+            return ApiResult(message="TellSpace Server: OK")
 
-    def register_blueprints(self):
-        """Register all blueprints under the {.blueprint} module in the passed application instance.
-
-            Parameters
-            ----------
-                app
-                    the ApiFlask application instance.
-        """
+    def __register_blueprints(self):
+        """Register all blueprints under the {.blueprint} module in the passed application instance."""
         for name in find_modules('blueprints'):
             mod = import_string(name)
             if hasattr(mod, 'bp'):
                 self.register_blueprint(mod.bp)
 
-    def register_error_handlers(self):
+    def __register_cors(self):
+        """Setup CORS, cross-origin-resource-sharing settings."""
+
+        origins_list = '*'
+
+        methods_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+
+        allowed_headers_list = [
+            'Access-Control-Allow-Credentials',
+            'Access-Control-Allow-Headers',
+            'Access-Control-Allow-Methods',
+            'Access-Control-Allow-Origin',
+            'Content-Type',
+            'Authorization',
+            'Content-Disposition',
+            'Referrer-Policy',
+            'Strict-Transport-Security',
+            'X-Frame-Options',
+            'X-Xss-Protection',
+            'X-Content-Type-Options',
+            'X-Permitted-Cross-Domain-Policies'
+        ]
+
+        CORS(
+            app=self,
+            resources={r"/*": {"origins": origins_list}},
+            methods=methods_list,
+            allowed_headers=allowed_headers_list,
+            supports_credentials=True
+        )
+
+    def __register_error_handlers(self):
         """Register all possible exception classes to this class instance. Exceptions taken into consideration are
-            1. flask_jwt_extended.exceptions - All the JWT token related exceptions.
-            2. marshmallow.exceptions
-
+            1. flask_jwt_extended.exceptions - exception classes for JWT token related exceptions.
+            2. marshmallow.exceptions - exceptions classes for parameter and request body validation errors.
+            3. mongoengine.errors - exception classes for database related requests.
         """
+        # FLASK_DEBUG == 0, is production mode
+        if (self.config['FLASK_DEBUG'] == 0):
 
-        if(self.config['FLASK_DEBUG'] == 0):
             # Register JWT exceptions
             for name, obj in inspect.getmembers(sys.modules['flask_jwt_extended.exceptions']):
                 if inspect.isclass(obj):
@@ -160,7 +175,7 @@ class ApiFlask(Flask):
                     @self.errorhandler(obj)
                     def handle_database_errors(error):
                         return ApiException(
-                            error_type='Database Connection Error',
+                            error_type='Database Error',
                             message='Internal Server Error',
                             status=500
                         )
@@ -168,7 +183,7 @@ class ApiFlask(Flask):
             @self.errorhandler(TellSpaceApiError)
             def handle_api_error(error):
                 return ApiException(
-                    error_type='TellSpace Api Error',
+                    error_type=error.error_type,
                     message=error.msg,
                     status=error.status
                 )
@@ -176,7 +191,7 @@ class ApiFlask(Flask):
             @self.errorhandler(TellSpaceAuthError)
             def handle_custom_errors(error):
                 return ApiException(
-                    error_type='TellSpace Authentication Error',
+                    error_type=error.error_type,
                     message=error.msg,
                     status=error.status
                 )
@@ -211,40 +226,8 @@ class ApiFlask(Flask):
                     err), status=405, error_type='Request Method')
             )
 
-    def register_cors(self):
-        """
-            Setup CORS, cross-origin-resource-sharing settings
-
-            Parameters
-            ----------
-                app
-                    the ApiFlask application instance.
-        """
-
-        origins_list = '*'
-
-        methods_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-
-        allowed_headers_list = [
-            'Access-Control-Allow-Credentials',
-            'Access-Control-Allow-Headers',
-            'Access-Control-Allow-Methods',
-            'Access-Control-Allow-Origin',
-            'Content-Type',
-            'Authorization',
-            'Content-Disposition',
-            'Referrer-Policy',
-            'Strict-Transport-Security',
-            'X-Frame-Options',
-            'X-Xss-Protection',
-            'X-Content-Type-Options',
-            'X-Permitted-Cross-Domain-Policies'
-        ]
-
-        CORS(
-            app=self,
-            resources={r"/*": {"origins": origins_list}},
-            methods=methods_list,
-            allowed_headers=allowed_headers_list,
-            supports_credentials=True
-        )
+            self.register_error_handler(
+                422,
+                lambda err: ApiException(message=str(
+                    err), status=422, error_type='Unprocessable Entity')
+            )

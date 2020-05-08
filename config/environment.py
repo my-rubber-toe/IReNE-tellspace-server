@@ -10,7 +10,6 @@ FLASK_DEBUG = os.getenv("FLASK_DEBUG")
 DB_NAME = os.getenv('DB_NAME')
 DB_HOST = os.getenv("DB_HOST")
 
-
 # Authorization
 GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")

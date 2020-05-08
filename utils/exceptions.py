@@ -6,15 +6,15 @@ Classes to standardize the exception raising.
 
 import datetime
 from utils.logger import AppLogger
-from flask import current_app
 
 
 class TellSpaceError(Exception):
     """Base Audit Manager Error Class. When called, it will write error logs to the error_logs.log file."""
 
-    error_type = 'TellSpaceError'
+    error_type = 'TellSpace Error'
 
     def __init__(self, err=None, msg='Error', status=500, action=None):
+        self.logger = AppLogger()
         self.msg = msg
         self.status = status
         if err:
@@ -39,8 +39,8 @@ class TellSpaceError(Exception):
             str(self.now.strftime("%a, %d %b %Y %I:%M:%S %p"))
         )
         log_string = '{' + log_string + '},\n'
-        # logger: AppLogger = current_app.__getattribute__('app_logger')
-        # logger.log_error(log_string)
+
+        self.logger.log_error(log_string)
 
     def __str__(self):
         return f'\nApplication is in DEBUG MODE:\nError Pretty Print:\n\tType:{self.error_type}; Msg:{self.msg}; Status:{self.status}; ' \
@@ -49,9 +49,9 @@ class TellSpaceError(Exception):
 
 class TellSpaceApiError(TellSpaceError):
     """Audit Manager for any error"""
-    error_type = 'TellSpaceApiError'
+    error_type = 'TellSpace Api Error'
 
 
 class TellSpaceAuthError(TellSpaceError):
     """Audit manager for authentication errors"""
-    error_type = 'TellSpaceAuthError'
+    error_type = 'TellSpace Authentication Error'

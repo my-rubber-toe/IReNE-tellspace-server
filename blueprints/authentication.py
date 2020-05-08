@@ -1,7 +1,7 @@
 """
 authentication.py
 ====================================
-Blueprint class that holds the endpoints that perform authentication operations. These endpoints are responsible for
+Holds the endpoints that perform authentication operations. These endpoints are responsible for
 the generation, refreshing and revoking of access tokens.
 """
 
@@ -10,7 +10,6 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
     jwt_required, get_jwt_identity, get_raw_jwt
 from google.oauth2 import id_token
 from google.auth.transport import requests
-
 from utils.responses import ApiResult
 from utils.exceptions import TellSpaceAuthError
 from cachetools import TTLCache
@@ -19,9 +18,10 @@ from database.daos import *
 from database.schemas import *
 
 bp = Blueprint('authentication', __name__, url_prefix='/auth')
+"""Instance of a Flask "Blueprint" class to implement a custom endpoint groups."""
 
-# Set tll to the same time of the ttl of the token #
 blacklist = TTLCache(maxsize=10000, ttl=120)
+"""Time To Live cache used to store all revoked tokens until token lifetime is ended."""
 
 
 @bp.route("/login/<google_token>", methods=['GET'])
@@ -130,7 +130,7 @@ def auth_refresh():
 @jwt_required
 def auth_logout():
     """
-        Revoke access token. Add access tokens to blacklist.
+        Revoke access token. Add access tokens to blacklist by extracting the JSON Token identifier.
 
         Returns
         -------
@@ -148,7 +148,8 @@ def auth_logout():
 @current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """
-        Verifies if a token has been blacklisted. Token exists within the blacklist cache.
+        Verifies if a token has been blacklisted if the time-to-live cache by extracting
+        the JSON token identifier.
 
         Parameters
         ----------
