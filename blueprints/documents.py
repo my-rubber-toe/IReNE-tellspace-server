@@ -12,7 +12,11 @@ from utils.responses import ApiResult, ApiException
 from utils.validators import *
 from utils.exceptions import TellSpaceAuthError
 from datetime import datetime
-from database.DAOs.get import *
+from database.daos.get import *
+from database.daos.post import *
+from database.daos.put import *
+from database.daos.delete import *
+from database.schemas import *
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
 """Instance of a Flask "Blueprint" class to implement a custom endpoint groups."""
@@ -36,10 +40,10 @@ def get_documents():
 
     email = get_jwt_identity()  # Get user identity.
 
-    collab: Collaborator = get.get_me(email)  # Extract collaborator from database.
+    collab: collaborator = get_me(email)  # Extract collaborator from database.
 
     if (not collab.banned) and collab.approved:  # Evaluate collaborator status before proceeding.
-        documents = get.get_doc_collab(collab)
+        documents = get_doc_collab(collab)
         return jsonify(documents)
 
     raise TellSpaceAuthError(
@@ -71,7 +75,7 @@ def get_document_by_id(doc_id: str):
 
     email = get_jwt_identity()
 
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
         doc = get_doc(doc_id, collab)
@@ -109,7 +113,7 @@ def create_document():
 
     body: CreateDocumentValidator = CreateDocumentValidator().load(request.json)
     email = get_jwt_identity()
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
         doc = post_create_doc_DAO(
@@ -157,7 +161,7 @@ def remove_document(doc_id: str):
     email = get_jwt_identity()
 
     # Extract collaborator with identity
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
         deleted_id = remove_doc(collab, doc_id)
@@ -199,7 +203,7 @@ def edit_document_title(doc_id: str):
     email = get_jwt_identity()
     body = TitleValidator().load(request.json)
 
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
     if not collab.banned and collab.approved:
         saved_id = put_doc_title(collab, doc_id, body['title'])
         return ApiResult(message=f'Updated document: {saved_id}')
@@ -235,7 +239,7 @@ def edit_document_description(doc_id: str):
     email = get_jwt_identity()
     body = DescriptionValidator().load(request.json)
 
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if not collab.banned and collab.approved:
         saved_id = put_doc_des(collab, doc_id, body['description'])
@@ -280,7 +284,7 @@ def edit_document_timeline(doc_id: str):
                 status=500
             )
     email = get_jwt_identity()
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if not collab.banned and collab.approved:  # If collaborator is NOT banned and its approved, then do the thing
         saved_id = put_doc_timeline(collab_id=collab, doc_id=doc_id, timeline=body['timeline'])
@@ -314,7 +318,7 @@ def create_document_section(doc_id: str):
                 approved.
     """
     email = get_jwt_identity()
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
     if not collab.banned:
         doc = post_doc_section(collab, doc_id)
         return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}')
@@ -349,7 +353,7 @@ def remove_document_section(doc_id: str, section_nbr: str):
     """
     email = get_jwt_identity()
 
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if not collab.banned:
         saved_id = remove_doc_section(collab, doc_id, int(section_nbr))
@@ -386,7 +390,7 @@ def edit_document_section(doc_id, section_nbr):
 
     email = get_jwt_identity()
     body: EditSectionValidator = EditSectionValidator().load(request.json)
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if not collab.banned:
         saved_id = put_doc_section(collab, doc_id, body['section_title'], body['section_text'], int(section_nbr))
@@ -424,11 +428,11 @@ def edit_document_infrastructure_types(doc_id):
 
     body = InfrastructureTypesValidator().load(request.json)  # Verify request parameters
 
-    collab: Collaborator = get_me(email)  # Extract collaborator with identity
+    collab: collaborator = get_me(email)  # Extract collaborator with identity
 
     try:  # Verify if the given infrastrucutres are in the Infrastrucutre Collection
         for infra in body['infrastructure_types']:
-            Infrastructure.objects.get(infrastructureType=infra)
+            infrastructure.objects.get(infrastructureType=infra)
     except:
         return ApiException(error_type='EditingError', message='Unable to find infrastructure', status=500)
 
@@ -469,11 +473,11 @@ def edit_document_damage_types(doc_id: str):
 
     body = DamageTypesValidator().load(request.json)  # Verify request parameters
 
-    collab: Collaborator = Collaborator.objects.get(email=email)  # Extract collaborator with identity
+    collab: collaborator = collaborator.objects.get(email=email)  # Extract collaborator with identity
 
     try:  # Verify that the recieved damage_types exist in the database
-        for damage in body['damage_types']:
-            Damage.objects.get(damageType=damage)
+        for d in body['damage_types']:
+            damage.objects.get(damageType=d)
     except:
         return ApiException(error_type='EditingError', message='Unable to find damage type', status=500)
 
@@ -514,7 +518,7 @@ def edit_document_locations(doc_id: str):
 
     email = get_jwt_identity()  # Get user identity
 
-    collab: Collaborator = get_me(email)  # Extract collaborator with identity
+    collab: collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_locations(collab, doc_id, body['locations'])
@@ -551,7 +555,7 @@ def edit_document_tags(doc_id: str):
     body = TagsValidator().load(request.json)
 
     email = get_jwt_identity()  # Get user identity
-    collab: Collaborator = get_me(email)  # Extract collaborator with identity
+    collab: collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_tags(collab, doc_id, body['tags'])
@@ -592,7 +596,7 @@ def edit_document_incident_date(doc_id: str):
 
     email = get_jwt_identity()  # Get user identity
 
-    collab: Collaborator = get_me(email)  # Extract collaborator with email identity
+    collab: collaborator = get_me(email)  # Extract collaborator with email identity
 
     if not collab.banned:
         saved_id = put_doc_incidentDate(collab, doc_id, body["incident_date"])
@@ -629,7 +633,7 @@ def edit_document_actors(doc_id: str):
 
     email = get_jwt_identity()  # Get user identity
 
-    collab: Collaborator = get_me(email)  # Extract collaborator with identity
+    collab: collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_actors(collab, doc_id, body['actors'])
@@ -664,7 +668,7 @@ def edit_document_authors(doc_id: str):
     body = AuthorsValidator().load(request.json)
 
     email = get_jwt_identity()  # Get user identity
-    collab: Collaborator = get_me(email)  # Extract collaborator with identity
+    collab: collaborator = get_me(email)  # Extract collaborator with identity
 
     if not collab.banned:
         saved_id = put_doc_authors(collab, doc_id, body['authors'])

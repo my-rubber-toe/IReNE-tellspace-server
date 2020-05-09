@@ -1,8 +1,7 @@
-from database.schemas import *
-from database.DAOs.revision import *
+from database.daos.revision import *
 import datetime
-import json
 from utils.exceptions import TellSpaceApiError
+
 
 def post_create_doc_DAO(**docatr):
     """
@@ -34,6 +33,7 @@ def post_create_doc_DAO(**docatr):
     log_document_creation(doc1)
     return doc1
 
+
 def post_doc_section(collab_id, docid):
     """
         DAO that creates a new section 
@@ -44,14 +44,11 @@ def post_doc_section(collab_id, docid):
     if len(doc.section) == 10:
         raise TellSpaceApiError(err='SectionError', msg='Section limit reached')
 
-    new_section = Section()
+    new_section = section()
     new_section.secTitle = f'Section No. {len(doc.section) + 1}'
     new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
     doc.section.append(new_section)
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     doc.save()
     log_document_creation_section(doc, new_section)
-    return DocumentCase.objects.get(id=docid)
-
-
-
+    return document_case.objects.get(id=docid)

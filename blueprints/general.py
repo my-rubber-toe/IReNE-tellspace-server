@@ -7,7 +7,7 @@ Holds the endpoints that allow the retrieval of non sensitive information. Holds
 
 from flask import Blueprint, jsonify
 from utils.responses import ApiResult
-from database.DAOs.get import get_infrastructure_list, get_damage_list, get_tags_list
+from database.daos.get import get_infrastructure_list, get_damage_list, get_tags_list
 
 bp = Blueprint('general', __name__, url_prefix='/general')
 """Instance of a Flask "Blueprint" class to implement a custom endpoint groups."""

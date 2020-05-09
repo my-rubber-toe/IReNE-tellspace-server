@@ -144,87 +144,88 @@ class ApiFlask(Flask):
             3. mongoengine.errors - exception classes for database related requests.
         """
 
-        # Register JWT exceptions
-        for name, obj in inspect.getmembers(sys.modules['flask_jwt_extended.exceptions']):
-            if inspect.isclass(obj):
-                @self.errorhandler(obj)
-                def handle_jwt_excepions(error):
-                    return ApiException(
-                        error_type='Token Error',
-                        message=error.msg,
-                        status=error.status
-                    )
-
-        # Register marshmallow validator  exceptions
-        for name, obj in inspect.getmembers(sys.modules['marshmallow.exceptions']):
-            if inspect.isclass(obj):
-                @self.errorhandler(obj)
-                def handle_marshmallow_errors(error):
-                    return ApiException(
-                        error_type='Validation Error',
-                        message='Please verify you request body and parameters.',
-                        status=400
-                    )
-
-        # Register mongoengine  exceptions
-        for name, obj in inspect.getmembers(sys.modules['mongoengine.errors']):
-            if inspect.isclass(obj) and not name == 'defaultdict':
-                @self.errorhandler(obj)
-                def handle_database_errors(error):
-                    return ApiException(
-                        error_type='Database Error',
-                        message='Internal Server Error',
-                        status=500
-                    )
-
-        @self.errorhandler(TellSpaceApiError)
-        def handle_api_error(error):
-            return ApiException(
-                error_type=error.error_type,
-                message=error.msg,
-                status=error.status
-            )
-
-        @self.errorhandler(TellSpaceAuthError)
-        def handle_custom_errors(error):
-            return ApiException(
-                error_type=error.error_type,
-                message=error.msg,
-                status=error.status
-            )
-
-        @self.errorhandler(ValueError)
-        def request_value_error(error):
-            return ApiException(
-                error_type='Value Error',
-                message=error.messages,
-                status=400
-            )
-
-        @self.errorhandler(Exception)
-        def handle_unexpected_error(error):
-            return ApiException(error_type='Unexpected Error', message=str(error), status=500)
-
-        self.register_error_handler(
-            400,
-            lambda err: ApiException(message=str(
-                err), status=400, error_type='Bad Request')
-        )
-
-        self.register_error_handler(
-            404,
-            lambda err: ApiException(message=str(
-                err), status=404, error_type='Not Found')
-        )
-
-        self.register_error_handler(
-            405,
-            lambda err: ApiException(message=str(
-                err), status=405, error_type='Request Method')
-        )
-
-        self.register_error_handler(
-            422,
-            lambda err: ApiException(message=str(
-                err), status=422, error_type='Unprocessable Entity')
-        )
+        # # Register JWT exceptions
+        # for name, obj in inspect.getmembers(sys.modules['flask_jwt_extended.exceptions']):
+        #     if inspect.isclass(obj):
+        #         @self.errorhandler(obj)
+        #         def handle_jwt_excepions(error):
+        #             return ApiException(
+        #                 error_type='Token Error',
+        #                 message=error.msg,
+        #                 status=error.status
+        #             )
+        #
+        # # Register marshmallow validator  exceptions
+        # for name, obj in inspect.getmembers(sys.modules['marshmallow.exceptions']):
+        #     if inspect.isclass(obj):
+        #         @self.errorhandler(obj)
+        #         def handle_marshmallow_errors(error):
+        #             return ApiException(
+        #                 error_type='Validation Error',
+        #                 message='Please verify you request body and parameters.',
+        #                 status=400
+        #             )
+        #
+        # # Register mongoengine  exceptions
+        # for name, obj in inspect.getmembers(sys.modules['mongoengine.errors']):
+        #     if inspect.isclass(obj) and not name == 'defaultdict':
+        #         @self.errorhandler(obj)
+        #         def handle_database_errors(error):
+        #             return ApiException(
+        #                 error_type='Database Error',
+        #                 message='Internal Server Error',
+        #                 status=500
+        #             )
+        #
+        # @self.errorhandler(TellSpaceApiError)
+        # def handle_api_error(error):
+        #     return ApiException(
+        #         error_type=error.error_type,
+        #         message=error.msg,
+        #         status=error.status
+        #     )
+        #
+        # @self.errorhandler(TellSpaceAuthError)
+        # def handle_custom_errors(error):
+        #     return ApiException(
+        #         error_type=error.error_type,
+        #         message=error.msg,
+        #         status=error.status
+        #     )
+        #
+        # @self.errorhandler(ValueError)
+        # def request_value_error(error):
+        #     return ApiException(
+        #         error_type='Value Error',
+        #         message=error.messages,
+        #         status=400
+        #     )
+        #
+        # @self.errorhandler(Exception)
+        # def handle_unexpected_error(error):
+        #     return ApiException(error_type='Unexpected Error', message=str(error), status=500)
+        #
+        # self.register_error_handler(
+        #     400,
+        #     lambda err: ApiException(message=str(
+        #         err), status=400, error_type='Bad Request')
+        # )
+        #
+        # self.register_error_handler(
+        #     404,
+        #     lambda err: ApiException(message=str(
+        #         err), status=404, error_type='Not Found')
+        # )
+        #
+        # self.register_error_handler(
+        #     405,
+        #     lambda err: ApiException(message=str(
+        #         err), status=405, error_type='Request Method')
+        # )
+        #
+        # self.register_error_handler(
+        #     422,
+        #     lambda err: ApiException(message=str(
+        #         err), status=422, error_type='Unprocessable Entity')
+        # )
+        pass

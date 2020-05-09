@@ -1,7 +1,5 @@
-from database.schemas import *
-from database.DAOs.revision import *
+from database.daos.revision import *
 import datetime
-import json
 from utils.exceptions import TellSpaceApiError
 
 def remove_doc(collab_id, doc_id):

@@ -1,8 +1,5 @@
-from database.schemas import *
-from database.DAOs.revision import *
-import datetime
+from database.daos.revision import *
 import json
-from utils.exceptions import TellSpaceApiError
 
 
 def get_me(email_collab):

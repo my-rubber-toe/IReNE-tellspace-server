@@ -14,7 +14,7 @@ from cachetools import TTLCache
 from datetime import timedelta
 from utils.responses import ApiResult
 from utils.exceptions import TellSpaceAuthError
-from database.DAOs.get import *
+from database.daos.get import *
 from database.schemas import *
 
 bp = Blueprint('authentication', __name__, url_prefix='/auth')
@@ -145,7 +145,7 @@ def auth_logout():
     return ApiResult(message="Successfully logged out.")
 
 
-# @current_app.jwt.token_in_blacklist_loader
+@current_app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     """
         Verifies if a token has been blacklisted if the time-to-live cache by extracting
