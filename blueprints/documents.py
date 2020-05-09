@@ -12,7 +12,7 @@ from utils.responses import ApiResult, ApiException
 from utils.validators import *
 from utils.exceptions import TellSpaceAuthError
 from datetime import datetime
-from database.daos import *
+from database.DAOs.get import *
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
 """Instance of a Flask "Blueprint" class to implement a custom endpoint groups."""
@@ -36,10 +36,10 @@ def get_documents():
 
     email = get_jwt_identity()  # Get user identity.
 
-    collab: Collaborator = get_me(email)  # Extract collaborator from database.
+    collab: Collaborator = get.get_me(email)  # Extract collaborator from database.
 
     if (not collab.banned) and collab.approved:  # Evaluate collaborator status before proceeding.
-        documents = get_doc_collab(collab)
+        documents = get.get_doc_collab(collab)
         return jsonify(documents)
 
     raise TellSpaceAuthError(

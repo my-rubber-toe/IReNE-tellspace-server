@@ -19,8 +19,9 @@ def ping_db():
     """
 
     while True:
-        conn = MongoClient(host=environment.DB_HOST)
-        if not conn[environment.DB_NAME].command('ping'):
+        # conn = MongoClient(host=environment.DB_HOST)
+        conn = MongoClient('mongodb://localhost:27017')
+        if not conn['IReNEdb'].command('ping'):
             logger: AppLogger = AppLogger()
             logger.log_error('Database Connection Error')
         conn.close()

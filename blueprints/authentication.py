@@ -14,7 +14,7 @@ from cachetools import TTLCache
 from datetime import timedelta
 from utils.responses import ApiResult
 from utils.exceptions import TellSpaceAuthError
-from database.daos import *
+from database.DAOs.get import *
 from database.schemas import *
 
 bp = Blueprint('authentication', __name__, url_prefix='/auth')
@@ -54,9 +54,9 @@ def get_tokens(google_token: str):
 
     if id_info['iss'] != 'accounts.google.com':  # Verify that the token was indeed issued by google accounts.
         raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
-
-    collab: Collaborator = get_me(id_info['email'])
-
+    print(id_info['email'])
+    collab: collaborator = get_me(id_info['email'])
+    print(collab.first_name)
     if (not collab.banned) and collab.approved:
         access_token_ttl = 5
         refresh_token_ttl = 10
@@ -92,7 +92,7 @@ def auth_me():
     """
     email = get_jwt_identity()
 
-    collab: Collaborator = get_me(email)
+    collab: collaborator = get_me(email)
 
     if (not collab.banned) and collab.approved:
         return ApiResult(
