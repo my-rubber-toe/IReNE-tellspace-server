@@ -82,9 +82,6 @@ For more info follow this link https://www.jetbrains.com/help/pycharm/configurin
 
 ## Documentation
 
-To access this project's documentation, access the directory `/docs/build/html/` and open the `index.html` file in the 
-browser of your liking.
-
 This project uses `sphinx` as the document generator package. To generate the documentation for this project, 
 change directory to `/docs` and run `make html`. Once all the application has been built, access the directory 
 `/docs/build/html/` and open the file `index.html` in your desired browser. 
