@@ -14,13 +14,16 @@ from config import environment
 
 def ping_db():
     """
-        Send ping command to the system database to check health.
+        Retrieves the database connection instance from the current_app object of Flask and sends a ping command for
+        database health check verification.
     """
-    conn = MongoClient(host=environment.DB_HOST)
+
     while True:
+        conn = MongoClient(host=environment.DB_HOST)
         if not conn[environment.DB_NAME].command('ping'):
-            logger: AppLogger = current_app.__getattribute__('app_logger')
+            logger: AppLogger = AppLogger()
             logger.log_error('Database Connection Error')
+        conn.close()
         time.sleep(10)
 
 

@@ -3,7 +3,7 @@
 
 ## Dependencies
     1. Python 3.8.0    
-    2. pip3 19.03
+    2. pip3 19.0.3
     3. python venv
     
 ## Setup Environment File
@@ -17,29 +17,36 @@ FLASK_ENV=development
 FLASK_DEBUG=1
 
 # System port to use
-PORT=5000
+PORT=<your-port>
 
-# Database TBD
-DB = ''
+# Database
+DB_NAME=<database-name>
+DB_HOST=<your-database-connection-string>
 
 # Authorization
-GOOGLE_OAUTH_CLIENT_ID="your-google-client-id"
-GOOGLE_OAUTH_CLIENT_SECRET="your-google-client-secret"
+GOOGLE_OAUTH_CLIENT_ID=<your-google-client-id>
+GOOGLE_OAUTH_CLIENT_SECRET=<your-google-client-secret>
 OAUTHLIB_RELAX_TOKEN_SCOPE=true
 
 # Set to true for testing purpouses
-OAUTHLIB_INSECURE_TRANSPORT=true
-FLASK_SECRET_KEY="your-server-secret-key" 
-FLASK_SALT="your-server-salt"
+FLASK_SECRET_KEY=<some-string>
+FLASK_SALT=<some-string>
 ```
-The variables for `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` require the creation on a google project on
-the [Google Cloud Console](https://console.cloud.google.com/). For instructions on how to create the credentials please
-follow this tutorial to generate client ID and client secret. 
 
-https://developers.google.com/adwords/api/docs/guides/authentication#webapp
+This application uses Google oAuth as the authentication strategy for login.The variables for `GOOGLE_OAUTH_CLIENT_ID` 
+and `GOOGLE_OAUTH_CLIENT_SECRET` require the creation on a google project on
+the [Google Cloud Console](https://console.cloud.google.com/). Users must provide a valid Google idToken 
+issued by the same `GOOGLE_OAUTH_CLIENT_ID` as in the server. The server will verify if the given idToken indeed was
+issued by said `GOOGLE_OAUTH_CLIENT_ID`.
 
-Once the credentials have been created, replace them in the environment file. As for the `FLASK_SECRET_KEY` and 
-`FLASK_SALT`, use any random string.
+For instructions on how to create the credentials please follow this tutorial to generate client ID and client secret.
+
+[Google oAuth Strategy](https://developers.google.com/adwords/api/docs/guides/authentication#webapp)
+
+Please verify the route `/auth/login/<google-token>` within the file `authentication.py` within the blueprints package 
+of this application for information on how the process is 
+
+Once the credentials have been created, replace them in the environment file. 
 
 
 ## Development Setup: Linux Environment
@@ -54,9 +61,9 @@ Install all dependencies with ```pip install -r requirements.txt```.
 
 Once all has been set, run the server using `python app.py`.
 
-## Development Setup: Pycharm
+## Development Setup: Windows Environment
 
-Ensure that you have `Python 3.8.0` installed. Once you have cloned the repository locally, open the project in pycharm 
+Ensure that you have `Python 3.8.0` and `Pycharm` installed. Once you have cloned the repository locally, open the project in pycharm 
 and access the project settings. 
 
 1. Search for `Project Interpreter`. 
@@ -75,11 +82,14 @@ For more info follow this link https://www.jetbrains.com/help/pycharm/configurin
 
 ## Documentation
 
-To generate the documentation for this project, change directory to `/docs` and run `make html`. Once all the 
-application has been built, access the directory `/docs/build/html/` and open the file `index.html` in
-your desired browser. 
+To access this project's documentation, access the directory `/docs/build/html/` and open the `index.html` file in the 
+browser of your liking.
 
-**Note: To update the documentation files, please refer to https://www.sphinx-doc.org/en/master/usage/quickstart.html**
+This project uses `sphinx` as the document generator package. To generate the documentation for this project, 
+change directory to `/docs` and run `make html`. Once all the application has been built, access the directory 
+`/docs/build/html/` and open the file `index.html` in your desired browser. 
+
+**Note: To update the documentation generation files, please refer to https://www.sphinx-doc.org/en/master/usage/quickstart.html**
 
 
  
