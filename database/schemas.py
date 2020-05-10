@@ -1,11 +1,14 @@
-"""
-schemas.py
-====================================
-This file contains all the schema objects representative of the entities in the database.
-"""
-
 from mongoengine import *
+# from config.environment import DB_HOST
 import json
+
+#Connection to the Database
+connect('IReNEdb')
+#connec the db for testing purposes
+#connect('IReNEdb', host='mongomock://localhost:27017')
+
+# Connection to the Database, make sure you place the correct container name for the database
+# connect('IReNEdb', host=DB_HOST)
 
 
 class collaborator(Document):
@@ -20,14 +23,11 @@ class collaborator(Document):
             - banned: <Boolean> <Default=False> When set to true, the Collaborator looses access to Tellspace service.
             - approved: <Boolean> <Default=False>  When set to true, the Collaborator gains access to Tellspace service.
     """
-    first_name = StringField(min_length=1, max_length=30, required=True,
-                             regex='^[A-ZÁÉÍÓÚÑ][a-z A-Z \- À-ÿ]*[a-záéíóúñ]$')
-    last_name = StringField(min_length=1, max_length=30, required=True,
-                            regex='^[A-ZÁÉÍÓÚÑ][a-z A-Z \- À-ÿ]*[a-záéíóúñ]$')
-    email = EmailField(min_length=9, max_length=70, required=True, unique=True, regex='^[\.a-z0-9]*(@upr\.edu)$')
-    banned = BooleanField(default=False, required=True)
-    approved = BooleanField(default=False, required=True)
-
+    first_name = StringField(min_length=1, max_length=30, required=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')
+    last_name = StringField(min_length=1, max_length=30, required=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')
+    email = EmailField(min_length= 9,max_length=70, required=True, unique=True, regex='^[\.a-z0-9]*(@upr\.edu)$')
+    banned = BooleanField(default=False,required=True)
+    approved = BooleanField(default=False,required=True)
 
 class admin(Document):
     """
@@ -40,10 +40,8 @@ class admin(Document):
             - password: <String> Admin's  password.
                 - password attribute follows this regex: '(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]))'
     """
-    username = StringField(min_length=8, max_length=20, required=True, unique=True,
-                           regex='(^[^.]([a-zA-Z0-9]*)[\.]([a-zA-Z0-9]*))[^.]$')
-    password = StringField(min_length=8, max_length=20, required=True, regex='(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])')
-
+    username = StringField(min_length=6, max_length=20, required=True, unique=True, regex='(^[^.]([a-zA-Z0-9]*)[\.]([a-zA-Z0-9]*))[^.]$' )
+    password = StringField(required=True)
 
 class tag(Document):
     """
@@ -54,8 +52,7 @@ class tag(Document):
         List of attributes:
             - tagItem: <String>  Tag that can be used in a DocumentCase.
     """
-    tagItem = StringField(min_length=1, max_length=50, required=True, unique=True, regex='^([a-z A-Z À-ÿ / & , \- ]*)$')
-
+    tagItem = StringField(min_length=1, max_length=50, required=True, unique=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$')
 
 class infrastructure(Document):
     """
@@ -66,10 +63,8 @@ class infrastructure(Document):
         List of attributes:
             - infrastructureType: <String>  category that can be used in a DocumentCase.
     """
-    infrastructureType = StringField(min_length=1, max_length=50, required=True, unique=True,
-                                     regex='^([a-z A-Z À-ÿ / & , \- ]*)$')
-
-
+    infrastructureType = StringField(min_length=1,max_length=50, required=True, unique=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$')
+    
 class damage(Document):
     """
         Document Class for Damage.
@@ -79,9 +74,7 @@ class damage(Document):
         List of attributes:
             - damageType: <String>  category that can be used in a DocumentCase.
     """
-    damageType = StringField(min_length=1, max_length=50, required=True, unique=True,
-                             regex='^([a-z A-Z À-ÿ / & , \- ]*)$')
-
+    damageType = StringField(min_length=1,max_length=50, required=True, unique=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$')
 
 class city_pr(Document):
     """
@@ -92,10 +85,9 @@ class city_pr(Document):
         List of attributes:
             - damageType: <String>  category that can be used in a DocumentCase.
     """
-    city = StringField(min_length=1, max_length=50, required=True, unique=True)
-    latitude = DecimalField(min_value=17.87, max_value=18.53, required=True)
-    longitude = DecimalField(min_value=-67.28, max_value=-65.23, required=True)
-
+    city = StringField(min_length=1,max_length=50, required=True, unique=True)
+    latitude = DecimalField(min_value=17.87, max_value= 18.53, required=True)
+    longitude = DecimalField(min_value=-67.28, max_value=-65.23, required=True) 
 
 class author(EmbeddedDocument):
     """
@@ -110,13 +102,10 @@ class author(EmbeddedDocument):
             - author_email: <String>  Author's Email.
             - author_faculty: <String>  Author's Faculty.
     """
-    author_FN = StringField(min_length=1, max_length=30, required=True,
-                            regex='^[A-ZÁÉÍÓÚÑ][a-z A-Z \- À-ÿ]*[a-záéíóúñ]$')
-    author_LN = StringField(min_length=1, max_length=30, required=True,
-                            regex='^[A-ZÁÉÍÓÚÑ][a-z A-Z \- À-ÿ]*[a-záéíóúñ]$')
-    author_email = EmailField(min_length=9, max_length=70, required=True, regex='^[\.a-z0-9]*(@upr\.edu)$')
-    author_faculty = StringField(min_length=1, max_length=30, required=True)
-
+    author_FN = StringField(min_length=1,max_length=30, required=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')
+    author_LN = StringField(min_length=1,max_length=30, required=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')
+    author_email = EmailField(min_length=9,max_length=70, required=True, regex='^[\.a-z0-9]*(@upr\.edu)$')
+    author_faculty = StringField(min_length=1,max_length=30, required=True)
 
 class actor(EmbeddedDocument):
     """
@@ -130,12 +119,9 @@ class actor(EmbeddedDocument):
             - actor_LN: <String>  Actor's Last Name.
             - role: <String>  Actor's role in the DocumentCase.
     """
-    actor_FN = StringField(min_length=1, max_length=30, required=True,
-                           regex='^[A-ZÁÉÍÓÚÑ][a-z A-Z \- À-ÿ]*[a-záéíóúñ]$')
-    actor_LN = StringField(min_length=1, max_length=30, required=True,
-                           regex='^[A-ZÁÉÍÓÚÑ][a-z A-Z \- À-ÿ]*[a-záéíóúñ]$')
-    role = StringField(min_length=1, max_length=30, required=True)
-
+    actor_FN = StringField(min_length=1, max_length=30, required=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')
+    actor_LN = StringField(min_length=1,max_length=30, required=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')
+    role = StringField(min_length=1,max_length=30, required=True)
 
 class timeline(EmbeddedDocument):
     """
@@ -152,11 +138,8 @@ class timeline(EmbeddedDocument):
                 - eventEndDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
     """
     event = StringField(min_length=10, max_length=100, required=True)
-    eventStartDate = StringField(min_length=9, max_length=11, required=True,
-                                 regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    eventEndDate = StringField(min_length=9, max_length=11, required=True,
-                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-
+    eventStartDate = StringField(min_length=9, max_length=11, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    eventEndDate = StringField(min_length=9, max_length=11,  required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
 
 class section(EmbeddedDocument):
     """
@@ -169,8 +152,7 @@ class section(EmbeddedDocument):
             - secTitle: <String>  Section's title.
             - content: <String>  Section's body.
     """
-    secTitle = StringField(min_length=1, max_length=100, required=True,
-                           regex="^([A-Z\\u00C0-\\u00DC]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
+    secTitle = StringField(min_length=1, max_length=100, required=True)
     content = StringField(min_length=1, required=True)
 
 
@@ -219,107 +201,40 @@ class document_case(Document):
     """
     creatoriD = ReferenceField('collaborator')
     # creatoriD = StringField(min_length=10, max_length = 100, required=True)
-    title = StringField(min_length=10, max_length=100, required=True, unique=True,
-                        regex="^([A-ZÁÉÍÓÚÑ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
-    language = StringField(min_length=1, max_length=20, required=True, regex="^[A-Z][a-z]{1,20}$")
-    description = StringField(min_length=0, max_length=500, required=False)
-    published = BooleanField(default=True, required=True)
-    incidentDate = StringField(min_length=9, max_length=11, required=True,
-                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    creationDate = StringField(min_length=9, max_length=11, required=True,
-                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    lastModificationDate = StringField(min_length=9, max_length=11, required=True,
-                                       regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    tagsDoc = ListField(StringField(min_length=0, max_length=50, unique=True), required=False, max_length=10)
-    infrasDocList = ListField(StringField(min_length=1, max_length=50, required=True, unique=True))
-    damageDocList = ListField(StringField(min_length=1, max_length=50, required=True, unique=True))
+    title = StringField(min_length=10, max_length = 100, required=True, unique=True, regex="^([A-ZÁÉÍÓÚÑÜ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
+    language = StringField(min_length=1, max_length=20,required=True, regex="^[A-Z][a-z]{1,20}$")
+    description = StringField(min_length=1, max_length=500,required=False)
+    published = BooleanField(default=True,required=True)
+    incidentDate = StringField(min_length=9, max_length=11, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    creationDate = StringField(min_length=9, max_length=11, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    lastModificationDate = StringField(min_length=9, max_length=11, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    tagsDoc = ListField(StringField(min_length=0,max_length=50, unique=True), required=False, max_length=10)
+    infrasDocList = ListField(StringField(min_length=1,max_length=50,required=True, unique=True))
+    damageDocList = ListField(StringField(min_length=1,max_length=50,required=True, unique=True))
     location = ListField(EmbeddedDocumentField(location), max_length=5, required=False)
     author = ListField(EmbeddedDocumentField(author), min_length=1, max_length=10, required=True)
-    actor = ListField(EmbeddedDocumentField(actor), min_length=1, max_length=5, required=True)
+    actor = ListField(EmbeddedDocumentField(actor),min_length=1, max_length=5, required=True)
     section = ListField(EmbeddedDocumentField(section), max_length=10, required=False)
     timeline = ListField(EmbeddedDocumentField(timeline), max_length=5, required=False)
 
 
-
 class creation_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for a document just created. 
-        This embedded document makes sure that each field in the document logged as created follows the regex pattern in the database.
-        List of attributes:
-            - creatoriD: <String>  the Collaborator's id which created the Case study.
-            - title: <String> The case study's title .
-            - language: <String> The language which the case study is written.
-            - description: <String> Case study's description.
-            - published: <Boolean> <Default=False> When set to true, the case study will be visible in SearchSpace service.
-            - incidentDate: <String>  Date when the incident happened, it has to have the following format: 'YYYY-MM-DD'.
-                 - incidentDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
-            - creationDate: <String>  Date when the case study was created, it has to have the following format: 'YYYY-MM-DD'.
-                - creationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
-            - lastModificationDate: <String>  Last date when the case study was modified, it has to have the following format: 'YYYY-MM-DD'.
-                - lastModificationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
-            - tagsDoc: List<String> of tags from the case study.
-            - infrasDocList: List<String> of infrastructure categories from the case study.
-            - damageDocList: List<String> of damage categories from the case study.
-            - location: List<Location> of addresses where the case study took place.
-            - author: List<Author> of author objects, the ones who wrote the case study.
-            - actor: List<Actor> of actor objects, the ones who plays a role in the case study.
-            - section: List<Section> of section objects, this will consist the body of the case study.
-            - timeline: List<Timeline> of timeline objects, this will consist of the events that happened within the case study.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-class creation_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for a document just created. 
-        This embedded document makes sure that each field in the document logged as created follows the regex pattern in the database.
-        List of attributes:
-            - creatoriD: <String>  the Collaborator's id which created the Case study.
-            - title: <String> The case study's title .
-            - language: <String> The language which the case study is written.
-            - description: <String> Case study's description.
-            - published: <Boolean> <Default=False> When set to true, the case study will be visible in SearchSpace service.
-            - incidentDate: <String>  Date when the incident happened, it has to have the following format: 'YYYY-MM-DD'.
-                 - incidentDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
-            - creationDate: <String>  Date when the case study was created, it has to have the following format: 'YYYY-MM-DD'.
-                - creationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
-            - lastModificationDate: <String>  Last date when the case study was modified, it has to have the following format: 'YYYY-MM-DD'.
-                - lastModificationDate attribute follows this regex: '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
-            - tagsDoc: List<String> of tags from the case study.
-            - infrasDocList: List<String> of infrastructure categories from the case study.
-            - damageDocList: List<String> of damage categories from the case study.
-            - location: List<Location> of addresses where the case study took place.
-            - author: List<Author> of author objects, the ones who wrote the case study.
-            - actor: List<Actor> of actor objects, the ones who plays a role in the case study.
-            - section: List<Section> of section objects, this will consist the body of the case study.
-            - timeline: List<Timeline> of timeline objects, this will consist of the events that happened within the case study.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
     creatoriD = ReferenceField('collaborator')
-    # creatoriD = StringField(min_length=10, max_length = 100, required=True)
-    title = StringField(min_length=10, max_length=100, required=False,
-                        regex="^([A-ZÁÉÍÓÚÑ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
-    language = StringField(min_length=1, max_length=20, required=False, regex="^[A-Z][a-z]{1,20}$")
+    title = StringField(min_length=10, max_length=250, required=False, default=None, regex="^([A-ZÁÉÍÓÚÑÜ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
+    language = StringField(min_length=0, required=False)
+    location = ListField(StringField(min_length=0, required=False))
     description = StringField(min_length=0, max_length=500, required=False)
-    published = BooleanField(default=False, required=False)
-    incidentDate = StringField(min_length=9, max_length=11, required=False,
-                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    creationDate = StringField(min_length=9, max_length=11, required=False,
-                               regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    lastModificationDate = StringField(min_length=9, max_length=11, required=False,
-                                       regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    tagsDoc = ListField(StringField(min_length=0, max_length=50, unique=False), required=False, max_length=10)
-    infrasDocList = ListField(StringField(min_length=1, max_length=50, required=False))
-    damageDocList = ListField(StringField(min_length=1, max_length=50, required=False))
-    location = ListField(EmbeddedDocumentField(location), max_length=5, required=False)
-    author = ListField(EmbeddedDocumentField(author), min_length=1, max_length=10, required=False)
-    actor = ListField(EmbeddedDocumentField(actor), min_length=1, max_length=5, required=False)
-    section = ListField(EmbeddedDocumentField(section), max_length=10, required=False)
-    timeline = ListField(EmbeddedDocumentField(timeline), max_length=5, required=False)
+    published = BooleanField(default=True, required=False)
+    incidentDate = StringField(min_length=1, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    creationDate = StringField(min_length=1, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    lastModificationDate = StringField(min_length=1, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    tagsDoc = ListField(StringField(min_length=0, max_length=30, required=False))
+    infrasDocList = ListField(StringField(min_length=1, max_length=30, required=False))
+    damageDocList = ListField(StringField(min_length=1, max_length=30, required=False))
+    author = ListField(EmbeddedDocumentField(author))
+    actor = ListField(EmbeddedDocumentField(actor))
+    section = ListField(EmbeddedDocumentField(section))
+    timeline = ListField(EmbeddedDocumentField(timeline))
 
     def _author_to_json(self):
         auth = []
@@ -385,34 +300,13 @@ class creation_embedded(EmbeddedDocument):
 
 
 class title_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for a title. 
-        This embedded document makes sure that each title follows the regex pattern in the database.
-        List of attributes:
-            - title: <Title> Title belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-    title = StringField(min_length=10, max_length=100, required=True,
-                        regex="^([A-ZÁÉÍÓÚÑ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
+    title = StringField(min_length=10, max_length=100, required=True, regex="^([A-ZÁÉÍÓÚ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9áéíóú]$)")
 
     def to_json(self):
         return self.title
 
 
 class description_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for a description. 
-        This embedded document makes sure that each description follows the regex pattern in the database.
-        List of attributes:
-            - description: <Description> Description belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
     description = StringField(min_length=0, max_length=500, required=False)
 
     def to_json(self):
@@ -420,34 +314,14 @@ class description_embedded(EmbeddedDocument):
 
 
 class infrastructure_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for a list of infrastructure list. 
-        This embedded document makes sure that the values of each infrastructure type follows the regex pattern in the database.
-        List of attributes:
-            - infrasDocList: <List> Infrastructures belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-    infrasDocList = ListField(StringField(min_length=1, max_length=50, required=False))
+    infrasDocList = ListField(StringField(min_length=1, max_length=50, required=True))
 
     def to_json(self):
         return self.infrasDocList
 
 
 class timeline_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for timelines. 
-        This embedded document makes sure that the values of each timeline event follows the regex pattern in the database.
-        List of attributes:
-            - timeline: <List> All the timelines events belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-    timeline = ListField(EmbeddedDocumentField(timeline), max_length=5, required=False)
+    timeline = ListField(EmbeddedDocumentField(timeline))
 
     def to_json(self):
         timeline = []
@@ -461,16 +335,6 @@ class timeline_embedded(EmbeddedDocument):
 
 
 class section_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for a section. 
-        This embedded document makes sure that the values of each damage type follows the regex pattern in the database.
-        List of attributes:
-            - section: <Section> Section belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
     section = EmbeddedDocumentField(section)
 
     def to_json(self):
@@ -483,34 +347,14 @@ class section_embedded(EmbeddedDocument):
 
 
 class damage_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for damage types. 
-        This embedded document makes sure that the values of each damage type follows the regex pattern in the database.
-        List of attributes:
-            - damageDocList: <List> All the damages types belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-    damageDocList = ListField(StringField(min_length=1, max_length=50, required=False))
+    damageDocList = ListField(StringField(min_length=1, max_length=50, required=True))
 
     def to_json(self):
         return self.damageDocList
 
 
 class actor_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for actors. 
-        This embedded document makes sure that the values of each actor follows the regex pattern in the database.
-        List of attributes:
-            - actor: <List> All the actors belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-    actor = ListField(EmbeddedDocumentField(actor), min_length=1, max_length=5, required=False)
+    actor = ListField(EmbeddedDocumentField(actor))
 
     def to_json(self):
         actors = []
@@ -523,17 +367,7 @@ class actor_embedded(EmbeddedDocument):
 
 
 class author_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for Authors. 
-        This embedded document makes sure that the values of each author follows the regex pattern in the database.
-        List of attributes:
-            - author: <List> All the authors belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-    author = ListField(EmbeddedDocumentField(author), min_length=1, max_length=10, required=False)
+    author = ListField(EmbeddedDocumentField(author))
 
     def to_json(self):
         authors = []
@@ -547,50 +381,18 @@ class author_embedded(EmbeddedDocument):
 
 
 class incident_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for Incident Dates. 
-        This embedded document makes sure that the values of each incident date follows the regex pattern in the database.
-        List of attributes:
-            - incidentDate: <List> All the incident dates belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
     incidentDate = StringField(min_length=1, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-
     def to_json(self):
         return self.incidentDate
 
 
 class tag_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for Tags. 
-        This embedded document makes sure that the values of each tag follow the regex pattern in the database.
-        List of attributes:
-            - tagsDoc: <List> All the tags belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
-    tagsDoc = ListField(StringField(min_length=1, max_length=50, required=False), required=False, max_length=10)
-
+    tagsDoc = ListField(StringField(min_length=1, max_length=50, required=False))
     def to_json(self):
         return self.tagsDoc
 
 
 class location_embedded(EmbeddedDocument):
-    """
-        EmbeddedDocument Class for Locations. 
-        These embedded documents make sure that the values of each location follow the regex pattern in the database.
-        List of attributes:
-            - location: <List> All the locations belonging to a document.
-        Methods
-        -------
-        to_json()
-            Returns the json equivalent of the object.
-    """
     location = ListField(EmbeddedDocumentField(location), max_length=5, required=False)
 
     def to_json(self):
@@ -613,8 +415,7 @@ class fields_embedded(EmbeddedDocument):
     """
     new = GenericEmbeddedDocumentField(required=True)
     old = GenericEmbeddedDocumentField(required=True)
-
-
+    
 class document_case_revision(Document):
     """
         EmbeddedDocument Class for Revision. 
@@ -634,12 +435,12 @@ class document_case_revision(Document):
     """
     creatorId = ReferenceField('collaborator')
     docId = ReferenceField('document_case')
-    creator_name = StringField(min_length=1, max_length=30, required=True,
-                               regex='^[A-ZÁÉÍÓÚÑ][a-z A-Z \- À-ÿ]*[a-záéíóú]$')
-    creator_email = EmailField(required=True, max_length=50, regex='^[\.a-z0-9]*(@upr\.edu)$')
-    document_title = StringField(min_length=10, max_length=100, required=True)
-    revision_date = StringField(min_length=1, max_length=11, required=True,
-                                regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    creator_name = StringField(min_length=1, max_length=30, required=True, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')
+    creator_email = EmailField(required=True,max_length=50, regex='^[\.a-z0-9]*(@upr\.edu)$')
+    document_title = StringField(min_length=10, max_length = 100, required=True)
+    revision_date = StringField(min_length=1, max_length=11, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     revision_number = IntField(min_length=0, required=True)
-    revision_type = StringField(min_length=1, max_length=20, required=True)
+    revision_type = StringField(min_length=1, max_length= 20, required=True)
     field_changed = EmbeddedDocumentField(fields_embedded)
+    
+
