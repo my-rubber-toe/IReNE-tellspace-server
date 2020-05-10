@@ -18,19 +18,23 @@ class Authors(Schema):
         validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')])
     email = fields.Email(required=True, validate=[
         validate.Length(min=9, max=70),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')])
-    faculty = fields.String(required=True, validate=validate.Length(min=1, max=30))
+        validate.Regexp('^[\.a-z0-9]*(@upr\.edu)$')])
+    faculty = fields.String(required=True, validate=[
+        validate.Length(min=1, max=30),
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : 0-9 À-ÿ]*$')])
 
 
 class Actors(Schema):
     """Actors Validator."""
     first_name = fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')])
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : À-ÿ]*$')])
     last_name = fields.String(required=False, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')])
-    role = fields.String(required=True, validate=validate.Length(min=1, max=30))
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : À-ÿ]*$')])
+    role = fields.String(required=True, validate=[
+        validate.Length(min=1, max=30),
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : 0-9 À-ÿ]*[a-záéíóúñü\.0-9]$')])
 
 
 class TimeLineEvent(Schema):
@@ -49,7 +53,7 @@ class CreateDocumentValidator(Schema):
 
     language = fields.String(min_length=1, required=True, validate=[
             validate.Length(min=1, max=20),
-            validate.Regexp("^[A-Z][a-z]{1,20}$")
+            validate.Regexp("^[A-Z][a-z]*")
     ])
 
     authors = fields.List(
@@ -149,7 +153,9 @@ class ActorsValidator(Schema):
 class LocationsValidator(Schema):
     """ Request body validation class for the endpoint /api/documents/<doc_id>/edit/locations"""
     locations = fields.List(
-        fields.String(required=True, validate=validate.Length(min=1)),
+        fields.String(required=True, validate=[
+            validate.Length(min=1, max=50),
+            validate.Regexp("^[A-ZÁÉÍÓÚ][A-Z a-z À-ÿ]*(, PR)$")]),
         required=True,
         validate=validate.Length(max=5)
     )
