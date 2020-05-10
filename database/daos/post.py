@@ -8,12 +8,12 @@ def post_create_doc_DAO(**docatr):
         DAO that posts a Doc into the DB & any new Tag is added to Tag Document
     """
     author_list = []
-    for author in docatr['author']:
-        author_list.append(author(author_FN=author['first_name'], author_LN=author['last_name'],
-                                  author_email=author['email'], author_faculty=author['faculty']))
+    for authorDoc in docatr['author']:
+        author_list.append(author(author_FN=authorDoc['first_name'], author_LN=authorDoc['last_name'],
+                                  author_email=authorDoc['email'], author_faculty=authorDoc['faculty']))
     actor_list = []
-    for actor in docatr['actor']:
-        actor_list.append(actor(actor_FN=actor['first_name'], actor_LN=actor['last_name'], role=actor['role']))
+    for actorDoc in docatr['actor']:
+        actor_list.append(actor(actor_FN=actorDoc['first_name'], actor_LN=actorDoc['last_name'], role=actorDoc['role']))
 
     doc1 = document_case(
         creatoriD=docatr["creatoriD"],
