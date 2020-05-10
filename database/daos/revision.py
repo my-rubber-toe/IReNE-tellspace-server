@@ -16,8 +16,7 @@ def create_revision_document(updated_document, revision_type):
         creator_email=updated_document.creatoriD.email,
         document_title=updated_document.title,
         revision_date=datetime.datetime.today().strftime('%Y-%m-%d'),
-        revision_number=str(
-            document_case_revision.objects(creatorId=updated_document.creatoriD, docId=updated_document.id).count()),
+        revision_number= document_case_revision.objects(creatorId=updated_document.creatoriD, docId=updated_document.id).count(),
         revision_type=revision_type
     )
 
