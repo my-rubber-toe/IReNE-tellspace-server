@@ -114,12 +114,19 @@ def put_doc_tags(collab_id, doc_id, tags):
         DAO that updates the tags list of a document
     """
     doc: document_case = document_case.objects.get(id=doc_id, creatoriD=collab_id)
-
     # Create tag if it doesnt exist in the database
+    tag_list = tag.objects()
+    tag_list_count = tag.objects().count()
+    count = 0
     for tagdoc in tags:
-        if not tag.objects(tagItem=tagdoc):
-            newTag = tag(tagItem=tagdoc)
-            newTag.save()
+        count = 0
+        for taglist in tag_list:
+            if(taglist.tagItem.lower() in tagdoc.lower()):
+                break
+            count = count + 1
+            if(count == tag_list_count):
+                newTag = tag(tagItem=tagdoc)
+                newTag.save()
     previous_tags = doc.tagsDoc
     doc.tagsDoc = tags
     doc.save()
@@ -187,3 +194,6 @@ def put_doc_authors(collab_id, doc_id, authors):
     doc.save()
     log_document_edit_author(doc, previous_authors)
     return doc.id
+
+
+

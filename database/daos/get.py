@@ -1,7 +1,6 @@
 from database.daos.revision import *
 import json
 
-
 def get_me(email_collab):
     """
         DAO that returns a json object with the information about a collaborator
@@ -15,9 +14,7 @@ def get_doc_collab(collab_id):
         DAO that returns a json object with the information about documents 
         created by a collaborator
     """
-    # number_cases = DocumentCase.objects(collab_id).aggregate()
     get_docs = document_case.objects.filter(creatoriD=collab_id)
-
     response = []
     for doc in get_docs:
         doc: document_case
@@ -31,7 +28,6 @@ def get_doc_collab(collab_id):
             "lastModificationDate": doc.lastModificationDate
         })
     return response
-
 
 def get_doc(docid, collabId):
     """
