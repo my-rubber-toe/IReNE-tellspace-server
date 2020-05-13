@@ -287,7 +287,7 @@ def edit_document_timeline(doc_id: str):
     collab: collaborator = get_me(email)
 
     if not collab.banned and collab.approved:  # If collaborator is NOT banned and its approved, then do the thing
-        saved_id = put_doc_timeline(collab_id=collab, doc_id=doc_id, timeline=body['timeline'])
+        saved_id = put_doc_timeline(collab_id=collab, doc_id=doc_id, timelineDoc=body['timeline'])
         return ApiResult(message=f'Updated document {saved_id} timeline.')
 
     raise TellSpaceAuthError(
@@ -319,7 +319,10 @@ def create_document_section(doc_id: str):
     """
     email = get_jwt_identity()
     collab: collaborator = get_me(email)
+    print(doc_id)
+    print(collab.id)
     if not collab.banned:
+        
         doc = post_doc_section(collab, doc_id)
         return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}')
 
@@ -694,6 +697,6 @@ def before_request():
             TellSpaceApiError
                 exception class used to return custom error types and messages.
     """
-    if request.method == 'POST' or request.method == 'PUT':
+    if request.method == 'PUT':
         if request.json == {} or request.json is None:  # Verify request parameters
             raise TellSpaceApiError(msg='No request body data.', status=400)

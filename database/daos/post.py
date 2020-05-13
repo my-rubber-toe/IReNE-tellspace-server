@@ -45,7 +45,7 @@ def post_doc_section(collab_id, docid):
         raise TellSpaceApiError(err='SectionError', msg='Section limit reached')
 
     new_section = section()
-    new_section.secTitle = f'Section No. {len(doc.section) + 1}'
+    new_section.secTitle = f'Section Number {len(doc.section) + 1}'
     new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
     doc.section.append(new_section)
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')

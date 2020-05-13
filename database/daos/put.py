@@ -29,12 +29,12 @@ def put_doc_des(collab_id, doc_id, des):
     return doc.id
 
 
-def put_doc_timeline(collab_id, doc_id, timeline):
+def put_doc_timeline(collab_id, doc_id, timelineDoc):
     """
         DAO that updates the timeline of a document
     """
     new_timeline_list = []
-    for timel in timeline:
+    for timel in timelineDoc:
         timelineBody = timeline(event=timel['event'],
                                 eventStartDate=str(timel['event_start_date']),
                                 eventEndDate=str(timel['event_end_date']))
@@ -65,7 +65,7 @@ def put_doc_section(collab_id, doc_id, sec_title, sec_content, sec_num):
     doc.section[sec_num - 1] = new_section_content
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     doc.save()
-    log_document_edit_section(doc, previous_section, sec_num)
+    # log_document_edit_section(doc, previous_section, sec_num)
     return doc.id
 
 
@@ -122,6 +122,7 @@ def put_doc_tags(collab_id, doc_id, tags):
         count = 0
         for taglist in tag_list:
             if(taglist.tagItem.lower() in tagdoc.lower()):
+                tags.remove(tag_list)
                 break
             count = count + 1
             if(count == tag_list_count):
@@ -141,13 +142,13 @@ def put_doc_locations(collab_id, doc_id, locations_list):
 
     repeated_hash = dict()
     new_locations = []
-    for location in locations_list:
+    for locDoc in locations_list:
         # Check repeated locations
-        if repeated_hash.__contains__(location):
+        if repeated_hash.__contains__(locDoc):
             raise TellSpaceApiError('RepeatedContentError', msg='One of the given locations is repeated')
 
-        city_pr = city_pr.objects.get(city=location)
-        loc_body = location(address=city_pr.city, latitude=city_pr.latitude, longitude=city_pr.longitude)
+        cityDoc = city_pr.objects.get(city=locDoc)
+        loc_body = location(address=cityDoc.city, latitude=cityDoc.latitude, longitude=cityDoc.longitude)
         new_locations.append(loc_body)
 
     doc: document_case = document_case.objects.get(id=doc_id, creatoriD=collab_id)
@@ -185,6 +186,7 @@ def put_doc_authors(collab_id, doc_id, authors):
     for authorDoc in authors:
         author_body = author(author_FN=authorDoc["first_name"], author_LN=authorDoc["last_name"],
                              author_email=authorDoc["email"], author_faculty=authorDoc["faculty"])
+        print(author_body)
         new_author_list.append(author_body)
 
     doc: document_case = document_case.objects.get(id=doc_id, creatoriD=collab_id)
