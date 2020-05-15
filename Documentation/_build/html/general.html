@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>General module &#8212; DAOs 3.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Config &amp; Utils" href="configutils.html" />
+    <link rel="prev" title="Authentication module" href="authentication.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-general">
+<span id="general-module"></span><h1>General module<a class="headerlink" href="#module-general" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-module-general-py">
+<h2>General Module: general.py<a class="headerlink" href="#general-module-general-py" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Holds the endpoints that allow the retrieval of non sensitive information. Holds a blueprint object</dt><dd><p>that is used to create the routes for this module.</p>
+</dd>
+</dl>
+<dl class="data">
+<dt id="general.bp">
+<code class="sig-prename descclassname">general.</code><code class="sig-name descname">bp</code><em class="property"> = &lt;flask.blueprints.Blueprint object&gt;</em><a class="headerlink" href="#general.bp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of a Flask “Blueprint” class to implement a custom endpoint groups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="general.get_damage_types">
+<code class="sig-prename descclassname">general.</code><code class="sig-name descname">get_damage_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#general.get_damage_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of the available damage types within the database.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Response</dt><dd><p>JSON Object containing the list of damage types.</p>
+</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><p>[“damage1”,”damage2”, …]</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="general.get_infrastructure_types">
+<code class="sig-prename descclassname">general.</code><code class="sig-name descname">get_infrastructure_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#general.get_infrastructure_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of the available infrastructure types within the database.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Response</dt><dd><p>JSON Object containing the list of infrastructure types.</p>
+</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><p>[“Infra1”, “Infra2”, …]</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="general.get_tags">
+<code class="sig-prename descclassname">general.</code><code class="sig-name descname">get_tags</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#general.get_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of all the available tags within the database. (Tags are created by collaborators.)</p>
+<blockquote>
+<div><dl class="simple">
+<dt>ApiResult</dt><dd><p>JSON Object containing the list of tags.</p>
+</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><p>[“Tag1”, “Tag2”, …]</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DAOs</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Database/DAOs</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="blueprints.html">Blueprints</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="documents.html">Documents module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html">Authentication module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">General module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configutils.html">Config &amp; Utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="blueprints.html">Blueprints</a><ul>
+      <li>Previous: <a href="authentication.html" title="previous chapter">Authentication module</a></li>
+      <li>Next: <a href="configutils.html" title="next chapter">Config &amp; Utils</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Fab5.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/general.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

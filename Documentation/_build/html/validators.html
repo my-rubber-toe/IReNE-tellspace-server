@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Validators module &#8212; DAOs 3.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Schedule_jobs module" href="schedule_jobs.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-validators">
+<span id="validators-module"></span><h1>Validators module<a class="headerlink" href="#module-validators" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="validators-validators-py">
+<h2>Validators: validators.py<a class="headerlink" href="#validators-validators-py" title="Permalink to this headline">¶</a></h2>
+<p>Holds the classes that perform the request body validation process. These classes throw message errors according to the
+missing values or type errors.</p>
+<dl class="class">
+<dt id="validators.Actors">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">Actors</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.Actors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Actors Validator.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.ActorsValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">ActorsValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.ActorsValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body validation class for the endpoint /api/documents/&lt;doc_id&gt;/edit/actors</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.Authors">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">Authors</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.Authors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authors Validator.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.AuthorsValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">AuthorsValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.AuthorsValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body schema for the endpoint /api/documents/&lt;doc_id&gt;/edit/authors</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.CreateDocumentValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">CreateDocumentValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.CreateDocumentValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body schema for the endpoint /api/documents/create</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.DamageTypesValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">DamageTypesValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.DamageTypesValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body validation class for the endpoint /api/documents/&lt;doc_id&gt;/edit/damage_types</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.DescriptionValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">DescriptionValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.DescriptionValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body validation class for the endpoint /api/documents/&lt;doc_id&gt;/edit/description</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.EditSectionValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">EditSectionValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.EditSectionValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body schema for the endpoint /api/documents/&lt;doc_id&gt;/edit/section</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.IncidentDateValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">IncidentDateValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.IncidentDateValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body validation class for the endpoint /api/documents/&lt;doc_id&gt;/edit/incident_date</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.InfrastructureTypesValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">InfrastructureTypesValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.InfrastructureTypesValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body schema for the endpoint /api/documents/&lt;doc_id&gt;/edit/infrastructure_types</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.LocationsValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">LocationsValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.LocationsValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body validation class for the endpoint /api/documents/&lt;doc_id&gt;/edit/locations</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.RemoveDocumentValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">RemoveDocumentValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.RemoveDocumentValidator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="validators.TagsValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">TagsValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.TagsValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body schema for the endpoint /api/documents/&lt;doc_id&gt;/edit/tags</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.TimeLineEvent">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">TimeLineEvent</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.TimeLineEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timeline Validator.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.TimelineValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">TimelineValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.TimelineValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body validation class for the endpoint /api/documents/&lt;doc_id&gt;/edit/timeline</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="validators.TitleValidator">
+<em class="property">class </em><code class="sig-prename descclassname">validators.</code><code class="sig-name descname">TitleValidator</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="headerlink" href="#validators.TitleValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request body validation class for the endpoint /api/documents/&lt;doc_id&gt;/edit/title</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DAOs</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Database/DAOs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blueprints.html">Blueprints</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="configutils.html">Config &amp; Utils</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="environment.html">Environment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exception.html">Exception module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logger.html">Logger module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="schedule_jobs.html">Schedule_jobs module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Validators module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="configutils.html">Config &amp; Utils</a><ul>
+      <li>Previous: <a href="schedule_jobs.html" title="previous chapter">Schedule_jobs module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Fab5.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/validators.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

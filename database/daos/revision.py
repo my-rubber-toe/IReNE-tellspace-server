@@ -50,7 +50,7 @@ def log_document_edit_incident(updated_document, old_incident_dates):
         Revision function for editing the incident date, 
         it will serve as a notification that a document's incident date was updated.
     """
-    revDoc = create_revision_document(updated_document, 'incident_date')
+    revDoc = create_revision_document(updated_document, 'incident-date')
     revDoc.field_changed = fields_embedded(
         new=incident_embedded(incidentDate=updated_document.incidentDate),
         old=incident_embedded(incidentDate=old_incident_dates))

@@ -121,7 +121,9 @@ def put_doc_tags(collab_id, doc_id, tags):
     for tagdoc in tags:
         count = 0
         for taglist in tag_list:
-            if(taglist.tagItem.lower() in tagdoc.lower()):
+            if(tagdoc in taglist.tagItem):
+                break
+            if((taglist.tagItem.lower() in tagdoc.lower()) and (len(taglist.tagItem) < len(tagdoc))):
                 tags.remove(tag_list)
                 break
             count = count + 1
