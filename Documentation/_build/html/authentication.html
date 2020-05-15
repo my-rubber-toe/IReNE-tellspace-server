@@ -32,8 +32,110 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="authentication-module">
-<h1>Authentication module<a class="headerlink" href="#authentication-module" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-authentication">
+<span id="authentication-module"></span><h1>Authentication module<a class="headerlink" href="#module-authentication" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="authentication-module-authentication-py">
+<h2>Authentication Module: authentication.py<a class="headerlink" href="#authentication-module-authentication-py" title="Permalink to this headline">¶</a></h2>
+<p>Holds the endpoints that perform authentication operations. These endpoints are responsible for
+the generation, refreshing and revoking of access tokens.</p>
+<dl class="function">
+<dt id="authentication.auth_logout">
+<code class="sig-prename descclassname">authentication.</code><code class="sig-name descname">auth_logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#authentication.auth_logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revoke access token. Add access tokens to blacklist by extracting the JSON Token identifier.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>ApiResult</dt><dd><p>the response object containing a JSON Object with acknowledgment message.</p>
+</dd>
+<dt>TellSpaceAuthError</dt><dd><p>Exception class for authentication errors.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="authentication.auth_me">
+<code class="sig-prename descclassname">authentication.</code><code class="sig-name descname">auth_me</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#authentication.auth_me" title="Permalink to this definition">¶</a></dt>
+<dd><p>”
+Get the collaborator information from the database. (First Name, Last Name, Email and id)</p>
+<blockquote>
+<div><dl class="simple">
+<dt>ApiResult</dt><dd><p>the response object containing a JSON Object with the collaborators first name, last name, email
+and id.</p>
+</dd>
+<dt>TellSpaceAuthError</dt><dd><p>Exception class for authentication errors.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="authentication.auth_refresh">
+<code class="sig-prename descclassname">authentication.</code><code class="sig-name descname">auth_refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#authentication.auth_refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new access_token given a valid refresh token.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>ApiResult</dt><dd><p>the response object containing a JSON Object with the new access_token</p>
+</dd>
+<dt>TellSpaceAuthError</dt><dd><p>Exception class for authentication errors.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="data">
+<dt id="authentication.bp">
+<code class="sig-prename descclassname">authentication.</code><code class="sig-name descname">bp</code><em class="property"> = &lt;flask.blueprints.Blueprint object&gt;</em><a class="headerlink" href="#authentication.bp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instance of a Flask “Blueprint” class to implement a custom endpoint groups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="authentication.check_if_token_in_blacklist">
+<code class="sig-prename descclassname">authentication.</code><code class="sig-name descname">check_if_token_in_blacklist</code><span class="sig-paren">(</span><em class="sig-param">decrypted_token</em><span class="sig-paren">)</span><a class="headerlink" href="#authentication.check_if_token_in_blacklist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies if a token has been blacklisted if the time-to-live cache by extracting
+the JSON token identifier.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>decrypted_token</dt><dd><p>the token string to be evaluated.</p>
+</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><dl class="simple">
+<dt>entry</dt><dd><p>the key of the blacklist set which points to the blacklisted token.</p>
+</dd>
+<dt>False</dt><dd><p>boolean value if a token is not found in the blacklist.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="authentication.get_tokens">
+<code class="sig-prename descclassname">authentication.</code><code class="sig-name descname">get_tokens</code><span class="sig-paren">(</span><em class="sig-param">google_token: str</em><span class="sig-paren">)</span><a class="headerlink" href="#authentication.get_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify if the given param string is a valid Google idToken issued by Google and made with the projects
+credentials. If the user is NOT banned and is approved, proceed with token generation.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>google_token</dt><dd><p>the JWT Google generated token to be evaluated.</p>
+</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><dl class="simple">
+<dt>ApiResult</dt><dd><p>the response object containing a JSON Object with two tokens: access_token and refresh_token,
+respectively.</p>
+</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><dl class="simple">
+<dt>TellSpaceAuthError</dt><dd><p>error exception class for authentication related errors.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+</div>
 </div>
 
 
