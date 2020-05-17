@@ -1,3 +1,6 @@
+"""
+    Author: Jainel M. Torres Santos <jainel.torres@upr.edu>
+"""
 from database.daos.revision import *
 import datetime
 from utils.exceptions import TellSpaceApiError
@@ -65,7 +68,6 @@ def put_doc_section(collab_id, doc_id, sec_title, sec_content, sec_num):
     doc.section[sec_num - 1] = new_section_content
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     doc.save()
-    # log_document_edit_section(doc, previous_section, sec_num)
     return doc.id
 
 

@@ -1,9 +1,11 @@
+
 """
-Documents Module: documents.py
-==============================
+Documents Module: documents.py \n
 Holds the endpoints that perform CRUD operations on the documents present in the database.
 All operations performed on these endpoints must have a valid access token to proceed. Also, said entity retrieved
-from the token must be authorized and not banned in order to perform operations.
+from the token must be authorized and not banned in order to perform operations. \n
+Author: Roberto Guzmán <roberto.guzman3@upr.edu> \n
+Co-Author: Jainel M. Torres Santos <jainel.torres@upr.edu>
 """
 
 from flask import Blueprint, request, jsonify

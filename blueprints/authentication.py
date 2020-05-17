@@ -1,6 +1,6 @@
 """
-Authentication Module: authentication.py
-========================================
+Authentication Module: authentication.py \n
+
 Holds the endpoints that perform authentication operations. These endpoints are responsible for
 the generation, refreshing and revoking of access tokens.
 """

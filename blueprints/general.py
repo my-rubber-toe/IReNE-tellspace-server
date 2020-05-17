@@ -1,6 +1,6 @@
 """
-General Module: general.py
-==========================
+General Module: general.py  \n
+
 Holds the endpoints that allow the retrieval of non sensitive information. Holds a blueprint object
  that is used to create the routes for this module.
 """

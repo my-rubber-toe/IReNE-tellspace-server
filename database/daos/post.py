@@ -1,3 +1,6 @@
+"""
+    Author: Jainel M. Torres Santos <jainel.torres@upr.edu>
+"""
 from database.daos.revision import *
 import datetime
 from utils.exceptions import TellSpaceApiError
