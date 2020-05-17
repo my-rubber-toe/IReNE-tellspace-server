@@ -1,9 +1,6 @@
 from mongoengine import *
 import json
 
-#Connection to the Database
-connect('IReNEdb')
-
 
 class collaborator(Document):
     """
