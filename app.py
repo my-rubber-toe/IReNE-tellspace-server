@@ -11,7 +11,7 @@ Depending on that input the app will be initialized with the corresponding envir
 from create_app import ApiFlask
 
 
-if __name__ == '__main__':
+app = ApiFlask(__name__).create_app('config.environment')
 
-    app = ApiFlask(__name__).create_app('config.environment')
+if __name__ == '__main__':
     app.run(host='localhost', port=app.config['PORT'], debug=app.config['FLASK_DEBUG'])
