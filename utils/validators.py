@@ -14,29 +14,29 @@ class Authors(Schema):
     """Authors Validator."""
     first_name = fields.String(required=True, validate=[
         validate.Length(min=2, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$') ])
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ]*[a-záéíóúñü]$') ])
     last_name = fields.String(required=True, validate=[
         validate.Length(min=2, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- À-ÿ]*[a-záéíóúñü]$')])
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ]*[a-záéíóúñü]$')])
     email = fields.Email(required=True, validate=[
         validate.Length(min=9, max=70),
         validate.Regexp('^[\.a-z0-9]*(@upr\.edu)$')])
     faculty = fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : 0-9 À-ÿ]*$')])
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z . : 0-9 À-ÿ]*$')])
 
 
 class Actors(Schema):
     """Actors Validator."""
     first_name = fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : À-ÿ]*$')])
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z . : À-ÿ]*$')])
     last_name = fields.String(required=False, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : À-ÿ]*$')])
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z . : À-ÿ]*$')])
     role = fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z \- \. : 0-9 À-ÿ]*$')])
+        validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z . : 0-9 À-ÿ]*$')])
 
 
 class TimeLineEvent(Schema):
@@ -50,7 +50,7 @@ class CreateDocumentValidator(Schema):
     """ Request body schema for the endpoint /api/documents/create"""
     title = fields.String(required=True, validate=[
             validate.Length(min=10, max=50),
-            validate.Regexp("^([A-ZÁÉÓÍÚÑÜ])([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
+            validate.Regexp("^([A-ZÁÉÓÍÚÑÜ])([A-Z a-z 0-9 À-ÿ :]*)([A-Za-z0-9À-ÿ]$)")
         ])
 
     language = fields.String(min_length=1, required=True, validate=[
@@ -73,7 +73,7 @@ class CreateDocumentValidator(Schema):
     infrastructure_type = fields.List(
         fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$")]),
+        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*$")]),
         required=True,
         validate=validate.Length(min=1)
     )
@@ -81,7 +81,7 @@ class CreateDocumentValidator(Schema):
     damage_type = fields.List(
         fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$")]),
+        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*$")]),
         required=True,
         validate=validate.Length(min=1)
     )
@@ -99,7 +99,7 @@ class TitleValidator(Schema):
         required=True,
         validate=[
             validate.Length(min=10, max=50),
-            validate.Regexp("^([A-ZÁÉÓÍÚÑÜ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")
+            validate.Regexp("^([A-ZÁÉÓÍÚÑÜ]+)([A-Z a-z 0-9 À-ÿ :]*)([A-Za-z0-9À-ÿ]$)")
         ]
     )
 
@@ -118,7 +118,7 @@ class EditSectionValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/section"""
     section_title = fields.String(required=True, validate=[
         validate.Length(min=1, max=50),
-        validate.Regexp("^([A-ZÁÉÓÍÚÑÜ]+)([A-Z a-z 0-9 À-ÿ : \-]*)([A-Za-z0-9À-ÿ]$)")])
+        validate.Regexp("^([A-ZÁÉÓÍÚÑÜ]+)([A-Z a-z 0-9 À-ÿ :]*)([A-Za-z0-9À-ÿ]$)")])
     section_text = fields.String(required=True, validate=validate.Length(min=1, max=5000))
 
 
@@ -127,7 +127,7 @@ class InfrastructureTypesValidator(Schema):
     infrastructure_types = fields.List(
         fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$")]),
+        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*$")]),
         required=True, 
         validate=validate.Length(min=1))
 
@@ -137,7 +137,7 @@ class DamageTypesValidator(Schema):
     damage_types = fields.List(
         fields.String(required=True, validate=[
             validate.Length(min=1, max=30),
-            validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$")]),
+            validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*$")]),
         required=True,
         validate=validate.Length(min=1)
     )
@@ -181,6 +181,6 @@ class TagsValidator(Schema):
     """ Request body schema for the endpoint /api/documents/<doc_id>/edit/tags"""
     tags = fields.List(fields.String(required=True, validate=[
         validate.Length(min=1, max=30),
-        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & , \- ]*$")]),
+        validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*$")]),
         required=True,
         validate=validate.Length(max=10))
