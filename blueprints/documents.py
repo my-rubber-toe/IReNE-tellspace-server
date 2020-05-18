@@ -19,6 +19,7 @@ from database.daos.post import *
 from database.daos.put import *
 from database.daos.delete import *
 from database.schemas import *
+import bson
 
 bp = Blueprint('documents', __name__, url_prefix='/documents')
 """Instance of a Flask "Blueprint" class to implement a custom endpoint groups."""
@@ -130,7 +131,10 @@ def create_document():
             infrasDocList=body['infrastructure_type'],
             damageDocList=body['damage_type'])
 
-        return ApiResult(docId=str(doc.id))
+        #Get size of document
+        doc_json = get_doc(doc.id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+        return ApiResult(docId=str(doc.id), doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -208,7 +212,11 @@ def edit_document_title(doc_id: str):
     collab: collaborator = get_me(email)
     if not collab.banned and collab.approved:
         saved_id = put_doc_title(collab, doc_id, body['title'])
-        return ApiResult(message=f'Updated document: {saved_id}')
+
+        #Get size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+        return ApiResult(message=f'Updated document: {saved_id}', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -245,7 +253,12 @@ def edit_document_description(doc_id: str):
 
     if not collab.banned and collab.approved:
         saved_id = put_doc_des(collab, doc_id, body['description'])
-        return ApiResult(message=f'Updated document description.')
+
+        #Get size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+
+        return ApiResult(message=f'Updated document description.', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -290,7 +303,9 @@ def edit_document_timeline(doc_id: str):
 
     if not collab.banned and collab.approved:  # If collaborator is NOT banned and its approved, then do the thing
         saved_id = put_doc_timeline(collab_id=collab, doc_id=doc_id, timelineDoc=body['timeline'])
-        return ApiResult(message=f'Updated document {saved_id} timeline.')
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+        return ApiResult(message=f'Updated document {saved_id} timeline.', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -324,7 +339,12 @@ def create_document_section(doc_id: str):
     if not collab.banned:
         
         doc = post_doc_section(collab, doc_id)
-        return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}')
+
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+
+        return ApiResult(message=f'Created new section for {doc.id}. Total No. of sections {len(doc.section)}', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -360,7 +380,12 @@ def remove_document_section(doc_id: str, section_nbr: str):
 
     if not collab.banned:
         saved_id = remove_doc_section(collab, doc_id, int(section_nbr))
-        return ApiResult(message=f'Removed section from document {saved_id}.')
+
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+
+        return ApiResult(message=f'Removed section from document {saved_id}.', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -398,7 +423,11 @@ def edit_document_section(doc_id, section_nbr):
     if not collab.banned:
         saved_id = put_doc_section(collab, doc_id, body['section_title'], body['section_text'], int(section_nbr))
 
-        return ApiResult(message=f'Edited section from the document {saved_id}.')
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+
+        return ApiResult(message=f'Edited section from the document {saved_id}.',  doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -442,8 +471,11 @@ def edit_document_infrastructure_types(doc_id):
     if not collab.banned:
         saved_id = put_doc_infrasType(collab, doc_id, body['infrastructure_types'])
 
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
         return ApiResult(
-            message=f'Edited infrastructure types of the document {saved_id}.'
+            message=f'Edited infrastructure types of the document {saved_id}.', doc_size = docSize
         )
 
     raise TellSpaceAuthError(
@@ -486,8 +518,11 @@ def edit_document_damage_types(doc_id: str):
 
     if not collab.banned:
         saved_id = put_doc_damageType(collab, doc_id, body['damage_types'])
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
         return ApiResult(
-            message=f'Edited damage types of the document {saved_id}.'
+            message=f'Edited damage types of the document {saved_id}.', doc_size = docSize
         )
 
     raise TellSpaceAuthError(
@@ -526,7 +561,10 @@ def edit_document_locations(doc_id: str):
     if not collab.banned:
         saved_id = put_doc_locations(collab, doc_id, body['locations'])
 
-        return ApiResult(message=f'Edited locations of the document {saved_id}.')
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+        return ApiResult(message=f'Edited locations of the document {saved_id}.', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -563,7 +601,10 @@ def edit_document_tags(doc_id: str):
     if not collab.banned:
         saved_id = put_doc_tags(collab, doc_id, body['tags'])
 
-        return ApiResult(message=f'Edited tags of the document {saved_id}.')
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+        return ApiResult(message=f'Edited tags of the document {saved_id}.', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -604,7 +645,11 @@ def edit_document_incident_date(doc_id: str):
     if not collab.banned:
         saved_id = put_doc_incidentDate(collab, doc_id, body["incident_date"])
 
-        return ApiResult(message=f'Edited incident date of the document {saved_id}.')
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+
+        return ApiResult(message=f'Edited incident date of the document {saved_id}.',  doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -640,7 +685,11 @@ def edit_document_actors(doc_id: str):
 
     if not collab.banned:
         saved_id = put_doc_actors(collab, doc_id, body['actors'])
-        return ApiResult(message=f'Updated actors on document {saved_id}.')
+
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+        return ApiResult(message=f'Updated actors on document {saved_id}.', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
@@ -676,7 +725,10 @@ def edit_document_authors(doc_id: str):
     if not collab.banned:
         saved_id = put_doc_authors(collab, doc_id, body['authors'])
 
-        return ApiResult(body=f'Updated authors on document: {saved_id}')
+        #Gets size of document
+        doc_json = get_doc(doc_id, collab)
+        docSize = len(bson.BSON.encode(doc_json))
+        return ApiResult(body=f'Updated authors on document: {saved_id}', doc_size = docSize)
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',

@@ -65,6 +65,10 @@ def put_doc_section(collab_id, doc_id, sec_title, sec_content, sec_num):
     doc.section[sec_num - 1] = new_section_content
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     doc.save()
+
+    doc_json = json.loads(doc.to_json())
+    print(len(bson.BSON.encode({doc_json})))
+    
     return doc.id
 
 
