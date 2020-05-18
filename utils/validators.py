@@ -99,7 +99,7 @@ class TitleValidator(Schema):
         required=True,
         validate=[
             validate.Length(min=10, max=50),
-            validate.Regexp("^([A-ZÁÉÓÍÚÑÜ]+)([A-Z a-z 0-9 À-ÿ :]*)([A-Za-z0-9À-ÿ]$)")
+            validate.Regexp("^[A-ZÁÉÍÓÚÑÜ][A-Z a-z 0-9 À-ÿ :]*[A-Za-z0-9À-ÿ]$")
         ]
     )
 
