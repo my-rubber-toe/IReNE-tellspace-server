@@ -119,7 +119,7 @@ class EditSectionValidator(Schema):
     section_title = fields.String(required=True, validate=[
         validate.Length(min=1, max=50),
         validate.Regexp("^([A-ZÁÉÓÍÚÑÜ]+)([A-Z a-z 0-9 À-ÿ :]*)([A-Za-z0-9À-ÿ]$)")])
-    section_text = fields.String(required=True, validate=validate.Length(min=1, max=5000))
+    section_text = fields.String(required=True, validate=validate.Length(min=1))
 
 
 class InfrastructureTypesValidator(Schema):

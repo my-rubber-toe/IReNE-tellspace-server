@@ -179,7 +179,7 @@ class section(EmbeddedDocument):
                 - min_Length : 1
     """
     secTitle = StringField(min_length=2, max_length=50, required=True, regex='^([A-ZÁÉÍÓÚÑÜ]+)([A-Z a-z 0-9 À-ÿ :]*)([A-Za-z0-9À-ÿ]$)')
-    content = StringField(min_length=1, required=True, max_length=5000)
+    content = StringField(min_length=1, required=True)
 
 
 class location(EmbeddedDocument):

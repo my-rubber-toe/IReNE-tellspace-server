@@ -1,6 +1,3 @@
-"""
-    Author: Jainel M. Torres Santos <jainel.torres@upr.edu>
-"""
 from database.daos.revision import *
 import json
 

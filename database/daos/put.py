@@ -1,6 +1,3 @@
-"""
-    Author: Jainel M. Torres Santos <jainel.torres@upr.edu>
-"""
 from database.daos.revision import *
 import datetime
 from utils.exceptions import TellSpaceApiError
@@ -156,11 +153,9 @@ def put_doc_locations(collab_id, doc_id, locations_list):
         new_locations.append(loc_body)
 
     doc: document_case = document_case.objects.get(id=doc_id, creatoriD=collab_id)
-    # previous_locations = doc.location
     doc.location = new_locations
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     doc.save()
-    # log_document_edit_location(doc, previous_locations)
     return doc.id
 
 

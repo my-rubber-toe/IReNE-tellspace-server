@@ -321,8 +321,6 @@ def create_document_section(doc_id: str):
     """
     email = get_jwt_identity()
     collab: collaborator = get_me(email)
-    print(doc_id)
-    print(collab.id)
     if not collab.banned:
         
         doc = post_doc_section(collab, doc_id)
