@@ -6,7 +6,7 @@ Holds a class to hold scheduling operations.
 
 from flask import current_app
 from utils.logger import AppLogger
-from pymongo import MongoClient
+from mongoengine import connection
 import time
 import threading
 from config import environment
@@ -19,11 +19,9 @@ def ping_db():
     """
 
     while True:
-        conn = MongoClient(host=environment.DB_HOST)
-        if not conn['IReNEdb'].command('ping'):
-            logger: AppLogger = AppLogger()
+        if not connection.get_db().command('ping'):
+            logger: AppLogger = current_app.__getattribute__('app_logger')
             logger.log_error('Database Connection Error')
-        conn.close()
         time.sleep(10)
 
 
