@@ -1,7 +1,7 @@
 from database.daos.revision import *
 import datetime
 from utils.exceptions import TellSpaceApiError
-
+from mongoengine.errors import OperationError
 
 def post_create_doc_DAO(**docatr):
     """
@@ -49,6 +49,9 @@ def post_doc_section(collab_id, docid):
     new_section.content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod...'
     doc.section.append(new_section)
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
-    doc.save()
+    try:
+        doc.save()
+    except OperationError as db_error:
+        raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_creation_section(doc, new_section)
     return document_case.objects.get(id=docid)
