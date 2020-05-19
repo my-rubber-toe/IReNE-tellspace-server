@@ -1,6 +1,7 @@
 """
-Responses: responses.py
-=======================
+responses.py
+============
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
 Holds classes to standardize the response methods.
 """
 

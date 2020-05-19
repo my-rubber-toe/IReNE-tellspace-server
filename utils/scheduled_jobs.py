@@ -1,6 +1,7 @@
 """
-Scheduled Jobs: scheduled_jobs.py
-=================================
+scheduled_jobs.py
+=================
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
 Holds a class to hold scheduling operations.
 """
 

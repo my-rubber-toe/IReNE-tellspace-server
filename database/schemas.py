@@ -1,3 +1,12 @@
+""""
+
+This file contains all the GET related operations on the database.
+
+Author: Jainel Torres <jainel.torres@upr.edu>
+CoAuthor: Roberto Guzmán <roberto.guzman3@upr.edu>
+
+"""
+
 from mongoengine import *
 import json
 

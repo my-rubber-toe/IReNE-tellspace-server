@@ -1,6 +1,7 @@
 """
-Exceptions Module: exceptions.py
+exceptions.py
 ================================
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
 Holds the classes to standardize the exception raising. All raised exceptions are logged to the app.log file.
 """
 

@@ -1,5 +1,7 @@
 """
-Authentication Module: authentication.py \n
+Authentication Module: authentication.py
+========================================
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
 
 Holds the endpoints that perform authentication operations. These endpoints are responsible for
 the generation, refreshing and revoking of access tokens.
@@ -60,8 +62,8 @@ def get_tokens(google_token: str):
         refresh_token_ttl = 10
 
         return ApiResult(
-            access_token=create_access_token(identity=collab.email, expires_delta=timedelta(hours=access_token_ttl)),
-            refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(hours=refresh_token_ttl)),
+            access_token=create_access_token(identity=collab.email, expires_delta=timedelta(seconds=access_token_ttl)),
+            refresh_token=create_refresh_token(identity=collab.email, expires_delta=timedelta(seconds=refresh_token_ttl)),
             access_token_ttl=access_token_ttl,
             refresh_token_ttl=refresh_token_ttl
         )

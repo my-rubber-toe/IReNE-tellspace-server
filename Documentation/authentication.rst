@@ -1,6 +1,7 @@
-Authentication module
+Authentication Module
 =====================
 
 .. automodule:: authentication
    :members:
-   
+
+

@@ -1,6 +1,7 @@
 """
-Logger Module: logger.py
-========================
+logger.py
+=========
+Author: Roberto Guzmán <roberto.guzman3@upr.edu> \n
 This module holds classes responsible for performing standarized log operations.Can be called by any other module to
 log events.
 """

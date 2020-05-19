@@ -1,3 +1,10 @@
+""""
+
+This file contains all operations related to document revisions.
+Author: Yomar Ruiz <yomar.ruiz@upr.edu>
+
+"""
+
 from database.schemas import *
 import datetime
 import json

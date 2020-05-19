@@ -1,7 +1,8 @@
 """
+validators.py
+=========================
 Author: Roberto Guzmán <roberto.guzman3@upr.edu> \n
 Co-Author: Jainel M. Torres Santos <jainel.torres@upr.edu> \n
-Validators: validators.py \n
 
 Holds the classes that perform the request body validation process. These classes throw message errors according to the
 missing values or type errors.
@@ -117,7 +118,7 @@ class EditSectionValidator(Schema):
     section_title = fields.String(required=True, validate=[
         validate.Length(min=2, max=50),
         validate.Regexp("[A-ZÁÉÓÍÚÑÜ][A-Z a-z 0-9 À-ÿ :]*[A-Za-z0-9À-ÿ]$")])
-    section_text = fields.String(required=True, validate=validate.Length(min=1))
+    section_text = fields.String(required=True)
 
 
 class InfrastructureTypesValidator(Schema):

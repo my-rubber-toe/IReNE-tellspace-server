@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../database/daos'))
 sys.path.insert(0, os.path.abspath('../database'))
 sys.path.insert(0, os.path.abspath('../blueprints'))

@@ -1,6 +1,8 @@
 """
-config.py
-====================================
+Configuration File: config.py
+=============================
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
+
 Holds the configuration options to be used as environment variables.
 """
 
@@ -9,8 +11,8 @@ import os
 
 load_dotenv(verbose=True)
 
-FLASK_APP = os.getenv("FLASK_APP")
-FLASK_ENV = os.getenv("FLASK_ENV")
+FLASK_APP = os.getenv("FLASK_APP") # The app source file to use upon server creation.
+FLASK_ENV = os.getenv("FLASK_ENV") # The environment in whicht the application runs. (i.e:)
 PORT = os.getenv("PORT")
 FLASK_DEBUG = os.getenv("FLASK_DEBUG")
 DB_NAME = os.getenv('DB_NAME')

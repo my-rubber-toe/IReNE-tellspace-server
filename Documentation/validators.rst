@@ -1,6 +1,7 @@
-Validators module
+Validators Module
 =================
 
 .. automodule:: validators
    :members:
-   
+
+
