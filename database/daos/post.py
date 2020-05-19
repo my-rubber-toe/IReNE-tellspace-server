@@ -1,7 +1,7 @@
 from database.daos.revision import *
 import datetime
 from utils.exceptions import TellSpaceApiError
-from mongoengine.errors import OperationError
+from pymongo.errors import DocumentTooLarge
 
 def post_create_doc_DAO(**docatr):
     """
@@ -29,7 +29,10 @@ def post_create_doc_DAO(**docatr):
         timeline=[],
         language=docatr["language"]
     )
-    doc1.save()
+    try:
+        doc1.save()
+    except DocumentTooLarge as db_error:
+        raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_creation(doc1)
     return doc1
 
@@ -51,7 +54,7 @@ def post_doc_section(collab_id, docid):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_creation_section(doc, new_section)
     return document_case.objects.get(id=docid)
