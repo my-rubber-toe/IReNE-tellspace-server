@@ -32,7 +32,7 @@ class Actors(Schema):
     first_name = fields.String(required=True, validate=[
         validate.Length(min=1, max=30)])
     last_name = fields.String(required=False, validate=[
-        validate.Length(min=1, max=30)])
+        validate.Length(min=0, max=30)])
     role = fields.String(required=True, validate=[
         validate.Length(min=2, max=30),
         validate.Regexp('^[A-ZÁÉÍÓÚÑÜ][a-z A-Z : 0-9 À-ÿ]*[.]{0,1}[ ]{0,1}[a-z A-Z : 0-9 À-ÿ]*[a-zA-Z0-9À-ÿ]$')])
