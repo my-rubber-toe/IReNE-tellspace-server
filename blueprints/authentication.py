@@ -54,9 +54,7 @@ def get_tokens(google_token: str):
 
     if id_info['iss'] != 'accounts.google.com':  # Verify that the token was indeed issued by google accounts.
         raise TellSpaceAuthError(msg="Wrong issuer. Token issuer is not Google.")
-    print(id_info['email'])
     collab: collaborator = get_me(id_info['email'])
-    print(collab.first_name)
     if (not collab.banned) and collab.approved:
         access_token_ttl = 5
         refresh_token_ttl = 10
