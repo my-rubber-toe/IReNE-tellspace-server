@@ -338,7 +338,7 @@ class creation_embedded(EmbeddedDocument):
     published = BooleanField(default=True,required=False)
     incidentDate = StringField(min_length=9, max_length=11, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     creationDate = StringField(min_length=9, max_length=11, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
-    lastModificationDate = StringField(min_length=9, max_length=11, required=True, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
+    lastModificationDate = StringField(min_length=9, max_length=11, required=False, regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     tagsDoc = ListField(StringField(min_length=2,max_length=30,regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*[a-záéíóúñü]$'), required=False, max_length=10)
     infrasDocList = ListField(StringField(min_length=2,max_length=30,required=False,regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*[a-záéíóúñü]$'),min_length=1)
     damageDocList = ListField(StringField(min_length=2,max_length=30,required=False, regex='^[A-ZÁÉÍÓÚÑÜ][a-z A-Z À-ÿ / & ,]*[a-záéíóúñü]$'),min_length=1)
@@ -420,7 +420,7 @@ class title_embedded(EmbeddedDocument):
                 - attribute follows following regex: ^([A-ZÁÉÍÓÚÑÜ]+)([A-Z a-z 0-9 À-ÿ :]*)([A-Za-z0-9À-ÿ]$)
                 - min_Length : 10, max_length: 50, required
     """
-    title = StringField(min_length=10, max_length=50, required=False, regex="^[A-ZÁÉÍÓÚ][A-Z a-z 0-9 À-ÿ :]*[A-Za-z0-9áéíóú]$")
+    title = StringField(min_length=10, max_length=50, required=False, regex="^[A-ZÁÉÍÓÚÑÜ][A-Z a-z 0-9 À-ÿ :]*[A-Za-z0-9À-ÿ]$")
 
     def to_json(self):
         return self.title
@@ -639,13 +639,11 @@ class document_case_revision(Document):
     docId = ReferenceField('document_case')
     creator_name = StringField(min_length=2, max_length=90, required=False)
     creator_email = EmailField(required=False,min_length=9, max_length=50, regex='^[\.a-z0-9]*(@upr\.edu)$')
-    document_title = StringField(min_length=10, max_length = 50, required=False, 
-        regex="^[A-ZÁÉÍÓÚ][A-Z a-z 0-9 À-ÿ :]*[A-Za-z0-9áéíóú]$")
+    document_title = StringField(min_length=10, max_length = 50, required=False, regex="^[A-ZÁÉÍÓÚÑÜ][A-Z a-z 0-9 À-ÿ :]*[A-Za-z0-9À-ÿ]$")
     revision_date = StringField(min_length=9, max_length=11, required=False, 
         regex='[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]')
     revision_number = IntField(min_value=0, required=False)
-    revision_type = StringField(min_length=2, max_length= 20, required=False, 
-        regex='^[a-z A-Z À-ÿ]*[a-záéíóúñü]$')
+    revision_type = StringField(min_length=2, max_length= 20, required=False)
     field_changed = EmbeddedDocumentField(fields_embedded)
     
 
