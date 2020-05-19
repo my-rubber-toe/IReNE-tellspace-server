@@ -1,4 +1,4 @@
-Logger module
+Logger Module
 =============
 
 .. automodule:: logger

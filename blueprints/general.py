@@ -1,6 +1,7 @@
 """
-General Module: general.py  \n
-
+General Module: general.py
+==========================
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
 Holds the endpoints that allow the retrieval of non sensitive information. Holds a blueprint object
  that is used to create the routes for this module.
 """

@@ -1,6 +1,8 @@
 """
 db_init.py
-====================================
+==========
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
+
 This file contains all essential operations to start and register this app's database connection as part of the
 current application context.
 """

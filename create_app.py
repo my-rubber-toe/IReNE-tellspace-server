@@ -1,6 +1,6 @@
 """
 create_app.py
-====================================
+==============
 Holds the configuration functions for blueprints, routes, cors, error catching and much more.
 """
 
@@ -228,4 +228,3 @@ class ApiFlask(Flask):
             lambda err: ApiException(message=str(
                 err), status=422, error_type='Unprocessable Entity')
         )
-        

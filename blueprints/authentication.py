@@ -1,5 +1,7 @@
 """
-Authentication Module: authentication.py \n
+Authentication Module: authentication.py
+========================================
+Author: Roberto Guzmán <roberto.guzman3@upr.edu>
 
 Holds the endpoints that perform authentication operations. These endpoints are responsible for
 the generation, refreshing and revoking of access tokens.

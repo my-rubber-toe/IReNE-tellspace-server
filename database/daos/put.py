@@ -1,3 +1,12 @@
+""""
+
+This file contains all the PUT related operations on the database.
+
+Author: Jainel Torres <jainel.torres@upr.edu>
+CoAuthor: Roberto Guzmán <roberto.guzman3@upr.edu>
+
+"""
+
 from database.daos.revision import *
 import datetime
 from utils.exceptions import TellSpaceApiError

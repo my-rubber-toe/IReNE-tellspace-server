@@ -1,5 +1,5 @@
-Database/DAOs
-=============
+Modules
+=======
 
 .. toctree::
    :maxdepth: 6
@@ -10,3 +10,7 @@ Database/DAOs
    put
    post
    revision
+   authentication
+   validators
+   responses
+   exceptions
