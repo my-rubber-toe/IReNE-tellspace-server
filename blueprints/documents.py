@@ -82,7 +82,9 @@ def get_document_by_id(doc_id: str):
 
     if not collab.banned and collab.approved:
         doc = get_doc(doc_id, collab)
-        return jsonify(doc)
+        docSize = len(bson.BSON.encode(doc))
+        return jsonify({'document':doc,
+        'document_size': docSize})
 
     raise TellSpaceAuthError(
         msg='Authorization Error. Collaborator is banned or has not been approved by the admin.',
