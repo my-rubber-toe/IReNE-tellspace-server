@@ -11,8 +11,8 @@ from database.daos.revision import *
 import datetime
 from utils.exceptions import TellSpaceApiError
 import bson
-from mongoengine.errors import OperationError as db_error
-
+from mongoengine.errors import OperationError
+from pymongo.errors import DocumentTooLarge
 def put_doc_title(collab_id, doc_id, title):
     """
         DAO that updates the title of a document
@@ -23,7 +23,7 @@ def put_doc_title(collab_id, doc_id, title):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_title(doc, previous_title)
     return doc.id
@@ -39,7 +39,7 @@ def put_doc_des(collab_id, doc_id, des):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_description(doc, previous_description)
     return doc.id
@@ -62,7 +62,7 @@ def put_doc_timeline(collab_id, doc_id, timelineDoc):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_timeline(doc, previous_timeline)
     return doc.id
@@ -85,7 +85,7 @@ def put_doc_section(collab_id, doc_id, sec_title, sec_content, sec_num):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
 
     doc_json = json.loads(doc.to_json())
@@ -104,7 +104,7 @@ def put_doc_incidentDate(collab_id, doc_id, inDate):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_incident(doc, previous_incidentDate)
     return doc.id
@@ -120,7 +120,7 @@ def put_doc_damageType(collab_id, doc_id, damType):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_damage(doc, previous_damages)
     return doc.id
@@ -136,7 +136,7 @@ def put_doc_infrasType(collab_id, doc_id, infrasType):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_infrastructure(doc, previous_infrastructure)
     return doc.id
@@ -167,7 +167,7 @@ def put_doc_tags(collab_id, doc_id, tags):
     doc.tagsDoc = tags
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_tags(doc, previous_tags)
     return doc.id
@@ -194,7 +194,7 @@ def put_doc_locations(collab_id, doc_id, locations_list):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     return doc.id
 
@@ -214,7 +214,7 @@ def put_doc_actors(collab_id, doc_id, actors):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_actor(doc, previous_actors)
     return doc.id
@@ -236,7 +236,7 @@ def put_doc_authors(collab_id, doc_id, authors):
     doc.lastModificationDate = datetime.datetime.today().strftime('%Y-%m-%d')
     try:
         doc.save()
-    except OperationError as db_error:
+    except DocumentTooLarge as db_error:
         raise TellSpaceApiError(err=db_error, msg='Document limit reached', status=507)
     log_document_edit_author(doc, previous_authors)
     return doc.id
