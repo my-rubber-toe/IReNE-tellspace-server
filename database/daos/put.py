@@ -147,24 +147,22 @@ def put_doc_tags(collab_id, doc_id, tags):
         DAO that updates the tags list of a document
     """
     doc: document_case = document_case.objects.get(id=doc_id, creatoriD=collab_id)
-    # Create tag if it doesnt exist in the database
+
+    #Gets the list of tags from the database
     tag_list = tag.objects()
-    tag_list_count = tag.objects().count()
-    count = 0
-    for tagdoc in tags:
-        count = 0
-        for taglist in tag_list:
-            if(tagdoc in taglist.tagItem):
-                break
-            if((taglist.tagItem.lower() in tagdoc.lower()) and (len(taglist.tagItem) < len(tagdoc))):
-                tags.remove(tag_list)
-                break
-            count = count + 1
-            if(count == tag_list_count):
-                newTag = tag(tagItem=tagdoc)
-                newTag.save()
+    tag_list_items = []
+    for x in tag_list:
+        tag_list_items.append(x.tagItem)
+
+    # Create tag if it doesnt exist in the database
+    for tag_doc in tags:
+        if(not(tag_list_items.__contains__(tag_doc))):
+            print(tag_doc)
+            newTag = tag(tagItem=tag_doc)
+            newTag.save()
     previous_tags = doc.tagsDoc
     doc.tagsDoc = tags
+    
     try:
         doc.save()
     except DocumentTooLarge as db_error:
